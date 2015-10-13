@@ -1,0 +1,28 @@
+* Catalog (aka Neuplanung Katalogangebot)
+
+** Installation
+Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
+
+#+BEGIN_SRC shell
+lein immutant war --nrepl-start --nrepl-port 42279
+#+END_SRC
+
+Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
+
+** Documentation
+
+- [[https://github.com/sbsdev/catalog/wiki][Wiki]]
+- [[https://sbsdev.github.io/catalog][API Docs]]
+
+** Configuration and Dependencies
+Configuration is fairly complex and involves a lot of dependencies. It
+is recommended to use the [[https://github.com/sbsdev/sbs-infrastructure/blob/master/catalog.yml][ansible installation script]] which automates
+the whole process.
+
+Amongst other you will need [[http://wildfly.org/][Wildfly]], LaTeX, XSLT, etc.
+
+** License
+
+Copyright © 2015 Swiss Library for the Blind, Visually Impaired and Print Disabled.
+
+Distributed under the [[http://www.gnu.org/licenses/agpl-3.0.html][GNU Affero General Public License]]. See the file LICENSE.
