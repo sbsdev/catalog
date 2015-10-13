@@ -6,6 +6,7 @@
             [clojure.data.zip.xml :refer [xml-> xml1-> attr= text]]))
 
 (def ^:private param-mapping
+  "Mapping from Marc21 XML to parameters. See [MARC 21 Format for Bibliographic Data](http://www.loc.gov/marc/bibliographic/)"
   {:title [:datafield (attr= :tag "245") :subfield (attr= :code "a")]
    :subtitle [:datafield (attr= :tag "245") :subfield (attr= :code "b")]
    :creator [:datafield (attr= :tag "100") :subfield]
