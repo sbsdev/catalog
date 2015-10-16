@@ -113,9 +113,44 @@
    ;; "\\pagestyle{plain}"
    "\\tableofcontents"])
 
-(defn catalog-entry [{:keys [title creator description source_publisher source_date genre duration]}]
+(defmulti catalog-entry (fn [{format :format}] format))
+
+(defmethod catalog-entry :hörfilm
+  [{:keys [title personel-name description source_publisher source_date genre library_signature]}]
   ["\\begin{description}"
-   (string/join " " [(format "\\item[%s]" (escape title))
+   (string/join " "
+                [(format "\\item[%s]" (escape title))
+                 (format "Regie: %s" (escape personel-name))
+                 (escape source_date)
+                 (translations genre) "\\\\"
+                 (escape description)
+                 (escape library_signature)])
+   "\\end{description}"])
+
+(defmethod catalog-entry :hörbuch
+  [{:keys [title creator description source_publisher source_date genre duration narrator
+           producer producer_place produced_commercially
+           library_signature]}]
+  ["\\begin{description}"
+   (string/join " "
+                [(format "\\item[%s]" (escape title))
+                 (escape creator)
+                 (escape source_publisher)
+                 (escape source_date)
+                 (translations genre) "\\\\"
+                 (escape description) "\\\\"
+                 (escape duration)
+                 (format "gelesen von: %s" (escape narrator))
+                 (escape producer) (escape producer_place)
+                 (escape produced_commercially)
+                 (escape library_signature)])
+   "\\end{description}"])
+
+(defmethod catalog-entry :default
+  [{:keys [title creator description source_publisher source_date genre duration]}]
+  ["\\begin{description}"
+   (string/join " "
+                [(format "\\item[%s]" (escape title))
                  (escape creator)
                  (escape source_publisher)
                  (escape source_date)
