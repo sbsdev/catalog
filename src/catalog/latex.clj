@@ -87,6 +87,7 @@
    "\\fixpdflayout"
    "\\checkandfixthelayout"
    "\\usepackage{graphicx}"
+   "\\usepackage{titletoc}"
    "\\usepackage[ngerman]{babel}"
    "\\def\\languageshorthands#1{}"
    "\\usepackage{fontspec,xunicode,xltxtra}"
@@ -174,7 +175,6 @@
 (defn genre-entry [format genre items]
   (when (genre items)
     [(str "\\subsection{" (translations genre "FIXME") "}")
-     (println genre (-> items genre first))
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenre-entries (genre items))
        (#{:hörbuch} format) (subgenre-entries (genre items))
@@ -186,6 +186,10 @@
 (defn format-entry [format items]
   (when (format items)
     [(str "\\section{" (translations format "FIXME") "}")
+     ;; start a section toc
+     "\\startcontents"
+     ;; the toc should range from levels 2 to 3 inclusive (i.e. 2 and 3)
+     "\\printcontents{}{2}{\\setcounter{tocdepth}{3}}"
      (case format
        (:hörfilm :ludo) (catalog-entries (format items))
        (genre-entries format (format items)))]))
