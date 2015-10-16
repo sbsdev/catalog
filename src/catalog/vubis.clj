@@ -95,6 +95,19 @@
        :format (format-raw-to-format format-raw))
       (dissoc :genre-raw :format-raw)))
 
+(defn order-and-group [items]
+  (->>
+   items
+   (sort-by (juxt :creator :title))
+   (reduce
+    (fn [m {:keys [format genre sub-genre] :as item}]
+      (let [update-keys
+            (cond
+              (= format :hörbuch) [format genre sub-genre]
+              (#{:hörfilm :ludo} format) [format]
+              (= genre :kinder-und-jugendbücher) [format genre sub-genre]
+              :else [format genre])]
+        (update-in m update-keys (fnil conj []) item))) {})))
 
 (defn read-file
   "Read an export file from VUBIS and return a map with all the data"
