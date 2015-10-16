@@ -171,18 +171,24 @@
 (defn subgenre-entries [items]
   (for [subgenre subgenres] (subgenre-entry subgenre items)))
 
-(defn genre-entry [genre items]
+(defn genre-entry [format genre items]
   (when (genre items)
     [(str "\\subsection{" (translations genre "FIXME") "}")
-     (subgenre-entries (genre items))]))
+     (println genre (-> items genre first))
+     (cond
+       (#{:kinder-und-jugendbücher} genre) (subgenre-entries (genre items))
+       (#{:hörbuch} format) (subgenre-entries (genre items))
+       :else (catalog-entries (genre items)))]))
 
-(defn genre-entries [items]
-  (for [genre genres] (genre-entry genre items)))
+(defn genre-entries [format items]
+  (for [genre genres] (genre-entry format genre items)))
 
 (defn format-entry [format items]
   (when (format items)
     [(str "\\section{" (translations format "FIXME") "}")
-     (genre-entries (format items))]))
+     (case format
+       (:hörfilm :ludo) (catalog-entries (format items))
+       (genre-entries format (format items)))]))
 
 (defn format-entries [items]
   (for [format formats] (format-entry format items)))
