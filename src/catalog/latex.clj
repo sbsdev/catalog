@@ -83,147 +83,146 @@
        (string/replace #">>" "{>}>"))))
 
 (defn preamble [{:keys [title font creator] :or {font "Verdana"}}]
-  ["\\isopage[12]"
-   "\\fixpdflayout"
-   "\\checkandfixthelayout"
-   "\\usepackage{graphicx}"
-   "\\usepackage{titletoc}"
-   "\\usepackage[ngerman]{babel}"
-   "\\def\\languageshorthands#1{}"
-   "\\usepackage{fontspec,xunicode,xltxtra}"
-   "\\defaultfontfeatures{Mapping=tex-text}"
-   (str "\\setmainfont{" font "}")
-   "\\usepackage{hyperref}"
-   (str "\\hypersetup{pdftitle={" (escape title) "}, pdfauthor={" (escape creator) "}}")
-   "\\setsecnumdepth{subsubsection}"
-   "\\setlength{\\parindent}{0pt}"])
+  (let [[title creator] (map escape [title creator])]
+    (format
+     "\\isopage[12]
+\\fixpdflayout
+\\checkandfixthelayout
+\\usepackage{graphicx}
+\\usepackage{titletoc}
+\\usepackage[ngerman]{babel}
+\\def\\languageshorthands#1{}
+\\usepackage{fontspec,xunicode,xltxtra}
+\\defaultfontfeatures{Mapping=tex-text}
+\\setmainfont{%s}
+\\usepackage{hyperref}
+\\hypersetup{pdftitle={%s}, pdfauthor={%s}}
+\\setsecnumdepth{subsubsection}
+\\setlength{\\parindent}{0pt}" font title creator)))
 
 (defn frontmatter [{:keys [title issue-number year]}]
-  ["\\frontmatter"
-   "\\begin{Spacing}{1.75}"
-   (str  "{\\huge " (escape title) "}\\\\[0.5cm]")
-   "\\end{Spacing}"
-   "{\\large Ausgabenummer und Jahr}\\\\[1.5cm]"
-   "\\vfill"
-   "Logo\\\\ "
-   "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]"
-   "\\cleartorecto"])
+  (format
+   "\\frontmatter
+\\begin{Spacing}{1.75}
+{\\huge %s}\\\\[0.5cm]
+\\end{Spacing}
+{\\large Ausgabenummer und Jahr}\\\\[1.5cm]
+\\vfill
+Logo\\\\
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
+\\cleartorecto" (escape title)))
 
 (defn mainmatter [env]
-  ["\\mainmatter"
-   ;; "\\pagestyle{plain}"
-   "\\tableofcontents"])
+  "\\mainmatter
+%% \\pagestyle{plain}
+\\tableofcontents")
 
-(defmulti catalog-entry (fn [{format :format}] format))
+(defmulti catalog-entry (fn [{fmt :format}] fmt))
 
 (defmethod catalog-entry :hörfilm
   [{:keys [title personel-name description source_publisher source_date genre library_signature]}]
-  ["\\begin{description}"
-   (string/join " "
-                [(format "\\item[%s]" (escape title))
-                 (format "Regie: %s" (escape personel-name))
-                 (escape source_date)
-                 (translations genre) "\\\\"
-                 (escape description)
-                 (escape library_signature)])
-   "\\end{description}"])
+  (format "\\begin{description}
+\\item[%s] Regie: %s %s %s \\\\ %s %s
+\\end{description}"
+          (escape title) (escape personel-name)
+          (escape source_date) (translations genre)
+          (escape description) (escape library_signature)))
 
 (defmethod catalog-entry :hörbuch
   [{:keys [title creator description source_publisher source_date genre duration narrator
            producer producer_place produced_commercially
            library_signature]}]
-  ["\\begin{description}"
-   (string/join " "
-                [(format "\\item[%s]" (escape title))
-                 (escape creator)
-                 (escape source_publisher)
-                 (escape source_date)
-                 (translations genre) "\\\\"
-                 (escape description) "\\\\"
-                 (escape duration)
-                 (format "gelesen von: %s" (escape narrator))
-                 (escape producer) (escape producer_place)
-                 (escape produced_commercially)
-                 (escape library_signature)])
-   "\\end{description}"])
+  (format "\\begin{description}
+\\item[%s] %s %s %s %s \\\\ %s \\\\ %s Gelesen von: %s %s %s %s %s
+\\end{description}"
+          (escape title)
+          (escape creator)
+          (escape source_publisher)
+          (escape source_date)
+          (translations genre)
+          (escape description)
+          (escape duration)
+          (escape narrator)
+          (escape producer)
+          (escape producer_place)
+          (escape produced_commercially)
+          (escape library_signature)))
 
 (defmethod catalog-entry :default
-  [{:keys [title creator description source_publisher source_date genre duration]}]
-  ["\\begin{description}"
-   (string/join " "
-                [(format "\\item[%s]" (escape title))
-                 (escape creator)
-                 (escape source_publisher)
-                 (escape source_date)
-                 (translations genre) "\\\\"
-                 (escape description)
-                 "Spieldauer"
-                 (escape duration)])
-   "\\end{description}"])
+  [{:keys [title creator description source_publisher source_date genre]}]
+  (format "\\begin{description}
+\\item[%s] %s %s %s %s \\\\ %s
+\\end{description}"
+          (escape title)
+          (escape creator)
+          (escape source_publisher)
+          (escape source_date)
+          (translations genre)
+          (escape description)))
 
 (defn catalog-entries [items]
   (for [item items] (catalog-entry item)))
 
 (defn subgenre-entry [subgenre items]
   (when (subgenre items)
-    [(str "\\subsubsection{" (translations subgenre "FIXME")"}")
+    [(format "\\subsubsection{%s}" (translations subgenre "FIXME"))
      (catalog-entries (subgenre items))]))
 
 (defn subgenre-entries [items]
   (for [subgenre subgenres] (subgenre-entry subgenre items)))
 
-(defn genre-entry [format genre items]
+(defn genre-entry [fmt genre items]
   (when (genre items)
-    [(str "\\subsection{" (translations genre "FIXME") "}")
+    [(format "\\subsection{%s}" (translations genre "FIXME"))
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenre-entries (genre items))
-       (#{:hörbuch} format) (subgenre-entries (genre items))
+       (#{:hörbuch} fmt) (subgenre-entries (genre items))
        :else (catalog-entries (genre items)))]))
 
-(defn genre-entries [format items]
-  (for [genre genres] (genre-entry format genre items)))
+(defn genre-entries [fmt items]
+  (for [genre genres] (genre-entry fmt genre items)))
 
-(defn format-entry [format items]
-  (when (format items)
-    [(str "\\section{" (translations format "FIXME") "}")
+(defn format-entry [fmt items]
+  (when (fmt items)
+    [(format "\\section{%s}" (translations fmt "FIXME"))
      ;; start a section toc
      "\\startcontents"
      ;; the toc should range from levels 2 to 3 inclusive (i.e. 2 and 3)
      "\\printcontents{}{2}{\\setcounter{tocdepth}{3}}"
-     (case format
-       (:hörfilm :ludo) (catalog-entries (format items))
-       (genre-entries format (format items)))]))
+     (case fmt
+       (:hörfilm :ludo) (catalog-entries (fmt items))
+       (genre-entries fmt (fmt items)))]))
 
 (defn format-entries [items]
-  (for [format formats] (format-entry format items)))
+  (for [fmt formats] (format-entry fmt items)))
 
 (defn catalog [{items :items}]
   ["\\chapter{Katalog}"
    (format-entries items)])
 
 (defn impressum [env]
-   ["\\chapter{Impressum}"
-   ""
-   "Neu im Sortiment"
-   ""
-   "Für Kundinnen und Kunden der SBS sowie für Interessenten"
-   ""
-   "Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach"
-   ""
-   "Neu im Sortiment kann im Jahresabonnement per Post zu CHF XX oder per E-Mail gratis bezogen werden."
-   ""
-   "Herausgeber:\\\\ "
-   "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\ "
-   "Grubenstrasse 12\\\\ "
-   "CH-8045 Zürich\\\\ "
-   "Fon +41 43 333 32 32\\\\ "
-   "Fax +41 43 333 32 33\\\\ "
-   "www.sbs.ch"
-   ""
-   "Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch\\\\ "
-   "Verkauf Institutionen: medienverlag@sbs.ch"
-   ""
-   "Copyright Vermerk"])
+   "\\chapter{Impressum}
+
+Neu im Sortiment
+
+Für Kundinnen und Kunden der SBS sowie für Interessenten
+
+Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach
+
+Neu im Sortiment kann im Jahresabonnement per Post zu CHF XX oder per E-Mail gratis bezogen werden.
+
+Herausgeber:\\\\
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\
+Grubenstrasse 12\\\\
+CH-8045 Zürich\\\\
+Fon +41 43 333 32 32\\\\
+Fax +41 43 333 32 33\\\\
+www.sbs.ch
+
+Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch\\\\
+Verkauf Institutionen: medienverlag@sbs.ch
+
+Copyright Vermerk")
 
 (defn document [{:keys [class options]
                  :or {class "memoir"
@@ -231,7 +230,7 @@
                  :as env}]
   (string/join "\n"
    (flatten
-    [(str "\\documentclass[" (string/join "," options) "]{" class "}")
+    [(format "\\documentclass[%s]{%s}" (string/join "," options) class)
      (preamble env)
      "\\begin{document}"
      (frontmatter env)
