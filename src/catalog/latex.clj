@@ -112,44 +112,32 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
 
 (defmethod catalog-entry :hörfilm
   [{:keys [title personel-name description source_publisher source_date genre library_signature]}]
-  (format "\\begin{description}
+  (apply
+   format "\\begin{description}
 \\item[%s] Regie: %s %s %s \\\\ %s %s
 \\end{description}"
-          (escape title) (escape personel-name)
-          (escape source_date) (translations genre)
-          (escape description) (escape library_signature)))
+   (map escape
+        [title personel-name source_date (translations genre) description library_signature])))
 
 (defmethod catalog-entry :hörbuch
-  [{:keys [title creator description source_publisher source_date genre duration narrator
+  [{:keys [creator title description source_publisher source_date genre duration narrator
            producer producer_place produced_commercially
            library_signature]}]
-  (format "\\begin{description}
+  (apply
+   format "\\begin{description}
 \\item[%s] %s %s %s %s \\\\ %s \\\\ %s Gelesen von: %s %s %s %s %s
 \\end{description}"
-          (escape title)
-          (escape creator)
-          (escape source_publisher)
-          (escape source_date)
-          (translations genre)
-          (escape description)
-          (escape duration)
-          (escape narrator)
-          (escape producer)
-          (escape producer_place)
-          (escape produced_commercially)
-          (escape library_signature)))
+   (map escape [title creator source_publisher source_date (translations genre)
+                description duration narrator producer producer_place produced_commercially
+                library_signature])))
 
 (defmethod catalog-entry :default
   [{:keys [title creator description source_publisher source_date genre]}]
-  (format "\\begin{description}
+  (apply
+   format "\\begin{description}
 \\item[%s] %s %s %s %s \\\\ %s
 \\end{description}"
-          (escape title)
-          (escape creator)
-          (escape source_publisher)
-          (escape source_date)
-          (translations genre)
-          (escape description)))
+   (map escape [creator title source_publisher source_date (translations genre) description])))
 
 (defn catalog-entries [items]
   (for [item items] (catalog-entry item)))
