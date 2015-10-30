@@ -58,29 +58,20 @@
   List](http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf))"
   [text]
   (if (nil? text) ""
-      (->
+      (reduce
+       (fn [txt [regexp replacement]]
+         (string/replace txt regexp replacement))
        text
-       ;; backslash
-       (string/replace #"\\" "\\\\textbackslash ")
-       ;; drop excessive white space
-       (string/replace #"\s+" " ")
-       ;; quote special chars
-       (string/replace #"(\$|&|%|#|_|\{|\})" "\\\\$1")
-       ;; append a '{}' to special chars so they are not missinterpreted
-       (string/replace #"(~|\^)" "$1{}")
-       ;; add non-breaking space in front of emdash or endash followed by
-       ;; punctuation
-       (string/replace #" ([–—]\p{P})" " $1")
-       ;; add non-breaking space in front ellipsis followed by punctuation
-       (string/replace #" ((\.{3}|…)\p{P})" " $1")
-       ;; [ and ] can sometimes be interpreted as the start or the end of
-       ;; an optional argument
-       (string/replace #"\[" "\\\\lbrack{}")
-       (string/replace #"\]" "\\\\rbrack{}")
-       ;; << and >> is apparently treated as a shorthand and is not
-       ;; handled by our shorthand disabling code
-       (string/replace #"<<" "{<}<")
-       (string/replace #">>" "{>}>"))))
+       [[#"\\" "\\\\textbackslash "] ; backslash
+        [#"\s+" " "] ; drop excessive white space
+        [#"(\$|&|%|#|_|\{|\})" "\\\\$1"] ; quote special chars
+        [#"(~|\^)" "$1{}"] ; append a '{}' to special chars so they are not missinterpreted
+        [#" ([–—]\p{P})" " $1"] ; add non-breaking space in front of emdash or endash followed by punctuation
+        [#" ((\.{3}|…)\p{P})" " $1"] ; add non-breaking space in front ellipsis followed by punctuation
+        [#"\[" "\\\\lbrack{}"] ; [ and ] can sometimes be interpreted as the start or the end of an optional argument
+        [#"\]" "\\\\rbrack{}"]
+        [#"<<" "{<}<"] ; << and >> is apparently treated as a shorthand and is not handled by our shorthand disabling code
+        [#">>" "{>}>"]])))
 
 (defn preamble [{:keys [title font creator] :or {font "Verdana"}}]
   (let [[title creator] (map escape [title creator])]
