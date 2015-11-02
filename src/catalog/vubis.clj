@@ -11,25 +11,34 @@
   {:record-id [:controlfield (attr= :tag "001")]
    :title [:datafield (attr= :tag "245") :subfield (attr= :code "a")]
    :subtitle [:datafield (attr= :tag "245") :subfield (attr= :code "b")]
-   :creator [:datafield (attr= :tag "100") :subfield]
-   :source [:datafield (attr= :tag "020") :subfield]
-   :description [:datafield (attr= :tag "520") :subfield]
-   :library_signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")]
-   :source_publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")]
-   :source_date [:datafield (attr= :tag "534") :subfield (attr= :code "d")]
-   :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")]
+   :creator [:datafield (attr= :tag "100") :subfield] ; autor
+   :source [:datafield (attr= :tag "020") :subfield] ; isbn
+   :description [:datafield (attr= :tag "520") :subfield] ; abstract
+   :volume [:datafield (attr= :tag "520") :fixme] ; Bandangabe
+   :source_publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
+   :source_date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
+   :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")]
-   :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")]
+   :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
    :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
-   :narrator [:datafield (attr= :tag "709") :subfield (attr= :code "a")]
-   :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")]
-   :producer [:datafield (attr= :tag "260") :subfield (attr= :code "b")]
-   :producer_place [:datafield (attr= :tag "260") :subfield (attr= :code "a")]
+   :narrator [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
+   :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
+   :producer [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
+   :producer-raw [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
+   :producer_place [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
    :produced_date [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
-   :produced_commercially [:datafield (attr= :tag "260") :subfield (attr= :code "d")]
+   :produced_commercially [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
+   :rucksackbuch [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; rucksackbuch?
    :format-raw [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
    :genre-raw [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
-   :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")]})
+   :library_signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
+   :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
+   :contraction [:datafield (attr= :tag "024") :fixme] ; Schriftart
+   :movie_country [:datafield (attr= :tag "024") :fixme] ; Film Land
+   :movie_category [:datafield (attr= :tag "024") :fixme] ; Filmkategorie
+   :game_category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
+   :game_materials [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
+   })
 
 (def iso-639-2-to-iso-639-1
   "Mapping between three letter codes of [ISO
@@ -84,6 +93,23 @@
    "LU" :ludo
    "MN" :musiknoten})
 
+(def producer-raw-to-producer
+  "Mapping between producer-raw and producer"
+  {1 "DBh, Marburg"
+   101 "DBh, Marburg"
+   2 "BHB, Berlin"
+   6 "WBH, Münster"
+   8 "SBH, Stuttgart"
+   11 "DKBB, Bonn"
+   13 "SBS, Zürich"
+   100 "SBS, Zürich"
+   24 "DZB, Leipzig"
+   102 "DZB, Leipzig"
+   25 "CAB, Landschlacht"
+   40 "BIT, München"
+   50 "BSVÖ, Wien"
+   103 "Paderborn"})
+
 (defn get-subfield
   "Get the subfield text for the given `path` in the given `record`.
   Returns nil if there is no such subfield"
@@ -93,14 +119,16 @@
 (defn clean-raw-item
   "Return a proper production based on a raw item, i.e.
   translate the language tag into proper ISO 639-1 codes"
-  [{:keys [genre-raw language format-raw] :as item :or {genre-raw "x01"}}]
+  [{:keys [genre-raw language format-raw producer-raw] :as item :or {genre-raw "x01"}}]
   (-> item
       (assoc-some
        :language (iso-639-2-to-iso-639-1 language)
        :genre (genre-raw-to-genre (subs genre-raw 0 1))
        :sub-genre (genre-raw-to-subgenre (subs genre-raw 0 3))
-       :format (format-raw-to-format format-raw))
-      (dissoc :genre-raw :format-raw)))
+       :format (format-raw-to-format format-raw)
+       :producer_brief (producer-raw-to-producer (Integer/parseInt producer-raw)
+                                                 (format "FIXME: %s" producer-raw)))
+      (dissoc :genre-raw :format-raw producer-raw)))
 
 (defn order-and-group [items]
   (->>
