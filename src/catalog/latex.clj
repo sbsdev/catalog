@@ -108,6 +108,11 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
 %% \\pagestyle{plain}
 \\tableofcontents")
 
+(defn to-url
+  "Return an url given a `record-id`"
+  [record-id]
+  (format "http://online.sbs.ch/iguana/www.main.cls?sUrl=search#anchor_Record_%s" record-id))
+
 (defmulti catalog-entry (fn [{fmt :format}] fmt))
 
 (defmethod catalog-entry :hörfilm
@@ -136,12 +141,12 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
                 price])))
 
 (defmethod catalog-entry :default
-  [{:keys [title creator description source_publisher source_date genre]}]
+  [{:keys [record-id title creator description source_publisher source_date genre]}]
   (apply
    format "\\begin{description}
-\\item[%s] %s %s %s %s \\\\ %s
+\\item[%s] \\href{%s}{%s} %s %s %s \\\\ %s
 \\end{description}"
-   (map escape [creator title source_publisher source_date (translations genre) description])))
+   (map escape [creator (to-url record-id) title source_publisher source_date (translations genre) description])))
 
 (defn catalog-entries [items]
   (for [item items] (catalog-entry item)))
