@@ -1,5 +1,7 @@
 * Catalog (aka Neuplanung Katalogangebot)
 
+Generate bi-monthly catalogs of the new items in the library.
+
 ** Installation
 Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
 
@@ -14,7 +16,16 @@ Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
 - [[https://github.com/sbsdev/catalog/wiki][Wiki]]
 - [[https://sbsdev.github.io/catalog][API Docs]]
 
-** Configuration and Dependencies
+Essentialy the system is a small service where dumps of the library
+database can be uploaded and catalogs in various formats downloaded.
+There will be a web interface to download catalogs and, if this cannot
+be automated, also to upload database exports from the library
+database.
+
+A database will contain all items. The catalogs will be produced based
+on those items.
+
+** configuration and Dependencies
 Configuration is fairly complex and involves a lot of dependencies. It
 is recommended to use the [[https://github.com/sbsdev/sbs-infrastructure/blob/master/catalog.yml][ansible installation script]] which automates
 the whole process.
