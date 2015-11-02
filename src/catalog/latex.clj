@@ -121,15 +121,19 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
 
 (defmethod catalog-entry :hörbuch
   [{:keys [creator title description source_publisher source_date genre duration narrator
-           producer producer_place produced_commercially
-           library_signature]}]
+           producer_brief produced_commercially
+           library_signature price]}]
   (apply
    format "\\begin{description}
-\\item[%s] %s %s %s %s \\\\ %s \\\\ %s Gelesen von: %s %s %s %s %s
+\\item[%s] %s %s %s \\\\ Genre: %s \\\\ %s \\\\ %s Min. Gelesen von: %s \\\\ Prod.: %s %s \\\\ Ausleihe: %s \\\\ Verkauf: %s %s
 \\end{description}"
-   (map escape [title creator source_publisher source_date (translations genre)
-                description duration narrator producer producer_place produced_commercially
-                library_signature])))
+   (map escape [creator title source_publisher source_date (translations genre)
+                description
+                duration narrator
+                producer_brief (if produced_commercially "Hörbuch aus dem Handel" "")
+                library_signature
+                "foo"
+                price])))
 
 (defmethod catalog-entry :default
   [{:keys [title creator description source_publisher source_date genre]}]
