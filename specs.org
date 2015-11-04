@@ -1,0 +1,132 @@
+* Marc21
+** Neue Hörbucher
+ 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+ 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+ 3. Verlag, Erscheinungsjahr
+ 4. Genre
+ 5. Abstract (=Annotation)
+ 6. Spieldauer in Minuten
+ 7. „gelesen von:“ Sprecher (falls es mehrere sind: mit „u.a.“)
+ 8. Produzent (Kürzel der übertragenden Organisation), Stadt. Falls es sich um ein kommerzielles Hörbuch handelt, zusätzlich: „Hörbuch aus dem Handel“
+ 9. Signaturen (zuerst Ausleihe, dann Verkauf mit Preisangabe in Franken)
+
+** Neue Braillebücher
+ 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+ 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+ 3. Verlag, Erscheinungsjahr
+ 4. Genre
+ 5. Abstract
+ 6. Produzent (Kürzel), Stadt. Falls es sich um ein Rucksackbuch handelt, zusätzlich: „Rucksackbuch“
+ 7. Schriftart, Bandangabe, Signaturen (zuerst Ausleihe, dann allenfalls Verkauf, gefolgt von Preisangabe in Franken)
+
+** Neue Grossdruckbücher
+ 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+ 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+ 3. Verlag, Erscheinungsjahr
+ 4. Genre
+ 5. Abstract
+ 6. Signatur: „Ausleihe“: Bandangabe und Signatur, „Verkauf“: Preis
+
+** Neue E-Books
+ 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+ 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+ 3. Verlag, Erscheinungsjahr
+ 4. Genre
+ 5. Abstract
+ 6. „Ausleihe“: Signatur
+
+** Neue Hörfilme
+ 1. Titel, Untertitel
+ 2. „Regie:“ Name Regisseur
+ 3. „Schauspieler:“ Namen der Hauptdarstellern
+ 4. Land, Erscheinungsjahr (des Originalfilms)
+ 5. Filmkategorie (Spielfilm, Dokumentarfilm, Mundartfilm)
+ 6. Abstract
+ 7. Produzent
+ 8. „Ausleihe“: Signatur
+
+** Neue Spiele
+ 1. Autor
+ 2. Titel, Untertitel
+ 3. Verlag (Originalproduzent)
+ 4. Systematikgruppe
+ 5. Abstract
+ 6. Materialdetails
+ 7. „Ausleihe“: Signatur
+
+** Aggregated
+ 1. Record-id
+ 2. Autor
+ 3. Titel
+ 4. Untertitel
+ 5. Bandangabe
+ 6. Verlag
+ 7. Erscheinungsjahr
+ 8. Genre
+ 9. Abstract
+ 10. Spieldauer
+ 11. Sprecher
+ 12. Produzent
+ 13. Produzent Stadt
+ 14. kommerziell?
+ 15. rucksackbuch?
+ 16. Signaturen
+ 17. Preis
+ 18. Schriftart
+ 19. Bandangabe
+ 20. Regie
+ 21. Schauspieler
+ 22. Film_Land
+ 23. Filmkategorie
+ 24. Spiel-Systematikgruppe
+ 25. Spiel-Materialdetails
+
+
+* Layout
+** Neue Hörbucher
+*Muster, Hans: [[http:online.link][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Genre: Abenteuerromane.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique. 
+  697 Min., gelesen von: Klaus Zippel[ u.a]. DZB, Leipzig[, Hörbuch aus dem Handel].
+  *Ausleihe:* DY 12345
+  *Verkauf:* DY 456789, CHF 21.90
+  
+** Neue Braillebücher
+*Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Genre: Abenteuerromane.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique. 
+  DZB, Leipzig[, Rucksackbuch Nr. XX].
+  *Ausleihe:* Kurzschrift, 5 Bd., DS 12345. Vollschrift, 7 Bd., DS 12346, Weitzeilige Vollschrift, 10 Bd., DS 45678
+  *Verkauf:* CHF 21.90. Kurzschrift, 5 Bd., DS 12347. Vollschrift, 7 Bd., DS 12347, Weitzeilige Vollschrift, 10 Bd., DS 45679
+
+Schriftart = ["Kurzschrift" "Vollschrift" "Weitzeilige Vollschrift"]
+
+** Neue Grossdruckbücher
+*Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Genre: Abenteuerromane.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
+  *Ausleihe:* GD 12345, 3 Bd.
+  *Verkauf:* CHF 21.90
+
+** Neue E-Books
+*Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Genre: Abenteuerromane.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
+  *Ausleihe:* EB 12345
+
+** Neue Hörfilme
+*[[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel.
+  Regie: Luigi Comencini, Schauspieler: Heinrich Gretler, Margrit Rainer.
+  Schweiz, 1955.
+  Mundartfilm.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
+  Präsens-Film.
+  *Ausleihe:* VI 12345
+
+** Neue Spiele
+*[[foo][Die Siedler von Catan]].* Untertitel. Klaus Teuber.
+  Kosmos.
+  Systematikgruppe.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
+  Materialdetails.
+  *Ausleihe:* XX 12345
