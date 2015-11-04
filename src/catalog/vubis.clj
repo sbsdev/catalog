@@ -16,32 +16,36 @@
   {:record-id [:controlfield (attr= :tag "001")]
    :title [:datafield (attr= :tag "245") :subfield (attr= :code "a")]
    :subtitle [:datafield (attr= :tag "245") :subfield (attr= :code "b")]
+   :name-of-part [:datafield (attr= :tag "245") :subfield (attr= :code "p")] ; Bandangabe
    :creator [:datafield (attr= :tag "100") :subfield] ; autor
    :source [:datafield (attr= :tag "020") :subfield] ; isbn
    :description [:datafield (attr= :tag "520") :subfield] ; abstract
-   :volume [:datafield (attr= :tag "520") :fixme] ; Bandangabe
+   :volumes [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
    :source_publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
-   :source_date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
+   :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
-   :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")]
+   :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
+   :accompanying_material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
    :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
    :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
    :narrator [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
+   :braille-grade-raw [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
+   :braille-music-grade-raw [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
    :producer [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
    :producer-raw [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
    :producer_place [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
    :produced_date [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
-   :produced_commercially [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
-   :rucksackbuch [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; rucksackbuch?
+   :produced_commercially? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
+   :series-title-raw [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
+   :series-volume-raw [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
    :format-raw [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
    :genre-raw [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
+   :genre-code [:datafield (attr= :tag "099") :subfield (attr= :code "a")] ; used for movie genre i.e. Filmkategorie
    :library_signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
-   :contraction [:datafield (attr= :tag "024") :fixme] ; Schriftart
-   :movie_country [:datafield (attr= :tag "024") :fixme] ; Film Land
-   :movie_category [:datafield (attr= :tag "024") :fixme] ; Filmkategorie
    :game_category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
+   :game_description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
    :game_materials [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
    })
 
@@ -115,6 +119,17 @@
    50 "BSVÖ, Wien"
    103 "Paderborn"})
 
+(def genre-code-to-genre
+  "Mapping between genre-code and genre. Used for movies"
+  {"I1" :spielfilm
+   "I2" :dokumentarfilm
+   "I3" :mundartfilm})
+
+(def braille-grade-raw-to-braille-grade
+  "Mapping between braille-grade-raw and braille-grade"
+  {"kr" :kurzschrift
+   "vd" :vollschrift})
+
 (def CatalogItem
   {:record-id s/Str
    :title s/Str
@@ -122,7 +137,7 @@
    :creator s/Str
    (s/optional-key :description) s/Str
    :source_publisher s/Str
-   :source_date s/Inst
+   :source-date s/Inst
    :language (apply s/enum (conj (vals iso-639-2-to-iso-639-1) "und"))
    (s/optional-key :genre) (apply s/enum (vals genre-raw-to-genre))
    (s/optional-key :subgenre) (apply s/enum (vals genre-raw-to-subgenre))
@@ -143,19 +158,38 @@
   [record path]
   (some-> (apply xml1-> record path) text))
 
+(defn get-year
+  "Grab the date year out of a string. Return nil if `s` cannot be
+  parsed."
+  [s]
+  (when-let [year (and s (re-find #"\d{4}" s))]
+    (time.coerce/to-date
+     (time.format/parse (time.format/formatters :year) year))))
+
 (defn clean-raw-item
   "Return a proper production based on a raw item, i.e.
   translate the language tag into proper ISO 639-1 codes"
-  [{:keys [genre-raw language format-raw producer-raw] :as item :or {genre-raw "x01"}}]
+  [{:keys [genre-raw genre-code language format-raw producer-raw
+           produced_commercially? source-date general-note
+           series-title-raw series-volume-raw braille-grade-raw] :as item
+    :or {genre-raw "x01"}}]
   (-> item
       (assoc-some
        :language (iso-639-2-to-iso-639-1 language)
-       :genre (genre-raw-to-genre (subs genre-raw 0 1))
+       :genre (or (genre-raw-to-genre (subs genre-raw 0 1))
+                  (genre-code-to-genre (subs genre-code 0 2)))
        :sub-genre (genre-raw-to-subgenre (subs genre-raw 0 3))
        :format (format-raw-to-format format-raw)
-       :producer_brief (producer-raw-to-producer (Integer/parseInt producer-raw)
-                                                 (format "FIXME: %s" producer-raw)))
-      (dissoc :genre-raw :format-raw producer-raw)))
+       :producer_brief (producer-raw-to-producer (Integer/parseInt producer-raw))
+       :produced_commercially? (some? produced_commercially?)
+       :rucksackbuch-number (when (and series-title-raw
+                                       (re-find #"^Rucksackbuch" series-title-raw))
+                              (Integer/parseInt series-volume-raw))
+       :braille-grade (braille-grade-raw-to-braille-grade braille-grade-raw)
+       :source-date (get-year source-date)
+       :movie_country (when general-note (second (re-find #"^Originalversion: (.*)$" general-note))))
+      (dissoc :genre-raw :genre-code :format-raw :producer-raw
+              :series-title-raw :series-volume-raw)))
 
 (defn order-and-group [items]
   (->>
