@@ -1,10 +1,15 @@
 (ns catalog.vubis
   "Import XML files from the library system"
-  (:require [clojure.java.io :as io]
-            [clojure.xml :as xml]
-            [clojure.zip :as zip]
-            [clojure.data.zip.xml :refer [xml-> xml1-> attr= text]]
-            [medley.core :refer [assoc-some]]))
+  (:require [clj-time
+             [coerce :as time.coerce]
+             [format :as time.format]]
+            [clojure
+             [xml :as xml]
+             [zip :as zip]]
+            [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
+            [clojure.java.io :as io]
+            [medley.core :refer [assoc-some]]
+            [schema.core :as s]))
 
 (def ^:private param-mapping
   "Mapping from Marc21 XML to parameters. See [MARC 21 Format for Bibliographic Data](http://www.loc.gov/marc/bibliographic/)"
@@ -109,6 +114,28 @@
    40 "BIT, München"
    50 "BSVÖ, Wien"
    103 "Paderborn"})
+
+(def CatalogItem
+  {:record-id s/Str
+   :title s/Str
+   (s/optional-key :subtitle) s/Str
+   :creator s/Str
+   (s/optional-key :description) s/Str
+   :source_publisher s/Str
+   :source_date s/Inst
+   :language (apply s/enum (conj (vals iso-639-2-to-iso-639-1) "und"))
+   (s/optional-key :genre) (apply s/enum (vals genre-raw-to-genre))
+   (s/optional-key :subgenre) (apply s/enum (vals genre-raw-to-subgenre))
+   :format (apply s/enum (vals format-raw-to-format))
+   :producer_brief (apply s/enum (set (vals producer-raw-to-producer)))
+   (s/optional-key :duration) s/Int
+   :rucksackbuch? s/Bool
+   :produced_commercially? s/Bool
+   (s/optional-key :narrator) s/Str
+   :library_signature s/Str
+   :price s/Str
+   (s/optional-key :braille_music_grade) s/Str
+   })
 
 (defn get-subfield
   "Get the subfield text for the given `path` in the given `record`.
