@@ -126,9 +126,10 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
         [title personel-name source_date (translations genre) description library_signature])))
 
 (defmethod catalog-entry :hörbuch
-  [{:keys [creator title description source_publisher source_date genre duration narrator
-           producer_brief produced_commercially
-           library_signature price]}]
+  [{:keys [record-id creator title subtitle name-of-part description source-publisher
+           source-date genre duration narrator
+           producer-brief produced-commercially
+           library-signature price]}]
   (apply
    format "\\begin{description}
 \\item[%s] %s %s %s \\\\ Genre: %s \\\\ %s \\\\ %s Min. Gelesen von: %s \\\\ Prod.: %s %s \\\\ Ausleihe: %s \\\\ Verkauf: %s %s
@@ -136,18 +137,18 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
    (map escape [creator title source_publisher source_date (translations genre)
                 description
                 duration narrator
-                producer_brief (if produced_commercially "Hörbuch aus dem Handel" "")
-                library_signature
+                producer-brief (if produced-commercially ", Hörbuch aus dem Handel" "")
+                library-signature
                 "foo"
                 price])))
 
 (defmethod catalog-entry :default
-  [{:keys [record-id title creator description source_publisher source_date genre]}]
+  [{:keys [record-id title creator description source-publisher source-date genre]}]
   (apply
    format "\\begin{description}
 \\item[%s] \\href{%s}{%s} %s %s %s \\\\ %s
 \\end{description}"
-   (map escape [creator (to-url record-id) title source_publisher source_date (translations genre) description])))
+   (map escape [creator (to-url record-id) title source-publisher source-date (translations genre) description])))
 
 (defn catalog-entries [items]
   (for [item items] (catalog-entry item)))

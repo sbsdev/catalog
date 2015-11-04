@@ -22,7 +22,7 @@
    :source [:datafield (attr= :tag "020") :subfield] ; isbn
    :description [:datafield (attr= :tag "520") :subfield] ; abstract
    :volumes [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
-   :source_publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
+   :source-publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
    :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
@@ -37,13 +37,13 @@
    :producer-raw [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
    :producer_place [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
    :produced_date [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
-   :produced_commercially? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
+   :produced-commercially? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
    :series-title-raw [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
    :series-volume-raw [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
    :format-raw [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
    :genre-raw [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
    :genre-code [:datafield (attr= :tag "099") :subfield (attr= :code "a")] ; used for movie genre i.e. Filmkategorie
-   :library_signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
+   :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
    :game_category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
    :game_description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
@@ -139,18 +139,18 @@
    (s/optional-key :subtitle) s/Str
    :creator s/Str
    (s/optional-key :description) s/Str
-   :source_publisher s/Str
+   :source-publisher s/Str
    :source-date s/Inst
    :language (apply s/enum (conj (vals iso-639-2-to-iso-639-1) "und"))
    (s/optional-key :genre) (apply s/enum (vals genre-raw-to-genre))
    (s/optional-key :subgenre) (apply s/enum (vals genre-raw-to-subgenre))
    :format (apply s/enum (vals format-raw-to-format))
-   :producer_brief (apply s/enum (set (vals producer-raw-to-producer)))
+   :producer-brief (apply s/enum (set (vals producer-raw-to-producer)))
    (s/optional-key :duration) s/Int
    :rucksackbuch? s/Bool
-   :produced_commercially? s/Bool
+   :produced-commercially? s/Bool
    (s/optional-key :narrator) s/Str
-   :library_signature s/Str
+   :library-signature s/Str
    :price s/Str
    (s/optional-key :braille_music_grade) s/Str
    })
@@ -179,7 +179,7 @@
   "Return a proper production based on a raw item, i.e.
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [genre-raw genre-code language format-raw producer-raw
-           produced_commercially? source-date general-note
+           produced-commercially? source-date general-note
            series-title-raw series-volume-raw
            braille-grade-raw narrator] :as item
     :or {genre-raw "x01"}}]
@@ -190,8 +190,8 @@
                   (genre-code-to-genre (subs genre-code 0 2)))
        :sub-genre (genre-raw-to-subgenre (subs genre-raw 0 3))
        :format (format-raw-to-format format-raw)
-       :producer_brief (producer-raw-to-producer (Integer/parseInt producer-raw))
-       :produced_commercially? (some? produced_commercially?)
+       :producer-brief (producer-raw-to-producer (Integer/parseInt producer-raw))
+       :produced-commercially? (some? produced-commercially?)
        :rucksackbuch-number (when (and series-title-raw
                                        (re-find #"^Rucksackbuch" series-title-raw))
                               (Integer/parseInt series-volume-raw))
