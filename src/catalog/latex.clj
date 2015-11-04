@@ -112,7 +112,7 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
   "Return an url given a `record-id`"
   [record-id]
   (let [api-key "c97386a2-914a-40c2-bd8d-df4c273175e6"]
-    (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search%23RecordId=%s" api-key record-id)))
+    (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search%%23RecordId=%s" api-key record-id)))
 
 (defmulti catalog-entry (fn [{fmt :format}] fmt))
 
