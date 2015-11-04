@@ -108,6 +108,8 @@
   {1 "DBh, Marburg"
    101 "DBh, Marburg"
    2 "BHB, Berlin"
+   4 "NBH, Hamburg"
+   5 "BBH, München"
    6 "WBH, Münster"
    8 "SBH, Stuttgart"
    11 "DKBB, Bonn"
