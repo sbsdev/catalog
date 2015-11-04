@@ -4,6 +4,7 @@
              [coerce :as time.coerce]
              [format :as time.format]]
             [clojure
+             [string :as string]
              [xml :as xml]
              [zip :as zip]]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
@@ -166,12 +167,19 @@
     (time.coerce/to-date
      (time.format/parse (time.format/formatters :year) year))))
 
+(defn normalize-name
+  "Change a name from 'name, surname' to 'surname name'"
+  [name]
+  (when name
+    (string/join " " (reverse (string/split name #",")))))
+
 (defn clean-raw-item
   "Return a proper production based on a raw item, i.e.
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [genre-raw genre-code language format-raw producer-raw
            produced_commercially? source-date general-note
-           series-title-raw series-volume-raw braille-grade-raw] :as item
+           series-title-raw series-volume-raw
+           braille-grade-raw narrator] :as item
     :or {genre-raw "x01"}}]
   (-> item
       (assoc-some
@@ -187,6 +195,7 @@
                               (Integer/parseInt series-volume-raw))
        :braille-grade (braille-grade-raw-to-braille-grade braille-grade-raw)
        :source-date (get-year source-date)
+       :narrator (normalize-name narrator)
        :movie_country (when general-note (second (re-find #"^Originalversion: (.*)$" general-note))))
       (dissoc :genre-raw :genre-code :format-raw :producer-raw
               :series-title-raw :series-volume-raw)))
