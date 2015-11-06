@@ -30,7 +30,7 @@ Configuration is fairly complex and involves a lot of dependencies. It
 is recommended to use the [[https://github.com/sbsdev/sbs-infrastructure/blob/master/catalog.yml][ansible installation script]] which automates
 the whole process.
 
-Amongst other you will need [[http://wildfly.org/][Wildfly]], LaTeX, XSLT, etc.
+Amongst other you will need [[http://wildfly.org/][Wildfly]], LaTeX, etc.
 
 ** License
 
