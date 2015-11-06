@@ -1,58 +1,77 @@
 * Marc21
 ** Neue Hörbucher
- 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
- 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
- 3. Verlag, Erscheinungsjahr
- 4. Genre
- 5. Abstract (=Annotation)
- 6. Spieldauer in Minuten
- 7. „gelesen von:“ Sprecher (falls es mehrere sind: mit „u.a.“)
- 8. Produzent (Kürzel der übertragenden Organisation), Stadt. Falls es sich um ein kommerzielles Hörbuch handelt, zusätzlich: „Hörbuch aus dem Handel“
- 9. Signaturen (zuerst Ausleihe, dann Verkauf mit Preisangabe in Franken)
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract (=Annotation)
+6. Spieldauer in Minuten
+7. „gelesen von:“ Sprecher (falls es mehrere sind: mit „u.a.“)
+8. Produzent (Kürzel der übertragenden Organisation), Stadt. Falls es sich um ein kommerzielles Hörbuch handelt, zusätzlich: „Hörbuch aus dem Handel“
+9. Signaturen (zuerst Ausleihe, dann Verkauf mit Preisangabe in Franken)
 
 ** Neue Braillebücher
- 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
- 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
- 3. Verlag, Erscheinungsjahr
- 4. Genre
- 5. Abstract
- 6. Produzent (Kürzel), Stadt. Falls es sich um ein Rucksackbuch handelt, zusätzlich: „Rucksackbuch“
- 7. Schriftart, Bandangabe, Signaturen (zuerst Ausleihe, dann allenfalls Verkauf, gefolgt von Preisangabe in Franken)
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. Produzent (Kürzel), Stadt. Falls es sich um ein Rucksackbuch handelt, zusätzlich: „Rucksackbuch“
+7. Schriftart, Bandangabe, Signaturen (zuerst Ausleihe, dann allenfalls Verkauf, gefolgt von Preisangabe in Franken)
 
 ** Neue Grossdruckbücher
- 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
- 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
- 3. Verlag, Erscheinungsjahr
- 4. Genre
- 5. Abstract
- 6. Signatur: „Ausleihe“: Bandangabe und Signatur, „Verkauf“: Preis
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. Signatur: „Ausleihe“: Bandangabe und Signatur, „Verkauf“: Preis
 
 ** Neue E-Books
- 1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
- 2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
- 3. Verlag, Erscheinungsjahr
- 4. Genre
- 5. Abstract
- 6. „Ausleihe“: Signatur
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. „Ausleihe“: Signatur
 
 ** Neue Hörfilme
- 1. Titel, Untertitel
- 2. „Regie:“ Name Regisseur
- 3. „Schauspieler:“ Namen der Hauptdarstellern
- 4. Land, Erscheinungsjahr (des Originalfilms)
- 5. Filmkategorie (Spielfilm, Dokumentarfilm, Mundartfilm)
- 6. Abstract
- 7. Produzent
- 8. „Ausleihe“: Signatur
+1. Titel, Untertitel
+2. „Regie:“ Name Regisseur
+3. „Schauspieler:“ Namen der Hauptdarstellern
+4. Land, Erscheinungsjahr (des Originalfilms)
+5. Filmkategorie (Spielfilm, Dokumentarfilm, Mundartfilm)
+6. Abstract
+7. Produzent
+8. „Ausleihe“: Signatur
 
 ** Neue Spiele
- 1. Autor
- 2. Titel, Untertitel
- 3. Verlag (Originalproduzent)
- 4. Systematikgruppe
- 5. Abstract
- 6. Materialdetails
- 7. „Ausleihe“: Signatur
+1. Autor
+2. Titel, Untertitel
+3. Verlag (Originalproduzent)
+4. Systematikgruppe
+5. Abstract
+6. Materialdetails
+7. „Ausleihe“: Signatur
+
+** Neue taktile Bücher
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Abstract
+5. Produzent (Kürzel), Stadt
+6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien, Signaturen
+
+** Neue Musiknoten
+1. Komponist: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere
+   sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Abstract
+5. Produzent (Kürzel), Stadt
+6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
+   Signaturen
 
 ** Aggregated
  1. Record-id
@@ -130,3 +149,16 @@ Schriftart = ["Kurzschrift" "Vollschrift" "Weitzeilige Vollschrift"]
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
   Materialdetails.
   *Ausleihe:* XX 12345
+** Neue taktile Bücher
+*Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
+  DZB, Leipzig.
+  *Ausleihe:* Kurzschrift, 5 Bd., DS 12345. Vollschrift, 7 Bd., DS 12346, Weitzeilige Vollschrift, 10 Bd., DS 45678
+  *Verkauf:* CHF 21.90. Kurzschrift, 5 Bd., DS 12347. Vollschrift, 7 Bd., DS 12347, Weitzeilige Vollschrift, 10 Bd., DS 45679
+** Neue Musiknoten
+*Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
+  DZB, Leipzig.
+  *Ausleihe:* Kurzschrift, 5 Bd., DS 12345. Vollschrift, 7 Bd., DS 12346, Weitzeilige Vollschrift, 10 Bd., DS 45678
+  *Verkauf:* CHF 21.90. Kurzschrift, 5 Bd., DS 12347. Vollschrift, 7 Bd., DS 12347, Weitzeilige Vollschrift, 10 Bd., DS 45679
+
