@@ -102,7 +102,8 @@
    "ER" :e-book
    "GD" :grossdruck
    "LU" :ludo
-   "MN" :musiknoten})
+   "MN" :musiknoten
+   "TB" :taktilesbuch})
 
 (def producer-raw-to-producer
   "Mapping between producer-raw and producer"

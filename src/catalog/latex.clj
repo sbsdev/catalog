@@ -131,6 +131,16 @@
                         library-signature product-number price]}]
     (io/file (io/resource "templates/braillebuch.tex"))))
 
+(def render-taktilesbuch
+  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+                        description producer-brief library-signature product-number price]}]
+    (io/file (io/resource "templates/taktilesbuch.tex"))))
+
+(def render-musiknoten
+  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+                        description producer-brief library-signature product-number price]}]
+    (io/file (io/resource "templates/musiknoten.tex"))))
+
 (def render-grossdruckbuch
   (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
                         genre description library-signature volumes product-number price]}]
@@ -159,6 +169,8 @@
 (defmethod catalog-entry :e-book [item] (render-e-book item))
 (defmethod catalog-entry :hörfilm [item] (render-hörfilm item))
 (defmethod catalog-entry :ludo [item] (render-spiel item))
+(defmethod catalog-entry :musiknoten [item] (render-musiknoten item))
+(defmethod catalog-entry :taktilesbuch [item] (render-taktilesbuch item))
 (defmethod catalog-entry :default [item] (render-hörbuch item))
 
 (defn catalog-entries [items]
