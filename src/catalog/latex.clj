@@ -12,12 +12,12 @@
             [comb.template :as template]))
 
 (def temp-name "/tmp/catalog.tex")
-(def translations {:hörbuch "Hörbücher"
-                   :braille "Braille"
-                   :grossdruck "Grossdruck"
-                   :e-book "E-Books"
-                   :hörfilm "Hörfilme"
-                   :ludo "Spiele"
+(def translations {:hörbuch "Neue Hörbücher"
+                   :braille "Neue Braillebücher"
+                   :grossdruck "Neue Grossdruckbücher"
+                   :e-book "Neue E-Books"
+                   :hörfilm "Neue Hörfilme"
+                   :ludo "Neue Spiele"
                    :belletristik "Belletristik"
                    :sachbücher "Sachbücher"
                    :kinder-und-jugendbücher "Kinder- und Jugendbücher"
