@@ -117,41 +117,47 @@
   ([s prefix postfix period?]
    (if s (str prefix (if period? (periodify s) s) postfix) "")))
 
-(def hörbuch-entry
+(def render-hörbuch
   (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher
                         source-date genre description duration narrator producer-brief
                         produced-commercially? library-signature product-number price]}]
     (io/file (io/resource "templates/hörbuch.tex"))))
 
-(def hörfilm-entry
-  (template/fn [{:keys [record-id title subtitle personel-name movie_country genre
-                        description producer library-signature]}]
-    (io/file (io/resource "templates/hörfilm.tex"))))
-
-(def braillebuch-entry
+(def render-braillebuch
   (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
                         genre description producer-brief rucksackbuch? rucksackbuch-number
                         library-signature product-number price]}]
     (io/file (io/resource "templates/braillebuch.tex"))))
 
-(def grossdruckbuch-entry
+(def render-grossdruckbuch
   (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
                         genre description library-signature volumes product-number price]}]
     (io/file (io/resource "templates/grossdruckbuch.tex"))))
 
-(def spiel-entry
+(def render-e-book
+  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+                        genre description library-signature]}]
+    (io/file (io/resource "templates/e-book.tex"))))
+
+(def render-hörfilm
+  (template/fn [{:keys [record-id title subtitle personel-name movie_country genre
+                        description producer library-signature]}]
+    (io/file (io/resource "templates/hörfilm.tex"))))
+
+(def render-spiel
   (template/fn [{:keys [record-id title subtitle creator source_publisher game_category description
                         game_materials library-signature]}]
     (io/file (io/resource "templates/spiel.tex"))))
 
 (defmulti catalog-entry (fn [{fmt :format}] fmt))
 
-(defmethod catalog-entry :hörbuch [item] (hörbuch-entry item))
-(defmethod catalog-entry :hörfilm [item] (hörfilm-entry item))
-(defmethod catalog-entry :braillebuch [item] (braillebuch-entry item))
-(defmethod catalog-entry :grossdruckbuch [item] (grossdruckbuch-entry item))
-(defmethod catalog-entry :spiel [item] (spiel-entry item))
-(defmethod catalog-entry :default [item] (hörbuch-entry item))
+(defmethod catalog-entry :hörbuch [item] (render-hörbuch item))
+(defmethod catalog-entry :braille [item] (render-braillebuch item))
+(defmethod catalog-entry :grossdruck [item] (render-grossdruckbuch item))
+(defmethod catalog-entry :e-book [item] (render-e-book item))
+(defmethod catalog-entry :hörfilm [item] (render-hörfilm item))
+(defmethod catalog-entry :ludo [item] (render-spiel item))
+(defmethod catalog-entry :default [item] (render-hörbuch item))
 
 (defn catalog-entries [items]
   (string/join
