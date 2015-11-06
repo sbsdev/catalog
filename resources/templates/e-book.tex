@@ -1,0 +1,5 @@
+\item[<%= creator %>:] \href{<%= (to-url record-id) %>}{\textbf{<%= (periodify title) %>}} <%= (periodify subtitle) %> <%= (periodify name-of-part) %> - <%= source-publisher %>, <%= (year source-date) %>. \\
+  <%= (wrap (translations genre) "Genre: ") %>
+  <%= (wrap description) %>
+  \textbf{Ausleihe:} <%= library-signature %>
+
