@@ -194,22 +194,22 @@
 (defn format-entries [items]
   (string/join (for [fmt formats] (format-entry fmt items))))
 
-(defn document [env]
-  (let [default {:class "memoir"
-                 :options #{"11pt" "a4paper" "oneside" "openright"}
-                 :font "Verdana"
-                 :creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                 :volume 1
-                 :year (year (time.coerce/to-date (time.core/now)))}
-        env (merge default env)
-        env (assoc env :options (string/join "," (:options env)))]
-    (template/eval (io/file (io/resource "templates/document.tex"))
-                   (escape env))))
+(def render-document (template/fn [title class options font creator volume year body]
+                       (io/file (io/resource "templates/document.tex"))))
+
+(defn document [title items &
+                {:keys [class options font creator volume year]
+                 :or {class "memoir"
+                      options #{"11pt" "a4paper" "oneside" "openright"}
+                      font "Verdana"
+                      creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
+                      volume 1
+                      year (year (time.coerce/to-date (time.core/now)))}}]
+  (render-document
+   title class (string/join "," options) font creator volume year (format-entries items)))
 
 (defn generate-latex [items]
-  (spit temp-name (document
-                   {:title "Neu im Sortiment"
-                    :items (vubis/order-and-group items)})))
+  (spit temp-name (document "Neu im Sortiment" (vubis/order-and-group items))))
 
 (defn generate-pdf []
   (shell/sh "latexmk" "-xelatex" temp-name :dir "/tmp"))
