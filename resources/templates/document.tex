@@ -1,0 +1,58 @@
+\documentclass[<%= options %>]{<%= class %>}
+\isopage[12]
+\fixpdflayout
+\checkandfixthelayout
+\usepackage{graphicx}
+\usepackage{titletoc}
+\usepackage[ngerman]{babel}
+\def\languageshorthands#1{}
+\usepackage{fontspec,xunicode,xltxtra}
+\defaultfontfeatures{Mapping=tex-text}
+\setmainfont{<%= font %>}
+\usepackage{hyperref}
+\hypersetup{pdftitle={<%= title %>}, pdfauthor={<%= creator %>}}
+\setsecnumdepth{subsubsection}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\frontmatter
+\begin{Spacing}{1.75}
+{\huge <%= title %>}\\[0.5cm]
+\end{Spacing}
+{\large <%= volume %>, <%= year %>}\\[1.5cm]
+\vfill
+Logo\\
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\[0.5cm]
+\cleartorecto
+
+\mainmatter
+%% \\pagestyle{plain}
+\tableofcontents
+
+\chapter{Katalog}
+<%= (format-entries items) %>
+
+\chapter{Impressum}
+
+Neu im Sortiment
+
+Für Kundinnen und Kunden der SBS sowie für Interessenten
+
+Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach
+
+Neu im Sortiment kann im Jahresabonnement per Post zu CHF XX oder per E-Mail gratis bezogen werden.
+
+Herausgeber:\\
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\
+Grubenstrasse 12\\
+CH-8045 Zürich\\
+Fon +41 43 333 32 32\\
+Fax +41 43 333 32 33\\
+www.sbs.ch
+
+Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch\\
+Verkauf Institutionen: medienverlag@sbs.ch
+
+Copyright Vermerk
+
+\end {document}

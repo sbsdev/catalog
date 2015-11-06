@@ -1,8 +1,15 @@
 (ns catalog.latex
   "Generate LaTeX for catalogues"
   (:require [catalog.vubis :as vubis]
-            [clojure.java.shell :as shell]
-            [clojure.string :as string]))
+            [clj-time
+             [coerce :as time.coerce]
+             [core :as time.core]
+             [format :as time.format]]
+            [clojure.java
+             [io :as io]
+             [shell :as shell]]
+            [clojure.string :as string]
+            [comb.template :as template]))
 
 (def temp-name "/tmp/catalog.tex")
 (def translations {:hörbuch "Hörbücher"
@@ -52,7 +59,7 @@
                 :wissenschaft-technik :jugendbücher :kinder-und-jugendsachbücher
                 :kinderbücher-ab-10 :kinderbücher-ab-6])
 
-(defn escape
+(defn escape-str
   "Escape characters that have a special meaning to LaTeX (see [The
   Comprehensive LaTeX Symbol
   List](http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf))"
@@ -73,40 +80,9 @@
         [#"<<" "{<}<"] ; << and >> is apparently treated as a shorthand and is not handled by our shorthand disabling code
         [#">>" "{>}>"]])))
 
-(defn preamble [{:keys [title font creator] :or {font "Verdana"}}]
-  (let [[title creator] (map escape [title creator])]
-    (format
-     "\\isopage[12]
-\\fixpdflayout
-\\checkandfixthelayout
-\\usepackage{graphicx}
-\\usepackage{titletoc}
-\\usepackage[ngerman]{babel}
-\\def\\languageshorthands#1{}
-\\usepackage{fontspec,xunicode,xltxtra}
-\\defaultfontfeatures{Mapping=tex-text}
-\\setmainfont{%s}
-\\usepackage{hyperref}
-\\hypersetup{pdftitle={%s}, pdfauthor={%s}}
-\\setsecnumdepth{subsubsection}
-\\setlength{\\parindent}{0pt}" font title creator)))
-
-(defn frontmatter [{:keys [title issue-number year]}]
-  (format
-   "\\frontmatter
-\\begin{Spacing}{1.75}
-{\\huge %s}\\\\[0.5cm]
-\\end{Spacing}
-{\\large Ausgabenummer und Jahr}\\\\[1.5cm]
-\\vfill
-Logo\\\\
-SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
-\\cleartorecto" (escape title)))
-
-(defn mainmatter [env]
-  "\\mainmatter
-%% \\pagestyle{plain}
-\\tableofcontents")
+(defn escape [item]
+  (zipmap (keys item)
+          (map (fn [v] (if (string? v) (escape-str v) v)) (vals item))))
 
 (defn to-url
   "Return an url given a `record-id`"
@@ -114,44 +90,75 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
   (let [api-key "c97386a2-914a-40c2-bd8d-df4c273175e6"]
     (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search%%23RecordId=%s" api-key record-id)))
 
+(defn year [date]
+  (time.format/unparse
+   (time.format/formatters :year)
+   (time.coerce/from-date date)))
+
+(defn periodify
+  "Add a period to the end of `s` if it is not nil and doesn't end in
+  punctuation. If `s` is nil return an empty string."
+  [s]
+  (cond
+    (nil? s) ""
+    (re-find #"[.,:!?]$" s) s
+    :else (str s ".")))
+
+(defn wrap
+  "Add a period to `s` and wrap it in `prefix` and `postfix`.
+  Typically this is used to put `s` on a line, i.e. where prefix is ''
+  and postfix is ' \\ '."
+  ([s]
+   (wrap s ""))
+  ([s prefix]
+   (wrap s prefix " \\\\ "))
+  ([s prefix postfix]
+   (wrap s prefix postfix true))
+  ([s prefix postfix period?]
+   (if s (str prefix (if period? (periodify s) s) postfix) "")))
+
+(def hörbuch-entry
+  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher
+                        source-date genre description duration narrator producer-brief
+                        produced-commercially? library-signature product-number price]}]
+    (io/file (io/resource "templates/hörbuch.tex"))))
+
+(def hörfilm-entry
+  (template/fn [{:keys [record-id title subtitle personel-name movie_country genre
+                        description producer library-signature]}]
+    (io/file (io/resource "templates/hörfilm.tex"))))
+
+(def braillebuch-entry
+  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+                        genre description producer-brief rucksackbuch? rucksackbuch-number
+                        library-signature product-number price]}]
+    (io/file (io/resource "templates/braillebuch.tex"))))
+
+(def grossdruckbuch-entry
+  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+                        genre description library-signature volumes product-number price]}]
+    (io/file (io/resource "templates/grossdruckbuch.tex"))))
+
+(def spiel-entry
+  (template/fn [{:keys [record-id title subtitle creator source_publisher game_category description
+                        game_materials library-signature]}]
+    (io/file (io/resource "templates/spiel.tex"))))
+
 (defmulti catalog-entry (fn [{fmt :format}] fmt))
 
-(defmethod catalog-entry :hörfilm
-  [{:keys [title personel-name description source_publisher source_date genre library_signature]}]
-  (apply
-   format "\\begin{description}
-\\item[%s] Regie: %s %s %s \\\\ %s %s
-\\end{description}"
-   (map escape
-        [title personel-name source_date (translations genre) description library_signature])))
-
-(defmethod catalog-entry :hörbuch
-  [{:keys [record-id creator title subtitle name-of-part description source-publisher
-           source-date genre duration narrator
-           producer-brief produced-commercially
-           library-signature price]}]
-  (apply
-   format "\\begin{description}
-\\item[%s] %s %s %s \\\\ Genre: %s \\\\ %s \\\\ %s Min. Gelesen von: %s \\\\ Prod.: %s %s \\\\ Ausleihe: %s \\\\ Verkauf: %s %s
-\\end{description}"
-   (map escape [creator title source_publisher source_date (translations genre)
-                description
-                duration narrator
-                producer-brief (if produced-commercially ", Hörbuch aus dem Handel" "")
-                library-signature
-                "foo"
-                price])))
-
-(defmethod catalog-entry :default
-  [{:keys [record-id title creator description source-publisher source-date genre]}]
-  (apply
-   format "\\begin{description}
-\\item[%s] \\href{%s}{%s} %s %s %s \\\\ %s
-\\end{description}"
-   (map escape [creator (to-url record-id) title source-publisher source-date (translations genre) description])))
+(defmethod catalog-entry :hörbuch [item] (hörbuch-entry item))
+(defmethod catalog-entry :hörfilm [item] (hörfilm-entry item))
+(defmethod catalog-entry :braillebuch [item] (braillebuch-entry item))
+(defmethod catalog-entry :grossdruckbuch [item] (grossdruckbuch-entry item))
+(defmethod catalog-entry :spiel [item] (spiel-entry item))
+(defmethod catalog-entry :default [item] (hörbuch-entry item))
 
 (defn catalog-entries [items]
-  (for [item items] (catalog-entry item)))
+  (string/join
+   (concat
+    "\\begin{description}"
+    (for [item items] (catalog-entry (escape item)))
+    "\\end{description}")))
 
 (defn subgenre-entry [subgenre items]
   (when (subgenre items)
@@ -186,57 +193,22 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\[0.5cm]
 (defn format-entries [items]
   (for [fmt formats] (format-entry fmt items)))
 
-(defn catalog [{items :items}]
-  ["\\chapter{Katalog}"
-   (format-entries items)])
+(defn document [env]
+  (let [default {:class "memoir"
+                 :options #{"11pt" "a4paper" "oneside" "openright"}
+                 :font "Verdana"
+                 :creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
+                 :volume 1
+                 :year (year (time.coerce/to-date (time.core/now)))}
+        env (merge default env)
+        env (assoc env :options (string/join "," (:options env)))]
+    (template/eval (io/file (io/resource "templates/document.tex"))
+                   (escape env))))
 
-(defn impressum [env]
-   "\\chapter{Impressum}
-
-Neu im Sortiment
-
-Für Kundinnen und Kunden der SBS sowie für Interessenten
-
-Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach
-
-Neu im Sortiment kann im Jahresabonnement per Post zu CHF XX oder per E-Mail gratis bezogen werden.
-
-Herausgeber:\\\\
-SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\\\
-Grubenstrasse 12\\\\
-CH-8045 Zürich\\\\
-Fon +41 43 333 32 32\\\\
-Fax +41 43 333 32 33\\\\
-www.sbs.ch
-
-Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch\\\\
-Verkauf Institutionen: medienverlag@sbs.ch
-
-Copyright Vermerk")
-
-(defn document [{:keys [class options]
-                 :or {class "memoir"
-                      options #{"11pt" "a4paper" "oneside" "openright"}}
-                 :as env}]
-  (string/join "\n"
-   (flatten
-    [(format "\\documentclass[%s]{%s}" (string/join "," options) class)
-     (preamble env)
-     "\\begin{document}"
-     (frontmatter env)
-     (mainmatter env)
-     (catalog env)
-     (impressum env)
-     "\\end {document}"])))
-
-(defn generate-latex []
-  (let [items (->
-               "/home/eglic/src/catalog/samples/vubis_export.xml"
-               vubis/read-file
-               vubis/order-and-group)]
-    (spit temp-name (document
-                     {:title "Neu im Sortiment"
-                      :items items}))))
+(defn generate-latex [items]
+  (spit temp-name (document
+                   {:title "Neu im Sortiment"
+                    :items (vubis/order-and-group items)})))
 
 (defn generate-pdf []
   (shell/sh "latexmk" "-xelatex" temp-name :dir "/tmp"))
