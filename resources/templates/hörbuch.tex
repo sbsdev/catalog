@@ -1,4 +1,4 @@
-\item[<%= creator %>:] \href{<%= (to-url record-id) %>}{\textbf{<%= title %>}}. <%= (periodify subtitle) %> <%= (periodify name-of-part) %> - <%= source-publisher %>, <%= (year source-date) %>. \\
+\item[<%= creator %>:] \href{<%= (to-url record-id) %>}{\textbf{<%= (periodify title) %>}} <%= (periodify subtitle) %> <%= (periodify name-of-part) %> - <%= source-publisher %>, <%= (year source-date) %>. \\
   <%= (wrap (translations genre) "Genre: ") %>
   <%= (wrap description) %>
   <%= (wrap duration "" " Min., " false) %><%= (wrap narrator "gelesen von: " "") %>
