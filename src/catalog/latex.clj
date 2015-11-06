@@ -160,38 +160,39 @@
     (for [item items] (catalog-entry (escape item)))
     "\\end{description}")))
 
+(def render-section (template/fn [title body] (io/file (io/resource "templates/section.tex"))))
+(def render-subsection (template/fn [title body] (io/file (io/resource "templates/subsection.tex"))))
+(def render-subsubsection (template/fn [title body] (io/file (io/resource "templates/subsubsection.tex"))))
+
 (defn subgenre-entry [subgenre items]
-  (when (subgenre items)
-    [(format "\\subsubsection{%s}" (translations subgenre "FIXME"))
-     (catalog-entries (subgenre items))]))
+  (when-let [items (subgenre items)]
+    (render-subsubsection (translations subgenre "FIXME")
+                          (catalog-entries items))))
 
 (defn subgenre-entries [items]
-  (for [subgenre subgenres] (subgenre-entry subgenre items)))
+  (string/join (for [subgenre subgenres] (subgenre-entry subgenre items))))
 
 (defn genre-entry [fmt genre items]
-  (when (genre items)
-    [(format "\\subsection{%s}" (translations genre "FIXME"))
+  (when-let [items (genre items)]
+    (render-subsection
+     (translations genre "FIXME")
      (cond
-       (#{:kinder-und-jugendbücher} genre) (subgenre-entries (genre items))
-       (#{:hörbuch} fmt) (subgenre-entries (genre items))
-       :else (catalog-entries (genre items)))]))
+       (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
+       (#{:hörbuch} fmt) (subgenre-entries items)
+       :else (catalog-entries items)))))
 
 (defn genre-entries [fmt items]
-  (for [genre genres] (genre-entry fmt genre items)))
+  (string/join (for [genre genres] (genre-entry fmt genre items))))
 
 (defn format-entry [fmt items]
-  (when (fmt items)
-    [(format "\\section{%s}" (translations fmt "FIXME"))
-     ;; start a section toc
-     "\\startcontents"
-     ;; the toc should range from levels 2 to 3 inclusive (i.e. 2 and 3)
-     "\\printcontents{}{2}{\\setcounter{tocdepth}{3}}"
-     (case fmt
-       (:hörfilm :ludo) (catalog-entries (fmt items))
-       (genre-entries fmt (fmt items)))]))
+  (when-let [items (fmt items)]
+    (render-section (translations fmt "FIXME")
+                    (case fmt
+                      (:hörfilm :ludo) (catalog-entries items)
+                      (genre-entries fmt items)))))
 
 (defn format-entries [items]
-  (for [fmt formats] (format-entry fmt items)))
+  (string/join (for [fmt formats] (format-entry fmt items))))
 
 (defn document [env]
   (let [default {:class "memoir"
