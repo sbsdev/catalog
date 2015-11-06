@@ -44,6 +44,7 @@
    :genre-raw [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
    :genre-code [:datafield (attr= :tag "099") :subfield (attr= :code "a")] ; used for movie genre i.e. Filmkategorie
    :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
+   :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
    :game_category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
    :game_description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
