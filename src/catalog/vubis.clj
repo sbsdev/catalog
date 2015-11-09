@@ -161,7 +161,7 @@
   "Get the subfield text for the given `path` in the given `record`.
   Returns nil if there is no such subfield"
   [record path]
-  (some-> (apply xml1-> record path) text))
+  (some-> (apply xml1-> record path) text string/trim))
 
 (defn get-year
   "Grab the date year out of a string. Return nil if `s` cannot be
