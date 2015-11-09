@@ -176,16 +176,14 @@
 (defmethod catalog-entry :taktilesbuch [item] (render-taktilesbuch item))
 (defmethod catalog-entry :default [item] (render-hörbuch item))
 
-(defn catalog-entries [items]
-  (string/join
-   (concat
-    "\\begin{flexlabelled}{boldlabel}{0pt}{0pt}{0pt}{0pt}{0pt}"
-    (for [item items] (catalog-entry (escape item)))
-    "\\end{flexlabelled}")))
-
+(def render-catalog-entries (template/fn [body] (io/file (io/resource "templates/catalog-entries.tex"))))
 (def render-section (template/fn [title pagestyle body] (io/file (io/resource "templates/section.tex"))))
 (def render-subsection (template/fn [title body] (io/file (io/resource "templates/subsection.tex"))))
 (def render-subsubsection (template/fn [title body] (io/file (io/resource "templates/subsubsection.tex"))))
+
+(defn catalog-entries [items]
+  (render-catalog-entries
+   (string/join (for [item items] (catalog-entry (escape item))))))
 
 (defn subgenre-entry [subgenre items]
   (when-let [items (subgenre items)]
