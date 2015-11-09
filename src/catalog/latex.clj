@@ -59,6 +59,13 @@
                 :wissenschaft-technik :jugendbücher :kinder-und-jugendsachbücher
                 :kinderbücher-ab-10 :kinderbücher-ab-6])
 
+(def pagestyles {:hörbuch "audiobook"
+                 :braille "anybook"
+                 :grossdruck "anybook"
+                 :e-book "anybook"
+                 :hörfilm "anybook"
+                 :ludo "anybook"})
+
 (defn escape-str
   "Escape characters that have a special meaning to LaTeX (see [The
   Comprehensive LaTeX Symbol
@@ -180,7 +187,7 @@
     (for [item items] (catalog-entry (escape item)))
     "\\end{description}")))
 
-(def render-section (template/fn [title body] (io/file (io/resource "templates/section.tex"))))
+(def render-section (template/fn [title pagestyle body] (io/file (io/resource "templates/section.tex"))))
 (def render-subsection (template/fn [title body] (io/file (io/resource "templates/subsection.tex"))))
 (def render-subsubsection (template/fn [title body] (io/file (io/resource "templates/subsubsection.tex"))))
 
@@ -207,6 +214,7 @@
 (defn format-entry [fmt items]
   (when-let [items (fmt items)]
     (render-section (translations fmt "FIXME")
+                    (pagestyles fmt)
                     (case fmt
                       (:hörfilm :ludo) (catalog-entries items)
                       (genre-entries fmt items)))))
@@ -220,7 +228,7 @@
 (defn document [title items &
                 {:keys [class options font creator volume year]
                  :or {class "memoir"
-                      options #{"11pt" "a4paper" "oneside" "openright"}
+                      options #{"11pt" "a4paper" "twoside" "openright"}
                       font "Verdana"
                       creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       volume 1

@@ -14,7 +14,36 @@
 \setsecnumdepth{none}
 \setlength{\parindent}{0pt}
 
+%% Header definition for all formats except Hörbücher
+\makepagestyle{anybook}
+\makeheadrule {anybook}{\textwidth}{\normalrulethickness}
+\makeevenhead {anybook}{\bfseries\thepage}{}{\bfseries\leftmark}
+\makeoddhead  {anybook}{\bfseries\rightmark}{}{\bfseries\thepage}
+\makeevenfoot {anybook}{}{}{}
+\makeoddfoot  {anybook}{}{}{}
+\makepsmarks  {anybook}{
+\nouppercaseheads
+\createmark      {chapter}      {both}{nonumber}{}{. \ }
+\createmark      {section}      {both}{nonumber}{}{. \ }
+\createmark      {subsection}   {both}{nonumber}{}{. \ }
+\createplainmark {toc}          {both} {\contentsname}
+}
+
+%% Remove the marks set by \subsubsection, so the subgenre isn't shown
+%% in the header for anything but audiobooks
+\addtopsmarks{anybook}{}{%
+\renewcommand\subsubsectionmark[1]{}
+}
+
+%% Header definition for Hörbücher
+\copypagestyle{audiobook}{anybook}
+\addtopsmarks{audiobook}{}{
+\createmark      {subsubsection}{both}{nonumber}{}{. \ }
+}
+
+\pagestyle{headings}
 \begin{document}
+\pagestyle{empty}
 \frontmatter
 \begin{Spacing}{1.75}
 {\huge <%= title %>}\\[0.5cm]
@@ -26,12 +55,12 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\[0.5cm]
 \cleartorecto
 
 \mainmatter
-%% \\pagestyle{plain}
 \tableofcontents
 
 \chapter{Katalog}
 <%= body %>
 
+\backmatter
 \chapter{Impressum}
 
 \section{Neu im Sortiment}
