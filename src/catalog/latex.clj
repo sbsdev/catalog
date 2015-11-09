@@ -179,9 +179,9 @@
 (defn catalog-entries [items]
   (string/join
    (concat
-    "\\begin{description}"
+    "\\begin{flexlabelled}{boldlabel}{0pt}{0pt}{0pt}{0pt}{0pt}"
     (for [item items] (catalog-entry (escape item)))
-    "\\end{description}")))
+    "\\end{flexlabelled}")))
 
 (def render-section (template/fn [title pagestyle body] (io/file (io/resource "templates/section.tex"))))
 (def render-subsection (template/fn [title body] (io/file (io/resource "templates/subsection.tex"))))
