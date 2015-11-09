@@ -9,7 +9,8 @@
              [io :as io]
              [shell :as shell]]
             [clojure.string :as string]
-            [comb.template :as template]))
+            [comb.template :as template])
+  (:import java.util.Locale))
 
 (def temp-name "/tmp/catalog.tex")
 (def translations {:hörbuch "Neue Hörbücher"
@@ -98,11 +99,6 @@
     (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search%%23RecordId=%s"
             api-key
             (string/replace record-id "/" "."))))
-
-(defn year [date]
-  (time.format/unparse
-   (time.format/formatters :year)
-   (time.coerce/from-date date)))
 
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in
@@ -222,19 +218,28 @@
 (defn format-entries [items]
   (string/join (for [fmt formats] (format-entry fmt items))))
 
-(def render-document (template/fn [title class options font creator volume year body]
+(def render-document (template/fn [title class options font creator volume date body]
                        (io/file (io/resource "templates/document.tex"))))
 
+(defn volume-number [date]
+  (let [month (.getMonthOfYear date)]
+    (quot (inc month) 2)))
+
+(defn format-date [date]
+  (time.format/unparse
+   (time.format/with-locale (time.format/formatter "MMMM yyyy") Locale/GERMAN)
+   date))
+
 (defn document [title items &
-                {:keys [class options font creator volume year]
+                {:keys [class options font creator volume date]
                  :or {class "memoir"
                       options #{"11pt" "a4paper" "twoside" "openright"}
                       font "Verdana"
                       creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      volume 1
-                      year (year (time.coerce/to-date (time.core/now)))}}]
+                      volume (volume-number (time.core/today))
+                      date (format-date (time.core/now))}}]
   (render-document
-   title class (string/join "," options) font creator volume year (format-entries items)))
+   title class (string/join "," options) font creator volume date (format-entries items)))
 
 (defn generate-latex [items]
   (spit temp-name (document "Neu im Sortiment" (vubis/order-and-group items))))
