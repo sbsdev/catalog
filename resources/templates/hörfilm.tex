@@ -1,7 +1,3 @@
-\item[\href{<%= (to-url record-id) %>}{<%= (periodify title) %>}] <%= (periodify subtitle) %> \\
-  <%= (wrap personel-name "Regie: " "" false) %><%= (wrap personel-name ", Schauspieler: " " \\\\ " false) %>
-  <%= (wrap movie_country) %>
-  <%= (wrap genre) %>
-  <%= (wrap description) %>
-  <%= (wrap producer) %>
+\item[\href{<%= (to-url record-id) %>}{<%= (periodify title) %>}] <%= (wrap subtitle) %>
+  <%= (wrap personel-name "Regie: " "" false) %><%= (wrap personel-name ", Schauspieler: " " \\\\ " false) %><%= (wrap movie_country) %><%= (wrap (translations genre)) %><%= (wrap description) %><%= (wrap producer) %>
   \textbf{Ausleihe:} <%= library-signature %>
