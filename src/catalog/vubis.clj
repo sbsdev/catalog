@@ -227,11 +227,15 @@
     :product-number
     (->> items
          (map #(select-vals [:product-number :braille-grade :volumes] %))
-         (remove nil?))
+         (remove empty?)
+         (group-by second)
+         not-empty) ; only pick entries that are non-empty
     :library-signature
     (->> items
          (map #(select-vals [:library-signature :braille-grade :volumes] %))
-         (remove nil?)))
+         (remove empty?)
+         (group-by second)
+         not-empty)) ; only pick entries that are non-empty
    (dissoc :volumes :braille-grade)))
 
 (defn collate-duplicate-items
