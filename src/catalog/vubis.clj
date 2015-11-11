@@ -242,7 +242,7 @@
   (let [braille-items (filter #(= (:format %) :braille) items)
         others (remove #(= (:format %) :braille) items)]
     (->> braille-items
-         (group-by :source)
+         (group-by (juxt :source :title))
          vals
          (map #(merge-braille-catalog-items %))
          (concat others))))
