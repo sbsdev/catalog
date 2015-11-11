@@ -204,10 +204,49 @@
                 :game-category-raw :game-description-raw :game-materials-raw
                 :personel-name :personel-relator-term))))
 
+(defn select-vals
+  "Return a list of the values for the given keys `ks` from `item` if
+  the value of the first key is non-nil"
+  [ks item]
+  (when ((first ks) item)
+    (-> item (select-keys ks) vals)))
+
+(defn merge-braille-catalog-items
+  "Merge `items` into one. All product-numbers and all
+  library-signatures together with their related information such as
+  braille-grade and volumes are collected in a list and merged with
+  the other properties."
+  [items]
+  (some-> items
+   first
+   (assoc-some
+    :product-number
+    (->> items
+         (map #(select-vals [:product-number :braille-grade :volumes] %))
+         (remove nil?))
+    :library-signature
+    (->> items
+         (map #(select-vals [:library-signature :braille-grade :volumes] %))
+         (remove nil?)))
+   (dissoc :volumes :braille-grade)))
+
+(defn collate-duplicate-items
+  "Merge duplicate braille `items` into one. Typically we have
+  multiple entries for the same braille book for all the different
+  braille grades. In the catalog we want one entry"
+  [items]
+  (let [braille-items (filter #(= (:format %) :braille) items)
+        others (remove #(= (:format %) :braille) items)]
+    (->> braille-items
+         (group-by :source)
+         vals
+         (map #(merge-braille-catalog-items %))
+         (concat others))))
 
 (defn order-and-group [items]
   (->>
    items
+   collate-braille-items
    (sort-by (juxt :creator :title))
    (reduce
     (fn [m {:keys [format genre sub-genre] :as item}]
