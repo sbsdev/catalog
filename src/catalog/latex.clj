@@ -100,6 +100,10 @@
             api-key
             (string/replace record-id "/" "."))))
 
+(defn year [date]
+  (time.format/unparse
+   (time.format/formatters :year) (time.coerce/from-date date)))
+
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in
   punctuation. If `s` is nil return an empty string."
