@@ -28,7 +28,7 @@
    :accompanying_material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
    :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
    :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
-   :narrator [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
+   :narrators-raw [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
    :braille-grade-raw [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
    :braille-music-grade-raw [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
@@ -140,6 +140,12 @@
   [record path]
   (some-> (apply xml1-> record path) text string/trim))
 
+(defn get-multi-subfields
+  "Get a list of subfield texts for the given `path` in the given
+  `record`. Returns an empty list if there is no such subfield"
+  [record path]
+  (some->> (apply xml-> record path) (map text) (map string/trim)))
+
 (defn get-year
   "Grab the date year out of a string. Return nil if `s` cannot be
   parsed."
@@ -171,7 +177,7 @@
   [{:keys [genre-raw genre-code language format-raw producer-raw
            produced-commercially-raw? source-date-raw general-note
            series-title-raw series-volume-raw duration
-           volumes-raw narrator producer-long-raw
+           volumes-raw narrators-raw producer-long-raw
            game-category-raw game-description-raw game-materials-raw
            braille-grade-raw title] :as item
     :or {genre-raw "x01"}}]
@@ -194,7 +200,8 @@
          :duration (when (= fmt :hörbuch) (get-duration duration))
          :braille-grade (when (= fmt :braille) (braille-grade-raw-to-braille-grade braille-grade-raw))
          :source-date (get-year source-date-raw)
-         :narrator (when (= fmt :hörbuch) (normalize-name narrator))
+         :narrators (when (and (= fmt :hörbuch) (not-empty narrators-raw))
+                      (map normalize-name narrators-raw))
          :volumes (when (#{:braille :grossdruck} fmt) volumes-raw)
          :movie_country (when general-note (second (re-find #"^Originalversion: (.*)$" general-note)))
          :producer (when (= fmt :hörfilm) producer-long-raw)
@@ -204,7 +211,7 @@
         (dissoc :genre-raw :genre-code :format-raw :producer-raw
                 :series-title-raw :series-volume-raw :source-date-raw
                 :produced-commercially-raw? :braille-grade-raw
-                :volumes-raw :producer-long-raw
+                :volumes-raw :producer-long-raw :narrators-raw
                 :produced-date-raw :producer-place-raw
                 :game-category-raw :game-description-raw :game-materials-raw
                 :personel-name :personel-relator-term))))
@@ -273,7 +280,9 @@
   (let [root (-> file io/file xml/parse zip/xml-zip)]
     (for [record (xml-> root :record)]
       (->> (for [[key path] param-mapping
-                 :let [val (get-subfield record path)]
+                 :let [val (cond
+                             (#{:narrators-raw} key) (get-multi-subfields record path)
+                             :else (get-subfield record path))]
                  :when (some? val)]
              [key val])
            (into {})

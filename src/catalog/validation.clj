@@ -28,7 +28,7 @@
 (abstract-map/extend-schema
  Hörbuch CatalogItem [:hörbuch]
  {:duration s/Int
-  :narrator s/Str
+  :narrators [s/Str]
   :produced-commercially? s/Bool})
 
 (abstract-map/extend-schema

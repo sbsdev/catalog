@@ -140,9 +140,15 @@
    (remove nil?)
    (string/join " ")))
 
+(defn render-narrators [narrators]
+  (let [narrator (first narrators)]
+    (if (> (count narrators) 1)
+      (wrap narrator "gelesen von: " " u.a. \\\\ " false)
+      (wrap narrator "gelesen von: "))))
+
 (def render-hörbuch
   (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher
-                        source-date genre description duration narrator producer-brief
+                        source-date genre description duration narrators producer-brief
                         produced-commercially? library-signature product-number price]}]
     (io/file (io/resource "templates/hörbuch.tex"))))
 
