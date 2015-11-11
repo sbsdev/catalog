@@ -162,3 +162,16 @@ Schriftart = ["Kurzschrift" "Vollschrift" "Weitzeilige Vollschrift"]
   *Ausleihe:* Kurzschrift, 5 Bd., DS 12345. Vollschrift, 7 Bd., DS 12346, Weitzeilige Vollschrift, 10 Bd., DS 45678
   *Verkauf:* CHF 21.90. Kurzschrift, 5 Bd., DS 12347. Vollschrift, 7 Bd., DS 12347, Weitzeilige Vollschrift, 10 Bd., DS 45679
 
+
+* Validation
+** Neue Hörbucher
+- missing :sub-genre
+  - ist ein Problem weil das Buch nicht im Katalog eingeordnet werden kann
+- missing :source-date
+  - wahrscheinlich nicht so schlimm
+- missing :source-publisher
+  - wahrscheinlich nicht so schlimm
+- missing :duration
+- missing :narrator
+
+

@@ -9,8 +9,7 @@
              [zip :as zip]]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
             [clojure.java.io :as io]
-            [medley.core :refer [assoc-some]]
-            [schema.core :as s]))
+            [medley.core :refer [assoc-some]]))
 
 (def ^:private param-mapping
   "Mapping from Marc21 XML to parameters. See [MARC 21 Format for Bibliographic Data](http://www.loc.gov/marc/bibliographic/)"
@@ -21,9 +20,9 @@
    :creator [:datafield (attr= :tag "100") :subfield] ; autor
    :source [:datafield (attr= :tag "020") :subfield] ; isbn
    :description [:datafield (attr= :tag "520") :subfield] ; abstract
-   :volumes [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
+   :volumes-raw [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
    :source-publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
-   :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
+   :source-date-raw [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
    :accompanying_material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
@@ -33,11 +32,11 @@
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
    :braille-grade-raw [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
    :braille-music-grade-raw [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
-   :producer [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
+   :producer-long-raw [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
    :producer-raw [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
-   :producer_place [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
-   :produced_date [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
-   :produced-commercially? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
+   :producer-place-raw [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
+   :produced-date-raw [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
+   :produced-commercially-raw? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
    :series-title-raw [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
    :series-volume-raw [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
    :format-raw [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
@@ -46,9 +45,9 @@
    :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
-   :game_category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
-   :game_description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
-   :game_materials [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
+   :game-category-raw [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
+   :game-description-raw [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
+   :game-materials-raw [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
    })
 
 (def iso-639-2-to-iso-639-1
@@ -135,28 +134,6 @@
   {"kr" :kurzschrift
    "vd" :vollschrift})
 
-(def CatalogItem
-  {:record-id s/Str
-   :title s/Str
-   (s/optional-key :subtitle) s/Str
-   :creator s/Str
-   (s/optional-key :description) s/Str
-   :source-publisher s/Str
-   :source-date s/Inst
-   :language (apply s/enum (conj (vals iso-639-2-to-iso-639-1) "und"))
-   (s/optional-key :genre) (apply s/enum (vals genre-raw-to-genre))
-   (s/optional-key :subgenre) (apply s/enum (vals genre-raw-to-subgenre))
-   :format (apply s/enum (vals format-raw-to-format))
-   :producer-brief (apply s/enum (set (vals producer-raw-to-producer)))
-   (s/optional-key :duration) s/Int
-   :rucksackbuch? s/Bool
-   :produced-commercially? s/Bool
-   (s/optional-key :narrator) s/Str
-   :library-signature s/Str
-   :price s/Str
-   (s/optional-key :braille_music_grade) s/Str
-   })
-
 (defn get-subfield
   "Get the subfield text for the given `path` in the given `record`.
   Returns nil if there is no such subfield"
@@ -171,6 +148,10 @@
     (time.coerce/to-date
      (time.format/parse (time.format/formatters :year) year))))
 
+(defn get-duration [s]
+  (when-let [duration (and s (re-find #"\d+" s))]
+    (Integer/parseInt s)))
+
 (defn normalize-name
   "Change a name from 'name, surname' to 'surname name'"
   [name]
@@ -184,28 +165,45 @@
   "Return a proper production based on a raw item, i.e.
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [genre-raw genre-code language format-raw producer-raw
-           produced-commercially? source-date general-note
-           series-title-raw series-volume-raw
-           braille-grade-raw narrator] :as item
+           produced-commercially-raw? source-date-raw general-note
+           series-title-raw series-volume-raw duration
+           volumes-raw narrator producer-long-raw
+           game-category-raw game-description-raw game-materials-raw
+           braille-grade-raw ] :as item
     :or {genre-raw "x01"}}]
-  (-> item
-      (assoc-some
-       :language (iso-639-2-to-iso-639-1 language)
-       :genre (or (genre-raw-to-genre (subs genre-raw 0 1))
-                  (genre-code-to-genre (subs genre-code 0 2)))
-       :sub-genre (genre-raw-to-subgenre (subs genre-raw 0 3))
-       :format (format-raw-to-format format-raw)
-       :producer-brief (producer-raw-to-producer (Integer/parseInt producer-raw))
-       :produced-commercially? (some? produced-commercially?)
-       :rucksackbuch-number (when (and series-title-raw
+  (let [rucksackbuch-number (when (and series-title-raw
                                        (re-find #"^Rucksackbuch" series-title-raw))
                               (Integer/parseInt series-volume-raw))
-       :braille-grade (braille-grade-raw-to-braille-grade braille-grade-raw)
-       :source-date (get-year source-date)
-       :narrator (normalize-name narrator)
-       :movie_country (when general-note (second (re-find #"^Originalversion: (.*)$" general-note))))
-      (dissoc :genre-raw :genre-code :format-raw :producer-raw
-              :series-title-raw :series-volume-raw)))
+        fmt (format-raw-to-format format-raw)]
+    (-> item
+        (assoc-some
+         :language (iso-639-2-to-iso-639-1 language)
+         :genre (or (genre-raw-to-genre (subs genre-raw 0 1))
+                    (genre-code-to-genre (subs genre-code 0 2)))
+         :sub-genre (genre-raw-to-subgenre (subs genre-raw 0 3))
+         :format fmt
+         :producer-brief (producer-raw-to-producer (Integer/parseInt producer-raw))
+         :produced-commercially? (when (= fmt :hörbuch) (some? produced-commercially-raw?))
+         :rucksackbuch-number (when (= fmt :braille) rucksackbuch-number)
+         :rucksackbuch? (when (= fmt :braille) (if rucksackbuch-number true false))
+         :duration (when (= fmt :hörbuch) (get-duration duration))
+         :braille-grade (when (= fmt :braille) (braille-grade-raw-to-braille-grade braille-grade-raw))
+         :source-date (get-year source-date-raw)
+         :narrator (when (= fmt :hörbuch) (normalize-name narrator))
+         :volumes (when (#{:braille :grossdruck} fmt) volumes-raw)
+         :movie_country (when general-note (second (re-find #"^Originalversion: (.*)$" general-note)))
+         :producer (when (= fmt :hörfilm) producer-long-raw)
+         :game-category (when (= fmt :ludo) game-category-raw)
+         :game-description (when (= fmt :ludo) game-description-raw)
+         :game-materials (when (= fmt :ludo) game-materials-raw))
+        (dissoc :genre-raw :genre-code :format-raw :producer-raw
+                :series-title-raw :series-volume-raw :source-date-raw
+                :produced-commercially-raw? :braille-grade-raw
+                :volumes-raw :producer-long-raw
+                :produced-date-raw :producer-place-raw
+                :game-category-raw :game-description-raw :game-materials-raw
+                :personel-name :personel-relator-term))))
+
 
 (defn order-and-group [items]
   (->>
