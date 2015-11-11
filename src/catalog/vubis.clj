@@ -152,6 +152,9 @@
   (when-let [duration (and s (re-find #"\d+" s))]
     (Integer/parseInt s)))
 
+(defn remove-nonprintable-chars [s]
+  (string/replace s #"[¶¬]" ""))
+
 (defn normalize-name
   "Change a name from 'name, surname' to 'surname name'"
   [name]
@@ -159,10 +162,8 @@
     (->> (string/split name #",")
          reverse
          (string/join " ")
-         string/trim)))
-
-(defn remove-nonprintable-chars [s]
-  (string/replace s #"[¶]" ""))
+         string/trim
+         remove-nonprintable-chars)))
 
 (defn clean-raw-item
   "Return a proper production based on a raw item, i.e.
