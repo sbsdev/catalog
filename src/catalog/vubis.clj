@@ -250,7 +250,7 @@
 (defn order-and-group [items]
   (->>
    items
-   collate-braille-items
+   collate-duplicate-items
    (sort-by (juxt :creator :title))
    (reduce
     (fn [m {:keys [format genre sub-genre] :as item}]
