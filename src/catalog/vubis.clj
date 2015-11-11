@@ -175,7 +175,10 @@
   "Change a name from 'name, surname' to 'surname name'"
   [name]
   (when name
-    (string/join " " (reverse (string/split name #",")))))
+    (->> (string/split name #",")
+         reverse
+         (string/join " ")
+         string/trim)))
 
 (defn clean-raw-item
   "Return a proper production based on a raw item, i.e.
