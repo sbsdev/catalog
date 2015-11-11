@@ -161,6 +161,9 @@
          (string/join " ")
          string/trim)))
 
+(defn remove-nonprintable-chars [s]
+  (string/replace s #"[¶]" ""))
+
 (defn clean-raw-item
   "Return a proper production based on a raw item, i.e.
   translate the language tag into proper ISO 639-1 codes"
@@ -169,7 +172,7 @@
            series-title-raw series-volume-raw duration
            volumes-raw narrator producer-long-raw
            game-category-raw game-description-raw game-materials-raw
-           braille-grade-raw ] :as item
+           braille-grade-raw title] :as item
     :or {genre-raw "x01"}}]
   (let [rucksackbuch-number (when (and series-title-raw
                                        (re-find #"^Rucksackbuch" series-title-raw))
@@ -177,6 +180,7 @@
         fmt (format-raw-to-format format-raw)]
     (-> item
         (assoc-some
+         :title (remove-nonprintable-chars title)
          :language (iso-639-2-to-iso-639-1 language)
          :genre (or (genre-raw-to-genre (subs genre-raw 0 1))
                     (genre-code-to-genre (subs genre-code 0 2)))
