@@ -126,6 +126,20 @@
   ([s prefix postfix period?]
    (if s (str prefix (if period? (periodify s) s) postfix) "")))
 
+(defn braille-signature [[signature grade volumes :as item]]
+  (when item
+    (let [translations {:kurzschrift "Kurzschrift" :vollschrift "Vollschrift"}]
+      (string/join
+       ", "
+       [(translations grade) (format "%s Bd." volumes) (periodify signature)]))))
+
+(defn braille-signatures [items]
+  (->>
+   [:kurzschrift :vollschrift :weitzeilig]
+   (map (fn [grade] (braille-signature (first (grade items)))))
+   (remove nil?)
+   (string/join " ")))
+
 (def render-hörbuch
   (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher
                         source-date genre description duration narrator producer-brief
