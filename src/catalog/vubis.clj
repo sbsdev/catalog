@@ -294,12 +294,23 @@
   braille grades. In the catalog we want one entry"
   [items]
   (let [braille-items (filter #(= (:format %) :braille) items)
-        others (remove #(= (:format %) :braille) items)]
-    (->> braille-items
-         (group-by (juxt :source :title))
-         vals
-         (map #(merge-braille-catalog-items %))
-         (concat others))))
+        musiknoten-items (filter #(= (:format %) :musiknoten) items)
+        taktile-items (filter #(= (:format %) :taktilesbuch) items)
+        others (remove #(#{:braille :musiknoten :taktilesbuch} (:format %)) items)]
+    (concat
+     (->> braille-items
+          (group-by (juxt :source :title))
+          vals
+          (map #(merge-braille-catalog-items %)))
+     (->> musiknoten-items
+          (group-by (juxt :source :title))
+          vals
+          (map #(merge-braille-catalog-items %)))
+     (->> taktile-items
+          (group-by (juxt :source :title))
+          vals
+          (map #(merge-braille-catalog-items %)))
+     others)))
 
 (defn order-and-group [items]
   (->>
