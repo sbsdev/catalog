@@ -20,34 +20,34 @@
    :creator [:datafield (attr= :tag "100") :subfield] ; autor
    :source [:datafield (attr= :tag "020") :subfield] ; isbn
    :description [:datafield (attr= :tag "520") :subfield] ; abstract
-   :volumes-raw [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
+   :volumes [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
    :source-publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
-   :source-date-raw [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
+   :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
    :accompanying_material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
    :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
    :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
-   :narrators-raw [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
+   :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
-   :braille-grade-raw [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
-   :braille-music-grade-raw [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
-   :producer-long-raw [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
-   :producer-raw [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
-   :producer-place-raw [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
-   :produced-date-raw [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
-   :produced-commercially-raw? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
-   :series-title-raw [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
-   :series-volume-raw [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
-   :format-raw [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
-   :genre-raw [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
+   :braille-grade [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
+   :braille-music-grade [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
+   :producer-long [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
+   :producer [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
+   :producer-place [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
+   :produced-date [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
+   :produced-commercially? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
+   :series-title [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
+   :series-volume [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
+   :format [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
+   :genre [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
    :genre-code [:datafield (attr= :tag "099") :subfield (attr= :code "a")] ; used for movie genre i.e. Filmkategorie
    :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
-   :game-category-raw [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
-   :game-description-raw [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
-   :game-materials-raw [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
+   :game-category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
+   :game-description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
+   :game-materials [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
    })
 
 (def iso-639-2-to-iso-639-1
@@ -172,49 +172,66 @@
          remove-nonprintable-chars)))
 
 (defn clean-raw-item
-  "Return a proper production based on a raw item, i.e.
+  "Return a proper production based on a raw item, e.g.
   translate the language tag into proper ISO 639-1 codes"
-  [{:keys [genre-raw genre-code language format-raw producer-raw
-           produced-commercially-raw? source-date-raw general-note
-           series-title-raw series-volume-raw duration
-           volumes-raw narrators-raw producer-long-raw
-           game-category-raw game-description-raw game-materials-raw
-           braille-grade-raw title] :as item
-    :or {genre-raw "x01"}}]
-  (let [rucksackbuch-number (when (and series-title-raw
-                                       (re-find #"^Rucksackbuch" series-title-raw))
-                              (Integer/parseInt series-volume-raw))
-        fmt (format-raw-to-format format-raw)]
-    (-> item
-        (assoc-some
-         :title (remove-nonprintable-chars title)
-         :language (iso-639-2-to-iso-639-1 language)
-         :genre (or (genre-raw-to-genre (subs genre-raw 0 1))
-                    (genre-code-to-genre (subs genre-code 0 2)))
-         :sub-genre (genre-raw-to-subgenre (subs genre-raw 0 3))
-         :format fmt
-         :producer-brief (producer-raw-to-producer (Integer/parseInt producer-raw))
-         :produced-commercially? (when (= fmt :hörbuch) (some? produced-commercially-raw?))
-         :rucksackbuch-number (when (= fmt :braille) rucksackbuch-number)
-         :rucksackbuch? (when (= fmt :braille) (if rucksackbuch-number true false))
-         :duration (when (= fmt :hörbuch) (get-duration duration))
-         :braille-grade (when (= fmt :braille) (braille-grade-raw-to-braille-grade braille-grade-raw))
-         :source-date (get-year source-date-raw)
-         :narrators (when (and (= fmt :hörbuch) (not-empty narrators-raw))
-                      (map normalize-name narrators-raw))
-         :volumes (when (#{:braille :grossdruck} fmt) volumes-raw)
-         :movie_country (when general-note (second (re-find #"^Originalversion: (.*)$" general-note)))
-         :producer (when (= fmt :hörfilm) producer-long-raw)
-         :game-category (when (= fmt :ludo) game-category-raw)
-         :game-description (when (= fmt :ludo) game-description-raw)
-         :game-materials (when (= fmt :ludo) game-materials-raw))
-        (dissoc :genre-raw :genre-code :format-raw :producer-raw
-                :series-title-raw :series-volume-raw :source-date-raw
-                :produced-commercially-raw? :braille-grade-raw
-                :volumes-raw :producer-long-raw :narrators-raw
-                :produced-date-raw :producer-place-raw
-                :game-category-raw :game-description-raw :game-materials-raw
-                :personel-name :personel-relator-term))))
+  [{:keys [record-id source description source-publisher
+           library-signature title
+           genre genre-code language format producer
+           produced-commercially? source-date general-note
+           series-title series-volume duration
+           volumes narrators producer-long
+           game-category game-description game-materials
+           braille-grade personel-name] :as item
+    :or {genre "x01"}}]
+  (let [fmt (format-raw-to-format format)
+        item (-> {}
+                 (assoc-some
+                  :record-id record-id
+                  :title (remove-nonprintable-chars title)
+                  :description description
+                  :source-publisher source-publisher
+                  :source source
+                  :language (iso-639-2-to-iso-639-1 language)
+                  :genre (or (genre-raw-to-genre (subs genre 0 1))
+                             (genre-code-to-genre (subs genre-code 0 2)))
+                  :sub-genre (genre-raw-to-subgenre (subs genre 0 3))
+                  :format fmt
+                  :producer-brief (producer-raw-to-producer (Integer/parseInt producer))
+                  :source-date (get-year source-date)
+                  :library-signature library-signature))]
+    (case fmt
+      :hörbuch (-> item
+                   (assoc-some
+                    :produced-commercially? (some? produced-commercially?)
+                    :duration (get-duration duration)
+                    :narrators (not-empty (map normalize-name narrators))))
+      :braille (let [rucksackbuch-number (and series-title
+                                              (re-find #"^Rucksackbuch" series-title)
+                                              (Integer/parseInt series-volume))]
+                 (-> item
+                     (assoc-some
+                      :rucksackbuch-number rucksackbuch-number
+                      :rucksackbuch? (boolean rucksackbuch-number)
+                      :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
+                      :volumes volumes)))
+      :grossdruck (-> item
+                      (assoc-some
+                       :volumes volumes))
+      :hörfilm (-> item
+                   (assoc-some
+                    :movie_country (and general-note
+                                        (second (re-find #"^Originalversion: (.*)$" general-note)))
+                    :producer producer-long
+                    :personel-name personel-name))
+      :ludo (-> item
+                (assoc-some
+                 :game-category game-category
+                 :game-description game-description
+                 :game-materials game-materials))
+
+      :e-book item
+      :musiknoten item
+      :taktilesbuch item)))
 
 (defn select-vals
   "Return a list of the values for the given keys `ks` from `item` if
@@ -281,7 +298,7 @@
     (for [record (xml-> root :record)]
       (->> (for [[key path] param-mapping
                  :let [val (cond
-                             (#{:narrators-raw} key) (get-multi-subfields record path)
+                             (#{:narrators} key) (get-multi-subfields record path)
                              :else (get-subfield record path))]
                  :when (some? val)]
              [key val])
