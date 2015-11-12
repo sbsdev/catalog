@@ -101,8 +101,9 @@
             (string/replace record-id "/" "."))))
 
 (defn year [date]
-  (time.format/unparse
-   (time.format/formatters :year) (time.coerce/from-date date)))
+  (when date
+    (time.format/unparse
+     (time.format/formatters :year) (time.coerce/from-date date))))
 
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in
@@ -264,7 +265,7 @@
    title class (string/join "," options) font creator volume date (format-entries items)))
 
 (defn generate-latex [items]
-  (spit temp-name (document "Neu im Sortiment" (vubis/order-and-group items))))
+  (spit temp-name (document "Neu im Sortiment" items)))
 
 (defn generate-pdf []
   (shell/sh "latexmk" "-xelatex" temp-name :dir "/tmp"))
