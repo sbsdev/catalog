@@ -1,4 +1,4 @@
-\item[<%= (wrap creator "" ": " false) %>\href{<%= (to-url record-id) %>}{<%= (periodify title) %>}] <%= (periodify subtitle) %> <%= (periodify name-of-part) %> - <%= source-publisher %>, <%= (year source-date) %>. \\ <%= (wrap description) %>
+\item[<%= (wrap creator "" ": " false) %>\href{<%= (to-url record-id) %>}{<%= (periodify title) %>}] <%= (periodify subtitle) %> <%= (periodify name-of-part) %> - <%= (wrap source-publisher "" "" false) %><%= (wrap (year source-date) ", " "") %> \\ <%= (wrap description) %>
   <%= (wrap producer-brief) %>
   \textbf{Ausleihe:} <%= library-signature %><% (when product-number %> \\
   \textbf{Verkauf:} <%= product-number%>, <%= price%><% ) %>
