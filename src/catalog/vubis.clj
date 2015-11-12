@@ -25,7 +25,7 @@
    :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
-   :accompanying_material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
+   :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
    :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
    :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
@@ -134,6 +134,12 @@
   {"kr" :kurzschrift
    "vd" :vollschrift})
 
+(def braille-music-grade-raw-to-braille-grade
+  "Mapping between braille-music-grade-raw and braille-grade"
+  {"ms" :kurzschrift
+   "vd" :vollschrift
+   "vs" :fixme})
+
 (defn get-subfield
   "Get the subfield text for the given `path` in the given `record`.
   Returns nil if there is no such subfield"
@@ -191,7 +197,8 @@
            series-title series-volume duration
            volumes narrators producer-long
            game-category game-description game-materials
-           braille-grade personel-name] :as item
+           braille-grade personel-name
+           accompanying-material braille-music-grade] :as item
     :or {genre "x01"}}]
   (let [fmt (format-raw-to-format format)
         item (-> {}
@@ -241,7 +248,11 @@
                  :game-materials game-materials))
 
       :e-book item
-      :musiknoten item
+      :musiknoten (-> item
+                      (assoc-some
+                       :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade)
+                       :volumes volumes
+                       :accompanying-material accompanying-material))
       :taktilesbuch item)))
 
 (defn select-vals
