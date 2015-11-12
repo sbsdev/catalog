@@ -46,10 +46,13 @@
                    :jugendbücher "Jugendbücher"
                    :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
                    :kinderbücher-ab-10 "Kinderbücher (ab 10)"
-                   :kinderbücher-ab-6 "Kinderbücher (ab 6)"})
+                   :kinderbücher-ab-6 "Kinderbücher (ab 6)"
+                   :musiknoten "Braille-Musiknoten"
+                   :taktilesbuch "Taktile Bücher"})
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
+(def braille-genres (conj genres :musiknoten :taktilesbuch))
 (def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :historische-romane :hörspiele :krimis
                 :lebensgeschichten-und-schicksale :literarische-gattungen
@@ -228,7 +231,8 @@
        :else (catalog-entries items)))))
 
 (defn genre-entries [fmt items]
-  (string/join (for [genre genres] (genre-entry fmt genre items))))
+  (let [genres (if (= fmt :braille) braille-genres genres)]
+    (string/join (for [genre genres] (genre-entry fmt genre items)))))
 
 (defn format-entry [fmt items]
   (when-let [items (fmt items)]
