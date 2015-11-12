@@ -312,6 +312,9 @@
             (cond
               (= format :hörbuch) [format genre sub-genre]
               (#{:hörfilm :ludo} format) [format]
+              ;; file tactile books and musiknoten under braille with
+              ;; the original format as genre
+              (#{:taktilesbuch :musiknoten} format) [:braille format]
               (= genre :kinder-und-jugendbücher) [format genre sub-genre]
               :else [format genre])]
         (update-in m update-keys (fnil conj []) item))) {})))
