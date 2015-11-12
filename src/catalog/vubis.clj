@@ -171,6 +171,16 @@
          string/trim
          remove-nonprintable-chars)))
 
+(defn trim-punctuation [s]
+  (-> s
+      (string/replace #"[\p{Punct}]+$" "")
+      (string/replace #"^[\p{Punct}]+" "")))
+
+(defn get-personel [s]
+  (-> s
+      trim-punctuation
+      normalize-name))
+
 (defn clean-raw-item
   "Return a proper production based on a raw item, e.g.
   translate the language tag into proper ISO 639-1 codes"
@@ -223,7 +233,7 @@
                     :movie_country (and general-note
                                         (second (re-find #"^Originalversion: (.*)$" general-note)))
                     :producer producer-long
-                    :personel-name personel-name))
+                    :personel-name (get-personel personel-name)))
       :ludo (-> item
                 (assoc-some
                  :game-category game-category
