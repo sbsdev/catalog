@@ -192,6 +192,7 @@
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [record-id source description source-publisher
            library-signature title creator
+           price product-number
            genre genre-code language format producer
            produced-commercially? source-date general-note
            series-title series-volume duration
@@ -216,7 +217,9 @@
                   :format fmt
                   :producer-brief (producer-raw-to-producer (Integer/parseInt producer))
                   :source-date (get-year source-date)
-                  :library-signature library-signature))]
+                  :library-signature library-signature
+                  :product-number product-number
+                  :price price))]
     (case fmt
       :hörbuch (-> item
                    (assoc-some
