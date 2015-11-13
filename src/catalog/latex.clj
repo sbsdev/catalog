@@ -189,8 +189,8 @@
     (io/file (io/resource "templates/hörfilm.tex"))))
 
 (def render-spiel
-  (template/fn [{:keys [record-id title subtitle creator source_publisher genre game-description
-                        accompanying-material library-signature]}]
+  (template/fn [{:keys [record-id title subtitle creator source-publisher genre description
+                        game-description accompanying-material library-signature]}]
     (io/file (io/resource "templates/spiel.tex"))))
 
 (defmulti catalog-entry (fn [{fmt :format}] fmt))
