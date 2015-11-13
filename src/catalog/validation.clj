@@ -104,8 +104,7 @@
  {:source-publisher s/Str
   :source-date s/Inst
   :game-category s/Str
-  :game-description s/Str
-  :game-materials s/Str})
+  :game-description s/Str})
 
 (defn distinct-titles? [items]
   (and (> (count items) 1)

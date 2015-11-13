@@ -25,7 +25,7 @@
    :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
-   :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial
+   :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
    :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
    :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
@@ -47,7 +47,6 @@
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
    :game-category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
    :game-description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
-   :game-materials [:datafield (attr= :tag "024") :fixme] ; Spiel-Materialdetails
    })
 
 (def iso-639-2-to-iso-639-1
@@ -197,7 +196,7 @@
            produced-commercially? source-date general-note
            series-title series-volume duration
            volumes narrators producer-long
-           game-category game-description game-materials
+           game-category game-description
            braille-grade personel-name
            accompanying-material braille-music-grade] :as item
     :or {genre "x01"}}]
@@ -248,7 +247,7 @@
                 (assoc-some
                  :game-category game-category
                  :game-description game-description
-                 :game-materials game-materials))
+                 :accompanying-material accompanying-material))
 
       :e-book item
       :musiknoten (-> item
