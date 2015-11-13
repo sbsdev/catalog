@@ -37,7 +37,7 @@
     (s/optional-key :source) s/Str
     (s/optional-key :description) s/Str
     :library-signature LibrarySignature
-    (s/optional-key :product-number) s/Str
+    (s/optional-key :product-number) LibrarySignature
     (s/optional-key :price) s/Str
     (s/optional-key :accompanying_material) s/Str
     (s/optional-key :language) Language
