@@ -200,8 +200,9 @@
            game-description
            braille-grade personel-name
            accompanying-material braille-music-grade] :as item
-    :or {genre "x01"}}]
   (let [fmt (format-raw-to-format format)
+    :or {genre "x01" ; an invalid genre
+         genre-code "x0"}}] ; an invalid genre-code
         item (-> {}
                  (assoc-some
                   :record-id record-id
