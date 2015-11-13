@@ -187,6 +187,16 @@
       trim-punctuation
       normalize-name))
 
+(defn get-format [s]
+  (->> s
+   ;; some format entries in the MARC21 file contain garbage after the
+   ;; format, so only look at the start
+   ;; FIXME: tbh shouldn't this be fixed in the original data? Were're
+   ;; only talking about 4 records that have 'LUD' and one that has
+   ;; 'LUn'
+   (re-find #"^(?:BR|DVD|DY|ER|GD|LU|MN|TB)")
+   format-raw-to-format))
+
 (defn clean-raw-item
   "Return a proper production based on a raw item, e.g.
   translate the language tag into proper ISO 639-1 codes"
@@ -200,9 +210,9 @@
            game-description
            braille-grade personel-name
            accompanying-material braille-music-grade] :as item
-  (let [fmt (format-raw-to-format format)
     :or {genre "x01" ; an invalid genre
          genre-code "x0"}}] ; an invalid genre-code
+  (let [fmt (get-format format)
         item (-> {}
                  (assoc-some
                   :record-id record-id
