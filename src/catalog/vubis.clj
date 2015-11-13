@@ -134,9 +134,11 @@
 
 (def braille-music-grade-raw-to-braille-grade
   "Mapping between braille-music-grade-raw and braille-grade"
-  {"ms" :kurzschrift
-   "vd" :vollschrift
-   "vs" :fixme})
+  {"vd" :vollschrift ; Vollschrift Deutsch
+   "vs" :vollschrift ; Vollschrift other language
+   "ms" :vollschrift}) ; Musikschrift, not valid really, but the
+                       ; MARC21 data isn't super clean for music, so
+                       ; swallow this as well
 
 (defn get-subfield
   "Get the subfield text for the given `path` in the given `record`.
