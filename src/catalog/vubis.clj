@@ -288,7 +288,13 @@
          not-empty)) ; only pick entries that are non-empty
    (dissoc :volumes :braille-grade)))
 
-(defn collate-duplicate-items
+(defn collate-duplicate-items [items]
+  (->> items
+       (group-by (juxt :source :title))
+       vals
+       (map #(merge-braille-catalog-items %))))
+
+(defn collate-all-duplicate-items
   "Merge duplicate braille `items` into one. Typically we have
   multiple entries for the same braille book for all the different
   braille grades. In the catalog we want one entry"
@@ -298,24 +304,13 @@
         taktile-items (filter #(= (:format %) :taktilesbuch) items)
         others (remove #(#{:braille :musiknoten :taktilesbuch} (:format %)) items)]
     (concat
-     (->> braille-items
-          (group-by (juxt :source :title))
-          vals
-          (map #(merge-braille-catalog-items %)))
-     (->> musiknoten-items
-          (group-by (juxt :source :title))
-          vals
-          (map #(merge-braille-catalog-items %)))
-     (->> taktile-items
-          (group-by (juxt :source :title))
-          vals
-          (map #(merge-braille-catalog-items %)))
+     (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items])
      others)))
 
 (defn order-and-group [items]
   (->>
    items
-   collate-duplicate-items
+   collate-all-duplicate-items
    (sort-by (juxt :creator :title))
    (reduce
     (fn [m {:keys [format genre sub-genre] :as item}]
