@@ -40,12 +40,11 @@
    :series-title [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
    :series-volume [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
    :format [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
-   :genre [:datafield (attr= :tag "099") :subfield (attr= :code "b")]
+   :genre [:datafield (attr= :tag "099") :subfield (attr= :code "b")] ; also Spiel-Systematikgruppe
    :genre-code [:datafield (attr= :tag "099") :subfield (attr= :code "a")] ; used for movie genre i.e. Filmkategorie
    :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
-   :game-category [:datafield (attr= :tag "024") :fixme] ; Spiel-Systematikgruppe
    :game-description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
    })
 
@@ -196,7 +195,7 @@
            produced-commercially? source-date general-note
            series-title series-volume duration
            volumes narrators producer-long
-           game-category game-description
+           game-description
            braille-grade personel-name
            accompanying-material braille-music-grade] :as item
     :or {genre "x01"}}]
@@ -245,7 +244,11 @@
                     :personel-name (get-personel personel-name)))
       :ludo (-> item
                 (assoc-some
-                 :game-category game-category
+                 ;; FIXME: in the future we will have the genre of the
+                 ;; game encoded in MARC21 but this hasn't been done
+                 ;; in the libary. So for now just say it is of
+                 ;; genre :spiel
+                 :genre :spiel
                  :game-description game-description
                  :accompanying-material accompanying-material))
 

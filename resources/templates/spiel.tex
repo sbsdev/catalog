@@ -1,5 +1,4 @@
 \item[\href{<%= (to-url record-id) %>}{<%= (periodify title) %>}] <%= (periodify subtitle) %> <%= (periodify creator) %> \\ 
   <%= (wrap source_publisher) %>
-  <%= (wrap game_category) %><%= (wrap description) %>
-  <%= (wrap game_materials) %>
+  <%= (wrap (translations genre)) %><%= (wrap game-description) %><%= (wrap accompanying-material) %>
   \textbf{Ausleihe:} <%= library-signature %>

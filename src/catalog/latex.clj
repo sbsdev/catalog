@@ -48,7 +48,8 @@
                    :kinderbücher-ab-10 "Kinderbücher (ab 10)"
                    :kinderbücher-ab-6 "Kinderbücher (ab 6)"
                    :musiknoten "Braille-Musiknoten"
-                   :taktilesbuch "Taktile Bücher"})
+                   :taktilesbuch "Taktile Bücher"
+                   :spiel "Spiel"})
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
@@ -188,8 +189,8 @@
     (io/file (io/resource "templates/hörfilm.tex"))))
 
 (def render-spiel
-  (template/fn [{:keys [record-id title subtitle creator source_publisher game_category description
-                        game_materials library-signature]}]
+  (template/fn [{:keys [record-id title subtitle creator source_publisher genre game-description
+                        accompanying-material library-signature]}]
     (io/file (io/resource "templates/spiel.tex"))))
 
 (defmulti catalog-entry (fn [{fmt :format}] fmt))

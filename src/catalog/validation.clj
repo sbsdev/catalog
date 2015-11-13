@@ -103,7 +103,7 @@
  Spiel CatalogItem [:ludo]
  {:source-publisher s/Str
   :source-date s/Inst
-  :game-category s/Str
+  :genre (s/eq :spiel)
   :game-description s/Str})
 
 (defn distinct-titles? [items]
