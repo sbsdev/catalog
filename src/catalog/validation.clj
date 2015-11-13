@@ -21,7 +21,7 @@
 (def SignatureTuple
   [(s/one s/Str "signature")
    (s/one BrailleGrade "grade")
-   (s/one s/Str "volumes")])
+   (s/one s/Int "volumes")])
 
 (def LibrarySignature
   (s/if map? {BrailleGrade [SignatureTuple]} s/Str))
@@ -82,7 +82,7 @@
   :genre Genre
   :sub-genre SubGenre
   :producer-brief ProducerBrief
-  :volumes s/Str})
+  :volumes s/Int})
 
 (abstract-map/extend-schema
  E-book CatalogItem [:e-book]

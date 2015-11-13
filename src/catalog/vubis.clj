@@ -152,6 +152,10 @@
   [record path]
   (some->> (apply xml-> record path) (map text) (map string/trim)))
 
+(defn parse-int [s]
+   (when-let [number (and s (re-find #"\d+" s))]
+     (Integer/parseInt number)))
+
 (defn get-year
   "Grab the date year out of a string. Return nil if `s` cannot be
   parsed."
@@ -159,10 +163,6 @@
   (when-let [year (and s (re-find #"\d{4}" s))]
     (time.coerce/to-date
      (time.format/parse (time.format/formatters :year) year))))
-
-(defn get-duration [s]
-  (when-let [duration (and s (re-find #"\d+" s))]
-    (Integer/parseInt s)))
 
 (defn remove-nonprintable-chars [s]
   (string/replace s #"[¶¬]" ""))
@@ -215,7 +215,7 @@
                              (genre-code-to-genre (subs genre-code 0 2)))
                   :sub-genre (genre-raw-to-subgenre (subs genre 0 3))
                   :format fmt
-                  :producer-brief (producer-raw-to-producer (Integer/parseInt producer))
+                  :producer-brief (producer-raw-to-producer (parse-int producer))
                   :source-date (get-year source-date)
                   :library-signature library-signature
                   :product-number product-number
@@ -224,20 +224,20 @@
       :hörbuch (-> item
                    (assoc-some
                     :produced-commercially? (some? produced-commercially?)
-                    :duration (get-duration duration)
+                    :duration (parse-int duration)
                     :narrators (not-empty (map normalize-name narrators))))
       :braille (let [rucksackbuch-number (and series-title
                                               (re-find #"^Rucksackbuch" series-title)
-                                              (Integer/parseInt series-volume))]
+                                              (parse-int series-volume))]
                  (-> item
                      (assoc-some
                       :rucksackbuch-number rucksackbuch-number
                       :rucksackbuch? (boolean rucksackbuch-number)
                       :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
-                      :volumes volumes)))
+                      :volumes (parse-int volumes))))
       :grossdruck (-> item
                       (assoc-some
-                       :volumes volumes))
+                       :volumes (parse-int volumes)))
       :hörfilm (-> item
                    (assoc-some
                     :movie_country (and general-note
@@ -254,7 +254,7 @@
       :musiknoten (-> item
                       (assoc-some
                        :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade)
-                       :volumes volumes
+                       :volumes (parse-int volumes)
                        :accompanying-material accompanying-material))
       :taktilesbuch item)))
 
