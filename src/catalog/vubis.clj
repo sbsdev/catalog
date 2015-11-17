@@ -189,13 +189,10 @@
       normalize-name))
 
 (defn get-format [s]
+  "Find the given format for a string `s`. If the string doesn't
+  correspond to any of BR, DVD, DY, ER, GD, LU, MN or TB return nil"
   (->> s
-   ;; some format entries in the MARC21 file contain garbage after the
-   ;; format, so only look at the start
-   ;; FIXME: tbh shouldn't this be fixed in the original data? Were're
-   ;; only talking about 4 records that have 'LUD' and one that has
-   ;; 'LUn'
-   (re-find #"^(?:BR|DVD|DY|ER|GD|LU|MN|TB)")
+   (re-find #"^(?:BR|DVD|DY|ER|GD|LU|MN|TB)$")
    format-raw-to-format))
 
 (defn clean-raw-item
@@ -276,7 +273,11 @@
                        :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade)
                        :volumes (parse-int volumes)
                        :accompanying-material accompanying-material))
-      :taktilesbuch item)))
+      :taktilesbuch item
+      ; default case that shouldn't really happen. When the MARC21
+      ; entry contains a faulty format then just return the item with
+      ; the faulty format. The validation will filter the item out.
+      (assoc item :format format))))
 
 (defn select-vals
   "Return a list of the values for the given keys `ks` from `item` if
