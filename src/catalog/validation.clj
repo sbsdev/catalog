@@ -21,7 +21,8 @@
 (def SignatureTuple
   [(s/one s/Str "signature")
    (s/one BrailleGrade "grade")
-   (s/one s/Int "volumes")])
+   (s/one s/Int "volumes")
+   (s/one s/Bool "double-spaced?")])
 
 (def LibrarySignature
   (s/if map? {BrailleGrade [SignatureTuple]} s/Str))
@@ -62,6 +63,7 @@
   :producer-brief ProducerBrief
   :sub-genre SubGenre
   :rucksackbuch? s/Bool
+  :double-spaced? s/Bool
   (s/optional-key :rucksackbuch-number) s/Int})
 
 (abstract-map/extend-schema

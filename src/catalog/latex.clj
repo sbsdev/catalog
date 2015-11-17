@@ -49,7 +49,11 @@
                    :kinderbücher-ab-6 "Kinderbücher (ab 6)"
                    :musiknoten "Braille-Musiknoten"
                    :taktilesbuch "Taktile Bücher"
-                   :spiel "Spiel"})
+                   :spiel "Spiel"
+                   [:kurzschrift false] "Kurzschrift"
+                   [:vollschrift false] "Vollschrift"
+                   [:kurzschrift true] "Weitzeilige Kurzschrift"
+                   [:vollschrift true] "Weitzeilige Vollschrift"})
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
@@ -131,17 +135,16 @@
   ([s prefix postfix period?]
    (if s (str prefix (if period? (periodify s) s) postfix) "")))
 
-(defn braille-signature [[signature grade volumes :as item]]
+(defn braille-signature [[signature grade volumes double-spaced? :as item]]
   (when item
-    (let [translations {:kurzschrift "Kurzschrift" :vollschrift "Vollschrift"}]
-      (string/join
-       ", "
-       [(translations grade) (format "%s Bd." volumes) (periodify signature)]))))
+    (string/join
+     ", "
+     [(translations [grade double-spaced?]) (format "%s Bd." volumes) (periodify signature)])))
 
 (defn braille-signatures [items]
   (->>
-   [:kurzschrift :vollschrift :weitzeilig]
-   (map (fn [grade] (braille-signature (first (grade items)))))
+   [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]]
+   (map (fn [k] (braille-signature (first (get items k)))))
    (remove nil?)
    (string/join " ")))
 
