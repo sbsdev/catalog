@@ -31,6 +31,7 @@
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
    :braille-grade [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
+   :double-spaced? [:datafield (attr= :tag "392") :subfield (attr= :code "g")] ; Weitzeiliger Druck
    :braille-music-grade [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
    :producer-long [:datafield (attr= :tag "260") :subfield (attr= :code "b")] ; Produzent
    :producer [:datafield (attr= :tag "260") :subfield (attr= :code "9")] ; a number that determines Produzent Kürzel und Stadt
@@ -207,7 +208,7 @@
            produced-commercially? source-date general-note
            series-title series-volume duration
            volumes narrators producer-long
-           game-description
+           game-description double-spaced?
            braille-grade personel-name
            accompanying-material braille-music-grade] :as item
     :or {genre "x01" ; an invalid genre
@@ -239,12 +240,16 @@
                     :narrators (not-empty (map normalize-name narrators))))
       :braille (let [rucksackbuch-number (and series-title
                                               (re-find #"^Rucksackbuch" series-title)
-                                              (parse-int series-volume))]
+                                              (parse-int series-volume))
+                     double-spaced? (boolean
+                                      (and double-spaced?
+                                           (re-find #"^Weitzeiliger Druck" double-spaced?)))]
                  (-> item
                      (assoc-some
                       :rucksackbuch-number rucksackbuch-number
                       :rucksackbuch? (boolean rucksackbuch-number)
                       :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
+                      :double-spaced? double-spaced?
                       :volumes (parse-int volumes))))
       :grossdruck (-> item
                       (assoc-some
@@ -280,6 +285,8 @@
   (when ((first ks) item)
     (-> item (select-keys ks) vals)))
 
+(defn fourth [coll] (first (next (next (next coll)))))
+
 (defn merge-braille-catalog-items
   "Merge `items` into one. All product-numbers and all
   library-signatures together with their related information such as
@@ -291,15 +298,15 @@
    (assoc-some
     :product-number
     (->> items
-         (map #(select-vals [:product-number :braille-grade :volumes] %))
+         (map #(select-vals [:product-number :braille-grade :volumes :double-spaced?] %))
          (remove empty?)
-         (group-by second)
+         (group-by (juxt second #(boolean (fourth %)))) ; group by grade and line spacing
          not-empty) ; only pick entries that are non-empty
     :library-signature
     (->> items
-         (map #(select-vals [:library-signature :braille-grade :volumes] %))
+         (map #(select-vals [:library-signature :braille-grade :volumes :double-spaced?] %))
          (remove empty?)
-         (group-by second)
+         (group-by (juxt second #(boolean (fourth %)))) ; group by grade and line spacing
          not-empty)) ; only pick entries that are non-empty
    (dissoc :volumes :braille-grade)))
 
