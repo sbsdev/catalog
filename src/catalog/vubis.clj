@@ -211,6 +211,11 @@
     :or {genre "x01" ; an invalid genre
          genre-code "x0"}}] ; an invalid genre-code
   (let [fmt (get-format format)
+        ;; tactile books aren't properly tagged in the format field.
+        ;; They are tagged as :ludo and their library signature starts
+        ;; with "TB"
+        fmt (if (and (= fmt :ludo) (re-find #"^TB " library-signature))
+              :taktilesbuch fmt)
         item (-> {}
                  (assoc-some
                   :record-id record-id
