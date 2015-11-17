@@ -278,7 +278,10 @@
                        :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade)
                        :volumes (parse-int volumes)
                        :accompanying-material accompanying-material))
-      :taktilesbuch item
+      :taktilesbuch (-> item
+                        (assoc-some
+                         :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
+                         :double-spaced? double-spaced?))
       ; default case that shouldn't really happen. When the MARC21
       ; entry contains a faulty format then just return the item with
       ; the faulty format. The validation will filter the item out.
