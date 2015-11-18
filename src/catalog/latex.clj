@@ -125,7 +125,8 @@
 (defn wrap
   "Add a period to `s` and wrap it in `prefix` and `postfix`.
   Typically this is used to put `s` on a line, i.e. where prefix is ''
-  and postfix is ' \\ '."
+  and postfix is ' \\ '. If `s` is a sequence the contained strings
+  are joined with \", \" as a separator"
   ([s]
    (wrap s ""))
   ([s prefix]
@@ -133,7 +134,10 @@
   ([s prefix postfix]
    (wrap s prefix postfix true))
   ([s prefix postfix period?]
-   (if s (str prefix (if period? (periodify s) s) postfix) "")))
+   (if s
+     (let [s (if (seq? s) (string/join ", " s) s)]
+       (str prefix (if period? (periodify s) s) postfix))
+     "")))
 
 (defn braille-signature [[signature grade volumes double-spaced? :as item]]
   (when item
@@ -187,7 +191,7 @@
     (io/file (io/resource "templates/e-book.tex"))))
 
 (def render-hörfilm
-  (template/fn [{:keys [record-id title subtitle personel-name movie_country genre
+  (template/fn [{:keys [record-id title subtitle directed-by actors movie_country genre
                         description producer library-signature]}]
     (io/file (io/resource "templates/hörfilm.tex"))))
 

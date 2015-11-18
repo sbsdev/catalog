@@ -141,18 +141,6 @@
                        ; MARC21 data isn't super clean for music, so
                        ; swallow this as well
 
-(defn get-subfield
-  "Get the subfield text for the given `path` in the given `record`.
-  Returns nil if there is no such subfield"
-  [record path]
-  (some-> (apply xml1-> record path) text string/trim))
-
-(defn get-multi-subfields
-  "Get a list of subfield texts for the given `path` in the given
-  `record`. Returns an empty list if there is no such subfield"
-  [record path]
-  (some->> (apply xml-> record path) (map text) (map string/trim)))
-
 (defn parse-int [s]
    (when-let [number (and s (re-find #"\d+" s))]
      (Integer/parseInt number)))
@@ -207,6 +195,7 @@
            volumes narrators producer-long
            game-description double-spaced?
            braille-grade personel-name
+           directed-by actors
            accompanying-material braille-music-grade] :as item
     :or {genre "x01" ; an invalid genre
          genre-code "x0"}}] ; an invalid genre-code
@@ -261,7 +250,8 @@
                     :movie_country (and general-note
                                         (second (re-find #"^Originalversion: (.*)$" general-note)))
                     :producer producer-long
-                    :personel-name (get-personel personel-name)))
+                    :directed-by directed-by
+                    :actors actors))
       :ludo (-> item
                 (assoc-some
                  ;; FIXME: in the future we will have the genre of the
@@ -356,6 +346,55 @@
               :else [format genre])]
         (update-in m update-keys (fnil conj []) item))) {})))
 
+(defn get-subfield
+  "Get the subfield text for the given `path` in the given `record`.
+  Returns nil if there is no such subfield"
+  [record path]
+  (some-> (apply xml1-> record path) text string/trim))
+
+(defn get-multi-subfields
+  "Get a list of subfield texts for the given `path` in the given
+  `record`. Returns an empty list if there is no such subfield"
+  [record path]
+  (some->> (apply xml-> record path) (map text) (map string/trim)))
+
+(defn get-personel-role
+  "Return `:director` if `personel` is a director, `actor` if
+  `personel` is an actor or nil otherwise"
+  [personel]
+  (when-let [raw-role (some-> (xml1-> personel :subfield (attr= :code "e")) text)]
+    (cond
+      (re-find #"Regie" raw-role) :director
+      (re-find #"Darst\." raw-role) :actor
+      :else nil)))
+
+(defn get-personel-name
+  "Get the name of a `personel`"
+  [personel]
+  (some->
+   (xml1-> personel :subfield (attr= :code "a"))
+   text
+   normalize-name))
+
+(defn personel-director? [personel]
+  (= :director (get-personel-role personel)))
+
+(defn personel-actor? [personel]
+  (= :actor (get-personel-role personel)))
+
+(defn get-personel-fields
+  "Grab all the personel related fields, e.g. directors and actors
+  from a `record`. Return a map with the keys `:directed-by` and
+  `:actors` that contains seqs of strings. If a record has no actors
+  or directors the corresponding key is not in the returned map, so
+  the returned map is potentially empty"
+  [record]
+  (let [personel (xml-> record :datafield (attr= :tag "700"))]
+    (assoc-some
+     {}
+     :directed-by (seq (map get-personel-name (filter personel-director? personel)))
+     :actors (seq (map get-personel-name (filter personel-actor? personel))))))
+
 (defn read-file
   "Read an export file from VUBIS and return a map with all the data"
   [file]
@@ -368,4 +407,5 @@
                  :when (some? val)]
              [key val])
            (into {})
+           (merge (get-personel-fields record))
            clean-raw-item))))

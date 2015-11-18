@@ -102,7 +102,8 @@
  Hörfilm CatalogItem [:hörfilm]
  {:genre (apply s/enum (vals vubis/genre-code-to-genre))
   :producer s/Str
-  :personel-name s/Str
+  :directed-by [s/Str]
+  :actors [s/Str]
   :movie_country s/Str})
 
 (abstract-map/extend-schema
