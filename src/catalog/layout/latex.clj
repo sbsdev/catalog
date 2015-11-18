@@ -1,6 +1,6 @@
-(ns catalog.latex
+(ns catalog.layout.latex
   "Generate LaTeX for catalogues"
-  (:require [catalog.vubis :as vubis]
+  (:require [catalog.layout.common :as layout]
             [clj-time
              [coerce :as time.coerce]
              [core :as time.core]
@@ -9,64 +9,11 @@
              [io :as io]
              [shell :as shell]]
             [clojure.string :as string]
-            [comb.template :as template])
-  (:import java.util.Locale))
+            [comb.template :as template]))
 
 (def temp-name "/tmp/catalog.tex")
-(def translations {:hörbuch "Neue Hörbücher"
-                   :braille "Neue Braillebücher"
-                   :grossdruck "Neue Grossdruckbücher"
-                   :e-book "Neue E-Books"
-                   :hörfilm "Neue Hörfilme"
-                   :ludo "Neue Spiele"
-                   :belletristik "Belletristik"
-                   :sachbücher "Sachbücher"
-                   :kinder-und-jugendbücher "Kinder- und Jugendbücher"
-                   :action-und-thriller "Action und Thriller"
-                   :beziehungsromane "Beziehungsromane"
-                   :fantasy-science-fiction "Fantasy, Science Fiction"
-                   :gesellschaftsromane "Gesellschaftsromane"
-                   :historische-romane "Historische Romane"
-                   :hörspiele "Hörspiele"
-                   :krimis "Krimis"
-                   :lebensgeschichten-und-schicksale "Lebensgeschichten und Schicksale"
-                   :literarische-gattungen "Literarische Gattungen"
-                   :literatur-in-fremdsprachen "Literatur in Fremdsprachen"
-                   :mundart-heimat-natur "Mundart, Heimat, Natur"
-                   :glaube-und-philosophie "Glaube und Philosophie"
-                   :biografien "Biografien"
-                   :freizeit-haus-garten "Freizeit, Haus, Garten"
-                   :geschichte-und-gegenwart "Geschichte und Gegenwart"
-                   :kunst-kultur-medien "Kunst, Kultur, Medien"
-                   :lebensgestaltung-gesundheit-erziehung "Lebensgestaltung, Gesundheit, Erziehung"
-                   :philosophie-religion-esoterik "Philosophie, Religion, Esoterik"
-                   :reisen-natur-tiere "Reisen, Natur, Tiere"
-                   :sprache "Sprache"
-                   :wissenschaft-technik "Wissenschaft, Technik"
-                   :jugendbücher "Jugendbücher"
-                   :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
-                   :kinderbücher-ab-10 "Kinderbücher (ab 10)"
-                   :kinderbücher-ab-6 "Kinderbücher (ab 6)"
-                   :musiknoten "Braille-Musiknoten"
-                   :taktilesbuch "Taktile Bücher"
-                   :spiel "Spiel"
-                   [:kurzschrift false] "Kurzschrift"
-                   [:vollschrift false] "Vollschrift"
-                   [:kurzschrift true] "Weitzeilige Kurzschrift"
-                   [:vollschrift true] "Weitzeilige Vollschrift"})
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
-(def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
-(def braille-genres (conj genres :musiknoten :taktilesbuch))
-(def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
-                :gesellschaftsromane :historische-romane :hörspiele :krimis
-                :lebensgeschichten-und-schicksale :literarische-gattungen
-                :literatur-in-fremdsprachen :mundart-heimat-natur :glaube-und-philosophie
-                :biografien :freizeit-haus-garten :geschichte-und-gegenwart
-                :kunst-kultur-medien :lebensgestaltung-gesundheit-erziehung
-                :philosophie-religion-esoterik :reisen-natur-tiere :sprache
-                :wissenschaft-technik :jugendbücher :kinder-und-jugendsachbücher
-                :kinderbücher-ab-10 :kinderbücher-ab-6])
 
 (def pagestyles {:hörbuch "audiobook"
                  :braille "anybook"
@@ -143,7 +90,7 @@
   (when item
     (string/join
      ", "
-     [(translations [grade double-spaced?]) (format "%s Bd." volumes) (periodify signature)])))
+     [(layout/translations [grade double-spaced?]) (format "%s Bd." volumes) (periodify signature)])))
 
 (defn braille-signatures [items]
   (->>
@@ -223,28 +170,28 @@
 
 (defn subgenre-entry [subgenre items]
   (when-let [items (subgenre items)]
-    (render-subsubsection (translations subgenre "FIXME")
+    (render-subsubsection (layout/translations subgenre "FIXME")
                           (catalog-entries items))))
 
 (defn subgenre-entries [items]
-  (string/join (for [subgenre subgenres] (subgenre-entry subgenre items))))
+  (string/join (for [subgenre layout/subgenres] (subgenre-entry subgenre items))))
 
 (defn genre-entry [fmt genre items]
   (when-let [items (genre items)]
     (render-subsection
-     (translations genre "FIXME")
+     (layout/translations genre "FIXME")
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
        (#{:hörbuch} fmt) (subgenre-entries items)
        :else (catalog-entries items)))))
 
 (defn genre-entries [fmt items]
-  (let [genres (if (= fmt :braille) braille-genres genres)]
+  (let [genres (if (= fmt :braille) layout/braille-genres layout/genres)]
     (string/join (for [genre genres] (genre-entry fmt genre items)))))
 
 (defn format-entry [fmt items]
   (when-let [items (fmt items)]
-    (render-section (translations fmt "FIXME")
+    (render-section (layout/translations fmt "FIXME")
                     (pagestyles fmt)
                     (case fmt
                       (:hörfilm :ludo) (catalog-entries items)
@@ -256,23 +203,14 @@
 (def render-document (template/fn [title class options font creator volume date body]
                        (io/file (io/resource "templates/document.tex"))))
 
-(defn volume-number [date]
-  (let [month (.getMonthOfYear date)]
-    (quot (inc month) 2)))
-
-(defn format-date [date]
-  (time.format/unparse
-   (time.format/with-locale (time.format/formatter "MMMM yyyy") Locale/GERMAN)
-   date))
-
 (defn document [title items &
                 {:keys [class options font creator volume date]
                  :or {class "memoir"
                       options #{"11pt" "a4paper" "twoside" "openright"}
                       font "Verdana"
                       creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      volume (volume-number (time.core/today))
-                      date (format-date (time.core/now))}}]
+                      volume (layout/volume-number (time.core/today))
+                      date (layout/format-date (time.core/now))}}]
   (render-document
    title class (string/join "," options) font creator volume date (format-entries items)))
 
