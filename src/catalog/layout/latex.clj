@@ -1,10 +1,8 @@
 (ns catalog.layout.latex
   "Generate LaTeX for catalogues"
-  (:require [catalog.layout.common :as layout]
+  (:require [catalog.layout.common :as layout :refer [periodify year braille-signatures]]
             [clj-time
-             [coerce :as time.coerce]
-             [core :as time.core]
-             [format :as time.format]]
+             [core :as time.core]]
             [clojure.java
              [io :as io]
              [shell :as shell]]
@@ -55,49 +53,7 @@
             api-key
             (string/replace record-id "/" "."))))
 
-(defn year [date]
-  (when date
-    (time.format/unparse
-     (time.format/formatters :year) (time.coerce/from-date date))))
-
-(defn periodify
-  "Add a period to the end of `s` if it is not nil and doesn't end in
-  punctuation. If `s` is nil return an empty string."
-  [s]
-  (cond
-    (nil? s) ""
-    (re-find #"[.,:!?]$" s) s
-    :else (str s ".")))
-
-(defn wrap
-  "Add a period to `s` and wrap it in `prefix` and `postfix`.
-  Typically this is used to put `s` on a line, i.e. where prefix is ''
-  and postfix is ' \\ '. If `s` is a sequence the contained strings
-  are joined with \", \" as a separator"
-  ([s]
-   (wrap s ""))
-  ([s prefix]
-   (wrap s prefix " \\\\ "))
-  ([s prefix postfix]
-   (wrap s prefix postfix true))
-  ([s prefix postfix period?]
-   (if s
-     (let [s (if (seq? s) (string/join ", " s) s)]
-       (str prefix (if period? (periodify s) s) postfix))
-     "")))
-
-(defn braille-signature [[signature grade volumes double-spaced? :as item]]
-  (when item
-    (string/join
-     ", "
-     [(layout/translations [grade double-spaced?]) (format "%s Bd." volumes) (periodify signature)])))
-
-(defn braille-signatures [items]
-  (->>
-   [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]]
-   (map (fn [k] (braille-signature (first (get items k)))))
-   (remove nil?)
-   (string/join " ")))
+(def wrap (layout/wrapper " \\\\ "))
 
 (defn render-narrators [narrators]
   (let [narrator (first narrators)]
