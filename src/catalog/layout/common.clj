@@ -1,7 +1,5 @@
 (ns catalog.layout.common
-  (:require [clj-time.format :as time.format]
-            [clojure.string :as string]
-            [clj-time
+  (:require [clj-time
              [coerce :as time.coerce]
              [format :as time.format]]
             [clojure.string :as string])
