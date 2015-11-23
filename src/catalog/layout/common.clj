@@ -82,6 +82,7 @@
     (nil? s) ""
     (number? s) (str s ".")
     (re-find #"[.,:!?]$" s) s
+    (string/blank? s) s
     :else (str s ".")))
 
 (defn wrapper

@@ -15,7 +15,7 @@
   "Mapping from Marc21 XML to parameters. See [MARC 21 Format for Bibliographic Data](http://www.loc.gov/marc/bibliographic/)"
   {:record-id [:controlfield (attr= :tag "001")]
    :title [:datafield (attr= :tag "245") :subfield (attr= :code "a")]
-   :subtitle [:datafield (attr= :tag "245") :subfield (attr= :code "b")]
+   :subtitles [:datafield (attr= :tag "245") :subfield (attr= :code "b")]
    :name-of-part [:datafield (attr= :tag "245") :subfield (attr= :code "p")] ; Bandangabe
    :creator [:datafield (attr= :tag "100") :subfield] ; autor
    :source [:datafield (attr= :tag "020") :subfield] ; isbn
@@ -154,7 +154,7 @@
      (time.format/parse (time.format/formatters :year) year))))
 
 (defn remove-nonprintable-chars [s]
-  (string/replace s #"[¶¬]" ""))
+  (and s (string/replace s #"[¶¬]" "")))
 
 (defn normalize-name
   "Change a name from 'name, surname' to 'surname name'"
@@ -187,14 +187,14 @@
   "Return a proper production based on a raw item, e.g.
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [record-id source description source-publisher
-           library-signature title creator
+           library-signature title subtitles creator
            price product-number
            genre genre-code language format producer
            produced-commercially? source-date general-note
            series-title series-volume duration
            volumes narrators producer-long
            game-description double-spaced?
-           braille-grade personel-name
+           braille-grade
            directed-by actors
            accompanying-material braille-music-grade] :as item
     :or {genre "x01" ; an invalid genre
@@ -209,6 +209,7 @@
                  (assoc-some
                   :record-id record-id
                   :title (remove-nonprintable-chars title)
+                  :subtitles (map remove-nonprintable-chars subtitles)
                   :creator creator
                   :description description
                   :source-publisher source-publisher
@@ -389,7 +390,7 @@
   or directors the corresponding key is not in the returned map, so
   the returned map is potentially empty"
   [record]
-  (let [personel (xml-> record :datafield (attr= :tag "700"))]
+  (let [personel (xml-> record :datafield (attr= :tag "700"))] ; Regie oder Darsteller
     (assoc-some
      {}
      :directed-by (seq (map get-personel-name (filter personel-director? personel)))
@@ -402,7 +403,7 @@
     (for [record (xml-> root :record)]
       (->> (for [[key path] param-mapping
                  :let [val (cond
-                             (#{:narrators} key) (get-multi-subfields record path)
+                             (#{:narrators :subtitles} key) (get-multi-subfields record path)
                              :else (get-subfield record path))]
                  :when (some? val)]
              [key val])

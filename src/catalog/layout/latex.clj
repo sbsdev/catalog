@@ -1,12 +1,13 @@
 (ns catalog.layout.latex
   "Generate LaTeX for catalogues"
-  (:require [catalog.layout.common :as layout :refer [periodify year braille-signatures]]
-            [clj-time
-             [core :as time.core]]
+  (:require [catalog.layout.common :as layout :refer [periodify]]
+            [clj-time.core :as time.core]
+            [clojure
+             [string :as string]
+             [walk :as walk]]
             [clojure.java
              [io :as io]
              [shell :as shell]]
-            [clojure.string :as string]
             [comb.template :as template]))
 
 (def temp-name "/tmp/catalog.tex")
@@ -42,8 +43,7 @@
         [#">>" "{>}>"]])))
 
 (defn escape [item]
-  (zipmap (keys item)
-          (map (fn [v] (if (string? v) (escape-str v) v)) (vals item))))
+  (walk/postwalk #(if (string? %) (escape-str %) %) item))
 
 (defn to-url
   "Return an url given a `record-id`"
@@ -61,45 +61,48 @@
       (wrap narrator "gelesen von: " " u.a. \\\\ " false)
       (wrap narrator "gelesen von: "))))
 
+(defn render-subtitles [subtitles]
+  (periodify (string/join ". " subtitles)))
+
 (def render-hörbuch
-  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher
+  (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher
                         source-date genre description duration narrators producer-brief
                         produced-commercially? library-signature product-number price]}]
     (io/file (io/resource "templates/hörbuch.tex"))))
 
 (def render-braillebuch
-  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+  (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
                         genre description producer-brief rucksackbuch? rucksackbuch-number
                         library-signature product-number price]}]
     (io/file (io/resource "templates/braillebuch.tex"))))
 
 (def render-taktilesbuch
-  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+  (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
                         description producer-brief library-signature product-number price]}]
     (io/file (io/resource "templates/taktilesbuch.tex"))))
 
 (def render-musiknoten
-  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+  (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
                         description producer-brief library-signature product-number price]}]
     (io/file (io/resource "templates/musiknoten.tex"))))
 
 (def render-grossdruckbuch
-  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+  (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
                         genre description library-signature volumes product-number price]}]
     (io/file (io/resource "templates/grossdruckbuch.tex"))))
 
 (def render-e-book
-  (template/fn [{:keys [creator record-id title subtitle name-of-part source-publisher source-date
+  (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
                         genre description library-signature]}]
     (io/file (io/resource "templates/e-book.tex"))))
 
 (def render-hörfilm
-  (template/fn [{:keys [record-id title subtitle directed-by actors movie_country genre
+  (template/fn [{:keys [record-id title subtitles directed-by actors movie_country genre
                         description producer library-signature]}]
     (io/file (io/resource "templates/hörfilm.tex"))))
 
 (def render-spiel
-  (template/fn [{:keys [record-id title subtitle creator source-publisher genre description
+  (template/fn [{:keys [record-id title subtitles creator source-publisher genre description
                         game-description accompanying-material library-signature]}]
     (io/file (io/resource "templates/spiel.tex"))))
 

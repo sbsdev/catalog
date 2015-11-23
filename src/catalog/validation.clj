@@ -37,7 +37,7 @@
    {:record-id s/Str
     (s/optional-key :creator) s/Str
     :title s/Str
-    (s/optional-key :subtitle) s/Str
+    (s/optional-key :subtitles) [s/Str]
     (s/optional-key :name-of-part) s/Str
     (s/optional-key :source) s/Str
     (s/optional-key :description) s/Str
