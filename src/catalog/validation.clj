@@ -20,12 +20,12 @@
 
 (def SignatureTuple
   [(s/one s/Str "signature")
-   (s/one BrailleGrade "grade")
-   (s/one s/Int "volumes")
+   (s/optional BrailleGrade "grade")
+   (s/optional s/Int "volumes")
    (s/optional s/Bool "double-spaced?")])
 
 (def SignatureKey
-  [(s/one (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade)) "grade")
+  [(s/one (s/maybe (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade))) "grade")
    (s/one s/Bool "double-spaced?")])
 
 (def LibrarySignature

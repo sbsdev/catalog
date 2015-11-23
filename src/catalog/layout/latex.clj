@@ -1,6 +1,6 @@
 (ns catalog.layout.latex
   "Generate LaTeX for catalogues"
-  (:require [catalog.layout.common :as layout :refer [periodify]]
+  (:require [catalog.layout.common :as layout :refer [periodify wrap]]
             [clj-time.core :as time.core]
             [clojure
              [string :as string]
@@ -52,8 +52,6 @@
     (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search\\%%23RecordId=%s"
             api-key
             (string/replace record-id "/" "."))))
-
-(def wrap (layout/wrapper " \\\\ "))
 
 (defn render-narrators [narrators]
   (let [narrator (first narrators)]

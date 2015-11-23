@@ -101,15 +101,21 @@
          (str prefix (if period? (periodify s) s) postfix))
        ""))))
 
+(def wrap (wrapper " \\\\ "))
+
 (defn- braille-signature [[signature grade volumes double-spaced? :as item]]
   (when item
-    (string/join
-     ", "
-     [(translations [grade double-spaced?]) (format "%s Bd." volumes) (periodify signature)])))
+    (->>
+     [(wrap (translations [grade double-spaced?]) "" "" false)
+      (wrap volumes "" " Bd." false)
+      (periodify signature)]
+     (remove string/blank?)
+     (string/join ", "))))
 
 (defn braille-signatures [items]
   (->>
-   [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]]
+   [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
+    [nil true] [nil false]]
    (map (fn [k] (braille-signature (first (get items k)))))
    (remove nil?)
    (string/join " ")))
