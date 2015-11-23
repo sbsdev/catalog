@@ -26,8 +26,6 @@
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
    :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
-   :personel-name [:datafield (attr= :tag "700") :subfield (attr= :code "a")] ; Regie oder Darsteller
-   :personel-relator-term [:datafield (attr= :tag "700") :subfield (attr= :code "e")]
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
    :braille-grade [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
