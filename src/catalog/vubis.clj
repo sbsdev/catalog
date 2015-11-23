@@ -208,7 +208,7 @@
                  (assoc-some
                   :record-id record-id
                   :title (remove-nonprintable-chars title)
-                  :subtitles (map remove-nonprintable-chars subtitles)
+                  :subtitles (seq (map remove-nonprintable-chars subtitles))
                   :creator creator
                   :description description
                   :source-publisher source-publisher
