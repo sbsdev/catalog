@@ -30,8 +30,8 @@
 
 (defn subgenre-entry [subgenre items]
   (when-let [items (subgenre items)]
-    [:level3
-     [:h3 (layout/translations subgenre "FIXME")]
+    [:level2
+     [:h2 (layout/translations subgenre "FIXME")]
      (catalog-entries items)]))
 
 (defn subgenre-entries [items]
@@ -39,8 +39,8 @@
 
 (defn genre-entries [genre items]
   (when-let [items (genre items)]
-    [:level2
-     [:h2 (layout/translations genre "FIXME")]
+    [:level1
+     [:h1 (layout/translations genre "FIXME")]
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
        :else (catalog-entries items))]))
@@ -61,41 +61,41 @@
            :dc:Date "FIXME"
            :dc:Format "ANSI/NISO Z39.86-2005"
            :dc:Language language}]
-      [:meta {:name (name k) :content v}])
-    [:book
-     [:frontmatter
-      [:doctitle title]
-      [:docauthor creator]]
-     [:bodymatter
-      [:level1 [:h1]
-       [:p {:class "Heftnummer"} volume]
-       [:p {:class "Datum"} date]]
-      [:level1 [:h1 "Katalog"]
-       (for [genre layout/braille-genres] (genre-entries genre items))]
-      [:level1 [:h1 "Impressum"]
-       [:level2 [:h2 title]
-        [:p "Für Kundinnen und Kunden der SBS sowie für Interessenten"]
-        [:p "Erscheint kostenlos sechsmal jährlich und listet alle seit der letzten Ausgabe neu in die SBS aufgenommenen Braillebücher auf"]
-        [:p (str "Herausgeber: " creator)]
-        [:p "Abonnement: medienverlag@sbs.ch"]]
-       [:level2 [:h2 "Ausleihe und Verkauf"]
-        [:p creator]
-        [:p "Grubenstrasse 12"]
-        [:p "CH-8045 Zürich"]
-        [:p "Fon +41 43 333 32 32"]
-        [:p "Fax +41 43 333 32 33"]
-        [:p "www.sbs.ch"]
-        [:p "Ausleihe/Verkauf Privatpersonen: nutzerservice@sbs.ch"]
-        [:p "Verkauf Institutionen: medienverlag@sbs.ch"]]]
-      [:level1 [:h1 "Einführungsrabatt"]
-       [:p "Die in dieser Ausgabe vorgestellten Rucksackbücher können während zweier Monate mit einem Einführungsrabatt von 20% (ringgebunden ohne Deckel) bestellt werden. Danach gilt der in diesem Heft angegebene Buchhandelspreis (ringgebunden mit Deckel)."]]
-      [:level1 [:h1 "Abkürzungen"]
-       [:p
-        [:list {:type "pl"}
-         [:li "Bd. = Band, Bände"]
-         [:li "K = Kurzschrift"]
-         [:li "V = Vollschrift"]
-         [:li "wtz = weitzeilige Vollschrift"]]]]]]]])
+      [:meta {:name (name k) :content v}])]
+   [:book
+    [:frontmatter
+     [:doctitle title]
+     [:docauthor creator]
+     [:level1 [:h1]
+      [:p {:class "Heftnummer"} volume]
+      [:p {:class "Datum"} date]]]
+    [:bodymatter
+     [:level1 [:h1 "Editorial"] [:p]]
+     (for [genre layout/braille-genres] (genre-entries genre items))
+     [:level1 [:h1 "Impressum"]
+      [:level2 [:h2 title]
+       [:p "Für Kundinnen und Kunden der SBS sowie für Interessenten"]
+       [:p "Erscheint kostenlos sechsmal jährlich und listet alle seit der letzten Ausgabe neu in die SBS aufgenommenen Braillebücher auf"]
+       [:p (str "Herausgeber: " creator)]
+       [:p "Abonnement: medienverlag@sbs.ch"]]
+      [:level2 [:h2 "Ausleihe und Verkauf"]
+       [:p creator]
+       [:p "Grubenstrasse 12"]
+       [:p "CH-8045 Zürich"]
+       [:p "Fon +41 43 333 32 32"]
+       [:p "Fax +41 43 333 32 33"]
+       [:p "www.sbs.ch"]
+       [:p "Ausleihe/Verkauf Privatpersonen: nutzerservice@sbs.ch"]
+       [:p "Verkauf Institutionen: medienverlag@sbs.ch"]]]
+     [:level1 [:h1 "Einführungsrabatt"]
+      [:p "Die in dieser Ausgabe vorgestellten Rucksackbücher können während zweier Monate mit einem Einführungsrabatt von 20% (ringgebunden ohne Deckel) bestellt werden. Danach gilt der in diesem Heft angegebene Buchhandelspreis (ringgebunden mit Deckel)."]]
+     [:level1 [:h1 "Abkürzungen"]
+      [:p
+       [:list {:type "pl"}
+        [:li "Bd. = Band, Bände"]
+        [:li "K = Kurzschrift"]
+        [:li "V = Vollschrift"]
+        [:li "wtz = weitzeilige Vollschrift"]]]]]]])
 
 (defn dtbook
   [items]
