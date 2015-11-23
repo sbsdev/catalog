@@ -19,8 +19,10 @@
    (if rucksackbuch?
      [:p (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
      [:p (wrap producer-brief)])
-   [:p "Ausleihe: " (layout/braille-signatures library-signature)]
-   [:p "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number)]])
+   (when library-signature
+     [:p {:class "aus"} "Ausleihe: " (layout/braille-signatures library-signature)])
+   (when product-number
+     [:p {:class "ver"} "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number)])])
 
 (defn catalog-entries [items]
   [:div {:class "catalog-list"}
