@@ -41,6 +41,7 @@
    :format [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
    :genre [:datafield (attr= :tag "099") :subfield (attr= :code "b")] ; also Spiel-Systematikgruppe
    :genre-code [:datafield (attr= :tag "099") :subfield (attr= :code "a")] ; used for movie genre i.e. Filmkategorie
+   :genre-text [:datafield (attr= :tag "099") :subfield (attr= :code "f")] ; used to display the genre
    :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
@@ -186,8 +187,8 @@
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [record-id source description source-publisher
            library-signature title subtitles creator
-           price product-number
-           genre genre-code language format producer
+           price product-number language format producer
+           genre genre-code genre-text
            produced-commercially? source-date general-note
            series-title series-volume duration
            volumes narrators producer-long
@@ -216,6 +217,7 @@
                   :genre (or (genre-raw-to-genre (subs genre 0 1))
                              (genre-code-to-genre (subs genre-code 0 2)))
                   :sub-genre (genre-raw-to-subgenre (subs genre 0 3))
+                  :genre-text genre-text
                   :format fmt
                   :producer-brief (producer-raw-to-producer (parse-int producer))
                   :source-date (get-year source-date)

@@ -66,13 +66,13 @@
 
 (def render-hörbuch
   (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher
-                        source-date genre description duration narrators producer-brief
+                        source-date genre-text description duration narrators producer-brief
                         produced-commercially? library-signature product-number price]}]
     (io/file (io/resource "templates/hörbuch.tex"))))
 
 (def render-braillebuch
   (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-                        genre description producer-brief rucksackbuch? rucksackbuch-number
+                        genre-text description producer-brief rucksackbuch? rucksackbuch-number
                         library-signature product-number price]}]
     (io/file (io/resource "templates/braillebuch.tex"))))
 
@@ -88,21 +88,21 @@
 
 (def render-grossdruckbuch
   (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-                        genre description library-signature volumes product-number price]}]
+                        genre-text description library-signature volumes product-number price]}]
     (io/file (io/resource "templates/grossdruckbuch.tex"))))
 
 (def render-e-book
   (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-                        genre description library-signature]}]
+                        genre-text description library-signature]}]
     (io/file (io/resource "templates/e-book.tex"))))
 
 (def render-hörfilm
-  (template/fn [{:keys [record-id title subtitles directed-by actors movie_country genre
+  (template/fn [{:keys [record-id title subtitles directed-by actors movie_country genre-text
                         description producer library-signature]}]
     (io/file (io/resource "templates/hörfilm.tex"))))
 
 (def render-spiel
-  (template/fn [{:keys [record-id title subtitles creator source-publisher genre description
+  (template/fn [{:keys [record-id title subtitles creator source-publisher genre-text description
                         game-description accompanying-material library-signature]}]
     (io/file (io/resource "templates/spiel.tex"))))
 

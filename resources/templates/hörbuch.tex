@@ -1,5 +1,5 @@
 \item[<%= (wrap creator "" ": " false) %>\href{<%= (to-url record-id) %>}{<%= (periodify title) %>}] <%= (render-subtitles subtitles) %> <%= (periodify name-of-part) %> - <%= (wrap source-publisher "" "" false) %><%= (wrap (year source-date) ", " "") %> \\
-  <%= (wrap (translations genre) "Genre: ") %><%= (wrap description) %>
+  <%= (wrap genre-text "Genre: ") %><%= (wrap description) %>
   <%= (wrap duration "" " Min., " false) %><%= (render-narrators narrators) %>
   <%= producer-brief %><%= (if produced-commercially? ", Hörbuch aus dem Handel" "") %>. \\
   \textbf{Ausleihe:} <%= library-signature %><% (when product-number %> \\

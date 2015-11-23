@@ -54,6 +54,7 @@
   :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
+  :genre-text s/Str
   :producer-brief ProducerBrief
   :duration s/Int
   :narrators [s/Str]
@@ -64,8 +65,9 @@
  {:source-publisher s/Str
   :source-date s/Inst
   :genre Genre
-  :producer-brief ProducerBrief
   :sub-genre SubGenre
+  :genre-text s/Str
+  :producer-brief ProducerBrief
   :rucksackbuch? s/Bool
   :double-spaced? s/Bool
   (s/optional-key :rucksackbuch-number) s/Int})
@@ -73,7 +75,11 @@
 (abstract-map/extend-schema
  Taktil CatalogItem [:taktilesbuch]
  {:source-publisher s/Str
-  :source-date s/Inst})
+  :source-date s/Inst
+  :genre Genre
+  :sub-genre SubGenre
+  :genre-text s/Str
+  :producer-brief ProducerBrief})
 
 (abstract-map/extend-schema
  Musiknoten CatalogItem [:musiknoten]
@@ -87,6 +93,7 @@
   :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
+  :genre-text s/Str
   :producer-brief ProducerBrief
   :volumes s/Int})
 
@@ -96,11 +103,13 @@
   :source-date s/Inst
   :producer-brief ProducerBrief
   :genre Genre
-  :sub-genre SubGenre})
+  :sub-genre SubGenre
+  :genre-text s/Str})
 
 (abstract-map/extend-schema
  Hörfilm CatalogItem [:hörfilm]
  {:genre (apply s/enum (vals vubis/genre-code-to-genre))
+  :genre-text s/Str
   :producer s/Str
   :directed-by [s/Str]
   :actors [s/Str]
@@ -111,6 +120,7 @@
  {:source-publisher s/Str
   :source-date s/Inst
   :genre (s/eq :spiel)
+  :genre-text s/Str
   :game-description s/Str})
 
 (defn distinct-titles? [items]
