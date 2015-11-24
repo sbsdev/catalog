@@ -11,22 +11,22 @@
 (defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
                              source-date genre-text description producer-brief rucksackbuch?
                              rucksackbuch-number library-signature product-number price]}]
-  [:div {:class "ps"}
-   [:p {:class "tit"} (wrap creator "" ": " false)
+  [:div {:brl:class "ps"}
+   [:p {:brl:class "tit"} (wrap creator "" ": " false)
     (wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part) " - "
     (wrap source-publisher "" ", " false) (wrap (layout/year source-date))]
-   [:p {:class "gen"} (wrap genre-text "Genre: ")]
-   [:p {:class "ann"} (wrap description)]
+   [:p {:brl:class "gen"} (wrap genre-text "Genre: ")]
+   [:p {:brl:class "ann"} (wrap description)]
    (if rucksackbuch?
-     [:p {:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
+     [:p {:brl:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
      [:p (wrap producer-brief)])
    (when library-signature
-     [:p {:class "aus"} "Ausleihe: " (layout/braille-signatures library-signature)])
+     [:p {:brl:class "aus"} "Ausleihe: " (layout/braille-signatures library-signature)])
    (when product-number
-     [:p {:class "ver"} "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number)])])
+     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number)])])
 
 (defn catalog-entries [items]
-  [:div {:class "catalog-list"}
+  [:div {:brl:class "list"}
    (for [item items] (catalog-entry item))])
 
 (defn subgenre-entry [subgenre items]
@@ -53,6 +53,7 @@
                       date (layout/format-date (time.core/now))
                       language "de"}}]
   [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
+            :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
             :version "2005-3" :xml:lang language}
    [:head
     (for [[k v]
