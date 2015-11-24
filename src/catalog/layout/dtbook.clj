@@ -74,7 +74,8 @@
       [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
     [:bodymatter
      [:level1 [:h1 "Editorial"] [:p]]
-     (for [genre layout/braille-genres] (genre-entries genre items))
+     (for [genre layout/braille-genres] (genre-entries genre items))]
+    [:rearmatter
      [:level1 [:h1 "Impressum"]
       [:level2 [:h2 title]
        [:p "Für Kundinnen und Kunden der SBS sowie für Interessenten"]
