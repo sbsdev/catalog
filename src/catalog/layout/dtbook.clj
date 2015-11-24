@@ -3,6 +3,7 @@
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html) to be
   converted to Braille later in the tool chain"
   (:require [catalog.layout.common :as layout]
+            [clj-time.coerce :as time.coerce]
             [clj-time.core :as time.core]
             [clojure.data.xml :as xml]))
 
@@ -50,7 +51,7 @@
                 {:keys [creator volume date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       volume (layout/volume-number (time.core/today))
-                      date (layout/format-date (time.core/now))
+                      date (time.coerce/to-date (time.core/today))
                       language "de"}}]
   [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
             :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
@@ -69,8 +70,8 @@
      [:doctitle title]
      [:docauthor creator]
      [:level1 [:h1]
-      [:p {:class "Heftnummer"} volume]
-      [:p {:class "Datum"} date]]]
+      [:p {:brl:class (format "nr_%s" volume)}]
+      [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
     [:bodymatter
      [:level1 [:h1 "Editorial"] [:p]]
      (for [genre layout/braille-genres] (genre-entries genre items))
