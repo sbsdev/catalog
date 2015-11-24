@@ -1,6 +1,6 @@
 (ns catalog.layout.latex
   "Generate LaTeX for catalogues"
-  (:require [catalog.layout.common :as layout :refer [periodify wrap]]
+  (:require [catalog.layout.common :as layout :refer [periodify wrap year braille-signatures]]
             [clj-time.core :as time.core]
             [clojure
              [string :as string]
