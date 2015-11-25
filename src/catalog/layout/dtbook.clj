@@ -84,7 +84,10 @@
    [:book
     [:frontmatter
      [:doctitle title]
-     [:docauthor creator]
+     ;; apparently a long docauthor is annoying, as it wraps around and
+     ;; messes up the sbsform macros. So, as this isn't shown anyway
+     ;; just use a fake value
+     [:docauthor "SBS"]
      [:level1
       [:p {:brl:class (format "nr_%s" volume)}]
       [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
