@@ -119,7 +119,6 @@
    (->>
     [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
      [nil true] [nil false]]
-    (map (fn [k] (braille-signature (first (get items k)) t)))
-    (remove nil?)
+    (keep (fn [k] (braille-signature (first (get items k)) t)))
     (string/join " "))))
 
