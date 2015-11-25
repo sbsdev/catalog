@@ -5,7 +5,8 @@
   (:require [catalog.layout.common :as layout]
             [clj-time.coerce :as time.coerce]
             [clj-time.core :as time.core]
-            [clojure.data.xml :as xml]))
+            [clojure.data.xml :as xml]
+            [clojure.string :as string]))
 
 (def wrap (layout/wrapper ""))
 (def translations (merge layout/translations
@@ -14,12 +15,22 @@
                           [:kurzschrift true] "wtz."
                           [:vollschrift true] "wtz."}))
 
+(defn empty-or-blank? [s]
+  (or (nil? s)
+      (and (coll? s) (empty? s))
+      (and (string? s) (string/blank? s))
+      false))
+
 (defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
                              source-date genre-text description producer-brief rucksackbuch?
                              rucksackbuch-number library-signature product-number price]}]
   [:div {:brl:class "ps"}
    [:p {:brl:class "tit"} (wrap creator "" ": " false)
-    (wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part) " - "
+    (->> [(wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part)]
+         flatten
+         (remove empty-or-blank?)
+         (string/join " "))
+    " - "
     (wrap source-publisher "" ", " false) (wrap (layout/year source-date))]
    [:p {:brl:class "gen"} (wrap genre-text "Genre: ")]
    [:p {:brl:class "ann"} (wrap description)]
