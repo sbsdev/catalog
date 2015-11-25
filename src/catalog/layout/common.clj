@@ -103,7 +103,7 @@
 
 (def wrap (wrapper " \\\\ "))
 
-(defn- braille-signature [[signature grade volumes double-spaced? :as item]]
+(defn- braille-signature [[signature grade volumes double-spaced? :as item] translations]
   (when item
     (->>
      [(wrap (translations [grade double-spaced?]) "" "" false)
@@ -112,11 +112,14 @@
      (remove string/blank?)
      (string/join ", "))))
 
-(defn braille-signatures [items]
-  (->>
-   [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
-    [nil true] [nil false]]
-   (map (fn [k] (braille-signature (first (get items k)))))
-   (remove nil?)
-   (string/join " ")))
+(defn braille-signatures
+  ([items]
+   (braille-signatures items translations))
+  ([items t]
+   (->>
+    [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
+     [nil true] [nil false]]
+    (map (fn [k] (braille-signature (first (get items k)) t)))
+    (remove nil?)
+    (string/join " "))))
 

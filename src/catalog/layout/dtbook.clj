@@ -8,6 +8,11 @@
             [clojure.data.xml :as xml]))
 
 (def wrap (layout/wrapper ""))
+(def translations (merge layout/translations
+                         {[:kurzschrift false] "K"
+                          [:vollschrift false] "V"
+                          [:kurzschrift true] "wtz."
+                          [:vollschrift true] "wtz."}))
 
 (defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
                              source-date genre-text description producer-brief rucksackbuch?
@@ -22,9 +27,9 @@
      [:p {:brl:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
      [:p {:brl:class "pro"} (wrap producer-brief)])
    (when library-signature
-     [:p {:brl:class "aus"} "Ausleihe: " (layout/braille-signatures library-signature)])
+     [:p {:brl:class "aus"} "Ausleihe: " (layout/braille-signatures library-signature translations)])
    (when product-number
-     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number)])])
+     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number translations)])])
 
 (defn catalog-entries [items]
   [:div {:brl:class "list"}
