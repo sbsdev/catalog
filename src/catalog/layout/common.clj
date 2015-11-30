@@ -16,47 +16,47 @@
                 :philosophie-religion-esoterik :reisen-natur-tiere :sprache
                 :wissenschaft-technik :jugendbücher :kinder-und-jugendsachbücher
                 :kinderbücher-ab-10 :kinderbücher-ab-6])
-(def translations {:hörbuch "Neue Hörbücher"
-                   :braille "Neue Braillebücher"
-                   :grossdruck "Neue Grossdruckbücher"
-                   :e-book "Neue E-Books"
-                   :hörfilm "Neue Hörfilme"
-                   :ludo "Neue Spiele"
-                   :belletristik "Belletristik"
-                   :sachbücher "Sachbücher"
-                   :kinder-und-jugendbücher "Kinder- und Jugendbücher"
-                   :action-und-thriller "Action und Thriller"
-                   :beziehungsromane "Beziehungsromane"
-                   :fantasy-science-fiction "Fantasy, Science Fiction"
-                   :gesellschaftsromane "Gesellschaftsromane"
-                   :historische-romane "Historische Romane"
-                   :hörspiele "Hörspiele"
-                   :krimis "Krimis"
-                   :lebensgeschichten-und-schicksale "Lebensgeschichten und Schicksale"
-                   :literarische-gattungen "Literarische Gattungen"
-                   :literatur-in-fremdsprachen "Literatur in Fremdsprachen"
-                   :mundart-heimat-natur "Mundart, Heimat, Natur"
-                   :glaube-und-philosophie "Glaube und Philosophie"
-                   :biografien "Biografien"
-                   :freizeit-haus-garten "Freizeit, Haus, Garten"
-                   :geschichte-und-gegenwart "Geschichte und Gegenwart"
-                   :kunst-kultur-medien "Kunst, Kultur, Medien"
-                   :lebensgestaltung-gesundheit-erziehung "Lebensgestaltung, Gesundheit, Erziehung"
-                   :philosophie-religion-esoterik "Philosophie, Religion, Esoterik"
-                   :reisen-natur-tiere "Reisen, Natur, Tiere"
-                   :sprache "Sprache"
-                   :wissenschaft-technik "Wissenschaft, Technik"
-                   :jugendbücher "Jugendbücher"
-                   :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
-                   :kinderbücher-ab-10 "Kinderbücher (ab 10)"
-                   :kinderbücher-ab-6 "Kinderbücher (ab 6)"
-                   :musiknoten "Braille-Musiknoten"
-                   :taktilesbuch "Taktile Bücher"
-                   :spiel "Spiel"
-                   [:kurzschrift false] "Kurzschrift"
-                   [:vollschrift false] "Vollschrift"
-                   [:kurzschrift true] "Weitzeilige Kurzschrift"
-                   [:vollschrift true] "Weitzeilige Vollschrift"})
+(def ^:dynamic translations {:hörbuch "Neue Hörbücher"
+                             :braille "Neue Braillebücher"
+                             :grossdruck "Neue Grossdruckbücher"
+                             :e-book "Neue E-Books"
+                             :hörfilm "Neue Hörfilme"
+                             :ludo "Neue Spiele"
+                             :belletristik "Belletristik"
+                             :sachbücher "Sachbücher"
+                             :kinder-und-jugendbücher "Kinder- und Jugendbücher"
+                             :action-und-thriller "Action und Thriller"
+                             :beziehungsromane "Beziehungsromane"
+                             :fantasy-science-fiction "Fantasy, Science Fiction"
+                             :gesellschaftsromane "Gesellschaftsromane"
+                             :historische-romane "Historische Romane"
+                             :hörspiele "Hörspiele"
+                             :krimis "Krimis"
+                             :lebensgeschichten-und-schicksale "Lebensgeschichten und Schicksale"
+                             :literarische-gattungen "Literarische Gattungen"
+                             :literatur-in-fremdsprachen "Literatur in Fremdsprachen"
+                             :mundart-heimat-natur "Mundart, Heimat, Natur"
+                             :glaube-und-philosophie "Glaube und Philosophie"
+                             :biografien "Biografien"
+                             :freizeit-haus-garten "Freizeit, Haus, Garten"
+                             :geschichte-und-gegenwart "Geschichte und Gegenwart"
+                             :kunst-kultur-medien "Kunst, Kultur, Medien"
+                             :lebensgestaltung-gesundheit-erziehung "Lebensgestaltung, Gesundheit, Erziehung"
+                             :philosophie-religion-esoterik "Philosophie, Religion, Esoterik"
+                             :reisen-natur-tiere "Reisen, Natur, Tiere"
+                             :sprache "Sprache"
+                             :wissenschaft-technik "Wissenschaft, Technik"
+                             :jugendbücher "Jugendbücher"
+                             :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
+                             :kinderbücher-ab-10 "Kinderbücher (ab 10)"
+                             :kinderbücher-ab-6 "Kinderbücher (ab 6)"
+                             :musiknoten "Braille-Musiknoten"
+                             :taktilesbuch "Taktile Bücher"
+                             :spiel "Spiel"
+                             [:kurzschrift false] "Kurzschrift"
+                             [:vollschrift false] "Vollschrift"
+                             [:kurzschrift true] "Weitzeilige Kurzschrift"
+                             [:vollschrift true] "Weitzeilige Vollschrift"})
 
 (defn volume-number [date]
   (let [month (.getMonthOfYear date)]
@@ -103,7 +103,7 @@
 
 (def wrap (wrapper " \\\\ "))
 
-(defn- braille-signature [[signature grade volumes double-spaced? :as item] translations]
+(defn- braille-signature [[signature grade volumes double-spaced? :as item]]
   (when item
     (->>
      [(wrap (translations [grade double-spaced?]) "" "" false)
@@ -112,13 +112,10 @@
      (remove string/blank?)
      (string/join ", "))))
 
-(defn braille-signatures
-  ([items]
-   (braille-signatures items translations))
-  ([items t]
-   (->>
-    [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
-     [nil true] [nil false]]
-    (keep (fn [k] (braille-signature (first (get items k)) t)))
-    (string/join " "))))
+(defn braille-signatures [items]
+  (->>
+   [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
+    [nil true] [nil false]]
+   (keep (fn [k] (braille-signature (first (get items k)))))
+   (string/join " ")))
 

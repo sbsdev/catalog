@@ -38,9 +38,11 @@
      [:p {:brl:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
      [:p {:brl:class "pro"} (wrap producer-brief)])
    (when library-signature
-     [:p {:brl:class "aus"} "Ausleihe: " (layout/braille-signatures library-signature translations)])
+     [:p {:brl:class "aus"} "Ausleihe: "
+      (binding [layout/translations translations] (layout/braille-signatures library-signature))])
    (when product-number
-     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false) (layout/braille-signatures product-number translations)])])
+     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false)
+      (binding [layout/translations translations] (layout/braille-signatures product-number))])])
 
 (defn catalog-entries [items]
   [:div {:brl:class "list"}
