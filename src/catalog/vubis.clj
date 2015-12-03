@@ -347,17 +347,25 @@
               :else [format genre])]
         (update-in m update-keys (fnil conj []) item))) {})))
 
+(defn ignore-sine-nomine [s]
+  "Return input string `s` unless it contains \"s.n.\" (Sine nomine),
+  \"s.l.\" (Sine loco) or \"s.a.\" (Sine anno)"
+  (when-not (re-matches #"\[?s.[nla]+.\]?" s)
+    s))
+
 (defn get-subfield
   "Get the subfield text for the given `path` in the given `record`.
   Returns nil if there is no such subfield"
   [record path]
-  (some-> (apply xml1-> record path) text string/trim))
+  (some->
+   (apply xml1-> record path) text string/trim ignore-sine-nomine))
 
 (defn get-multi-subfields
   "Get a list of subfield texts for the given `path` in the given
   `record`. Returns an empty list if there is no such subfield"
   [record path]
-  (some->> (apply xml-> record path) (map text) (map string/trim)))
+  (some->>
+   (apply xml-> record path) (map text) (map string/trim) (map ignore-sine-nomine)))
 
 (defn get-personel-role
   "Return `:director` if `personel` is a director, `actor` if
