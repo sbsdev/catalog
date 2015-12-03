@@ -14,8 +14,9 @@
                 :biografien :freizeit-haus-garten :geschichte-und-gegenwart
                 :kunst-kultur-medien :lebensgestaltung-gesundheit-erziehung
                 :philosophie-religion-esoterik :reisen-natur-tiere :sprache
-                :wissenschaft-technik :jugendbücher :kinder-und-jugendsachbücher
-                :kinderbücher-ab-10 :kinderbücher-ab-6])
+                :wissenschaft-technik
+                :kinderbücher-ab-6 :kinderbücher-ab-10 :jugendbücher :kinder-und-jugendsachbücher])
+
 (def ^:dynamic translations {:hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"
                              :grossdruck "Neue Grossdruckbücher"
