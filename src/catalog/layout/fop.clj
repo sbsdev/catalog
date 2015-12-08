@@ -286,7 +286,7 @@
              :line-height "130%"
              :xml:lang "de"}
    [:fo:layout-master-set
-    (simple-page-master {:master-name "recto"})
+    (simple-page-master {:master-name "recto" :margin-left "35mm" :margin-right "15mm"})
     (simple-page-master {:master-name "verso"})
     [:fo:page-sequence-master {:master-name "main"}
      [:fo:repeatable-page-master-alternatives
