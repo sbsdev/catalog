@@ -95,33 +95,7 @@
       [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
     [:bodymatter
      [:level1 [:h1 "Editorial"] [:p "..."]]
-     (for [genre layout/braille-genres] (genre-entries genre items))]
-    ;; [:rearmatter
-    ;;  [:level1 [:h1 "Impressum"]
-    ;;   [:level2 [:h2 title]
-    ;;    [:p "Für Kundinnen und Kunden der SBS sowie für Interessenten"]
-    ;;    [:p "Erscheint kostenlos sechsmal jährlich und listet alle seit der letzten Ausgabe neu in die SBS aufgenommenen Braillebücher auf"]
-    ;;    [:p (str "Herausgeber: " creator)]
-    ;;    [:p "Abonnement: medienverlag@sbs.ch"]]
-    ;;   [:level2 [:h2 "Ausleihe und Verkauf"]
-    ;;    [:p creator]
-    ;;    [:p "Grubenstrasse 12"]
-    ;;    [:p "CH-8045 Zürich"]
-    ;;    [:p "Fon +41 43 333 32 32"]
-    ;;    [:p "Fax +41 43 333 32 33"]
-    ;;    [:p "www.sbs.ch"]
-    ;;    [:p "Ausleihe/Verkauf Privatpersonen: nutzerservice@sbs.ch"]
-    ;;    [:p "Verkauf Institutionen: medienverlag@sbs.ch"]]]
-    ;;  [:level1 [:h1 "Einführungsrabatt"]
-    ;;   [:p "Die in dieser Ausgabe vorgestellten Rucksackbücher können während zweier Monate mit einem Einführungsrabatt von 20% (ringgebunden ohne Deckel) bestellt werden. Danach gilt der in diesem Heft angegebene Buchhandelspreis (ringgebunden mit Deckel)."]]
-    ;;  [:level1 [:h1 "Abkürzungen"]
-    ;;   [:p
-    ;;    [:list {:type "pl"}
-    ;;     [:li "Bd. = Band, Bände"]
-    ;;     [:li "K = Kurzschrift"]
-    ;;     [:li "V = Vollschrift"]
-    ;;     [:li "wtz = weitzeilige Vollschrift"]]]]]
-    ]])
+     (for [genre layout/braille-genres] (genre-entries genre items))]]])
 
 (defn dtbook
   [items]
