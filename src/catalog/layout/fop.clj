@@ -328,4 +328,4 @@
         (xml/indent out))))
 
 (defn generate-pdf []
-  (shell/sh "fop" "-a" "catalog.xml" "catalog.pdf"))
+  (shell/sh "fop" "-c" "resources/fop.xconf" "catalog.xml" "catalog.pdf"))
