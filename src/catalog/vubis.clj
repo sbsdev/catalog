@@ -333,7 +333,8 @@
   (->>
    items
    collate-all-duplicate-items
-   (sort-by (juxt :creator :title))
+   ;; sort by creator, title. If there is no creator then sort just by title
+   (sort-by (juxt #(or (:creator %) (:title %)) :title))
    (reduce
     (fn [m {:keys [format genre sub-genre] :as item}]
       (let [update-keys
