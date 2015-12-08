@@ -2,7 +2,11 @@
   (:require [clj-time
              [coerce :as time.coerce]
              [format :as time.format]]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [clojure
+             [string :as string]]
+            [clojure
+             [string :as string]])
   (:import java.util.Locale))
 
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
@@ -17,7 +21,8 @@
                 :wissenschaft-technik
                 :kinderbücher-ab-6 :kinderbücher-ab-10 :jugendbücher :kinder-und-jugendsachbücher])
 
-(def ^:dynamic translations {:hörbuch "Neue Hörbücher"
+(def ^:dynamic translations {:inhalt "Inhaltsverzeichnis"
+                             :hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"
                              :grossdruck "Neue Grossdruckbücher"
                              :e-book "Neue E-Books"
@@ -120,3 +125,7 @@
    (keep (fn [k] (braille-signature (first (get items k)))))
    (string/join " ")))
 
+(def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
+
+(defn render-subtitles [subtitles]
+  (periodify (string/join ". " subtitles)))

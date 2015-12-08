@@ -1,6 +1,6 @@
 (ns catalog.layout.latex
   "Generate LaTeX for catalogues"
-  (:require [catalog.layout.common :as layout :refer [periodify wrap year braille-signatures]]
+  (:require [catalog.layout.common :as layout :refer [periodify wrap year braille-signatures render-subtitles]]
             [clj-time.core :as time.core]
             [clojure
              [string :as string]
@@ -11,8 +11,6 @@
             [comb.template :as template]))
 
 (def temp-name "/tmp/catalog.tex")
-
-(def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 
 (def pagestyles {:hörbuch "audiobook"
                  :braille "anybook"
@@ -58,9 +56,6 @@
     (if (> (count narrators) 1)
       (wrap narrator "gelesen von: " " u.a. \\\\ " false)
       (wrap narrator "gelesen von: "))))
-
-(defn render-subtitles [subtitles]
-  (periodify (string/join ". " subtitles)))
 
 (def render-hörbuch
   (template/fn [{:keys [creator record-id title subtitles name-of-part source-publisher
@@ -155,7 +150,7 @@
                       (genre-entries fmt items)))))
 
 (defn format-entries [items]
-  (string/join (for [fmt formats] (format-entry fmt items))))
+  (string/join (for [fmt layout/formats] (format-entry fmt items))))
 
 (def render-document (template/fn [title class options font creator volume date body]
                        (io/file (io/resource "templates/document.tex"))))
