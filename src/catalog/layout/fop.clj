@@ -58,7 +58,7 @@
                          :retrieve-boundary "page-sequence"}]])
 
 (defn- set-marker [title]
-  [:fo:block
+  [:fo:block {:keep-with-next "always"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
 (defn toc-entry [items fmt]
