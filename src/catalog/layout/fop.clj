@@ -276,7 +276,8 @@
      (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
-       (mapcat #(genre-sexp items fmt %) layout/genres))]))
+       (mapcat #(genre-sexp items fmt %)
+               (if (= fmt :braille) layout/braille-genres layout/genres)))]))
 
 (defn- page-number []
   [:fo:inline
