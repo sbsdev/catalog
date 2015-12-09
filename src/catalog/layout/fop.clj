@@ -67,7 +67,7 @@
       [:fo:page-number-citation {:ref-id (hash [fmt])}]]]))
 
 (defn toc [items formats]
-  [:fo:block
+  [:fo:block {:line-height "150%"}
    (h1 :inhalt)
    (keep #(toc-entry items %) formats)])
 
@@ -81,7 +81,7 @@
 
 (defn- sub-toc-entry [items fmt genre]
   (when-let [items (genre items)]
-    [:fo:block
+    [:fo:block {:line-height "150%"}
      [:fo:block {:text-align-last "justify"}
       [:fo:basic-link {:internal-destination (hash [fmt genre])}
        (str (layout/translations genre) " ")
