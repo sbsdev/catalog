@@ -133,6 +133,7 @@
   (block {:keep-with-next "always"}
      (bold (wrap creator "" ": " false)
            (external-link record-id (layout/periodify title)))
+     (when (or subtitles name-of-part) " ")
      (layout/render-subtitles subtitles)
      (layout/periodify name-of-part)
      (when (or source-publisher source-date) " - ")
@@ -217,8 +218,8 @@
   (list-item
    (block {:keep-with-next "always"}
      (bold (external-link record-id (layout/periodify title)))
-     (layout/render-subtitles subtitles) " "
-     (layout/periodify creator))
+     (layout/render-subtitles subtitles)
+     (layout/wrap creator " "))
    (block (wrap source-publisher))
    (block (wrap genre-text))
    (block (wrap description))

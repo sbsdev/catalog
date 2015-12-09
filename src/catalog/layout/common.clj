@@ -114,7 +114,7 @@
     (->>
      [(wrap (translations [grade double-spaced?]) "" "" false)
       (wrap volumes "" " Bd." false)
-      (periodify signature)]
+      signature]
      (remove string/blank?)
      (string/join ", "))))
 
@@ -123,7 +123,7 @@
    [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
     [nil true] [nil false]]
    (keep (fn [k] (braille-signature (first (get items k)))))
-   (string/join " ")))
+   (string/join ". ")))
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 
