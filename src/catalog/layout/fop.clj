@@ -4,7 +4,12 @@
             [clojure.java
              [io :as io]
              [shell :as shell]]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import [java.io BufferedOutputStream FileOutputStream StringReader]
+           javax.xml.transform.TransformerFactory
+           javax.xml.transform.sax.SAXResult
+           javax.xml.transform.stream.StreamSource
+           [org.apache.fop.apps FopFactory MimeConstants]))
 
 (defn simple-page-master
   [{:keys [master-name page-height page-width
@@ -334,8 +339,12 @@
 (defn document [items]
   (with-open [out (io/writer "catalog.xml")]
     (-> (document-sexp items {})
-        xml/sexp-as-element
-        (xml/indent out))))
+        xml/sexp-as-element)))
 
-(defn generate-pdf []
-  (shell/sh "fop" "-c" "resources/fop.xconf" "catalog.xml" "catalog.pdf"))
+(defn generate-pdf [document out]
+  (with-open [out (BufferedOutputStream. (FileOutputStream. out))]
+    (.transform (.newTransformer (TransformerFactory/newInstance))
+                (StreamSource. (StringReader. (xml/emit-str document)))
+                (SAXResult. (.getDefaultHandler
+                             (.newFop (FopFactory/newInstance (io/file (io/resource "fop.xconf")))
+                                      MimeConstants/MIME_PDF out))))))

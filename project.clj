@@ -9,7 +9,8 @@
                  [prismatic/schema "1.0.3"]
                  [clj-time "0.11.0"]
                  [comb "0.1.0" :exclusions [org.clojure/clojure]]
-                 [org.clojure/data.xml "0.0.8"]]
+                 [org.clojure/data.xml "0.0.8"]
+                 [org.apache.xmlgraphics/fop "2.0"]]
   :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]
             [refactor-nrepl "2.0.0-SNAPSHOT"]]
   :main ^:skip-aot catalog.core
