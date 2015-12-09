@@ -11,8 +11,8 @@
            margin-bottom margin-top
            margin-left margin-right]
     :or {page-height "297mm" page-width "210mm"
-         margin-bottom "50mm" margin-top "20mm"
-         margin-left "15mm" margin-right "35mm"}}]
+         margin-bottom "20mm" margin-top "20mm"
+         margin-left "25mm" margin-right "25mm"}}]
   [:fo:simple-page-master {:master-name master-name
                            :page-height page-height
                            :page-width page-width
@@ -286,7 +286,7 @@
              :line-height "130%"
              :xml:lang "de"}
    [:fo:layout-master-set
-    (simple-page-master {:master-name "recto" :margin-left "35mm" :margin-right "15mm"})
+    (simple-page-master {:master-name "recto"})
     (simple-page-master {:master-name "verso"})
     [:fo:page-sequence-master {:master-name "main"}
      [:fo:repeatable-page-master-alternatives
