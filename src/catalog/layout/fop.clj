@@ -44,6 +44,18 @@
 (defn h4 [fmt genre subgenre h]
   (heading h (hash [fmt genre subgenre h]) {:font-size "13pt" :role "H3"}))
 
+(def ^:private running-header-class-name "running-header")
+
+(defn- retrieve-marker []
+  [:fo:inline
+   [:fo:retrieve-marker {:retrieve-class-name running-header-class-name
+                         :retrieve-position "last-ending-within-page"
+                         :retrieve-boundary "page-sequence"}]])
+
+(defn- set-marker [title]
+  [:fo:block
+   [:fo:marker {:marker-class-name running-header-class-name} title]])
+
 (defn toc-entry [items fmt]
   (when (fmt items)
     [:fo:block {:text-align-last "justify"}
@@ -235,6 +247,8 @@
 (defn subgenre-sexp [items fmt genre subgenre]
   (when-let [items (subgenre items)]
     [(h3 fmt genre subgenre)
+     (when-not (#{:kinder-und-jugendbücher} genre)
+       (set-marker (layout/translations subgenre)))
      (entries-sexp items)]))
 
 (defn subgenres-sexp [items fmt genre]
@@ -243,6 +257,7 @@
 (defn genre-sexp [items fmt genre]
   (when-let [items (genre items)]
     [(h2 fmt genre)
+     (set-marker (layout/translations genre))
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre)
        (#{:hörbuch} fmt) (subgenres-sexp items fmt genre)
@@ -252,15 +267,10 @@
   (when-let [items (fmt items)]
     [(h1 fmt)
      (sub-toc items fmt)
+     (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
        (mapcat #(genre-sexp items fmt %) layout/genres))]))
-
-(defn- retrieve-marker []
-  [:fo:inline
-   [:fo:retrieve-marker {:retrieve-class-name "head"
-                         :retrieve-position "last-ending-within-page"
-                         :retrieve-boundary "page-sequence"}]])
 
 (defn- page-number []
   [:fo:inline
