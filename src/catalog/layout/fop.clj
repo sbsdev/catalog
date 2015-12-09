@@ -37,17 +37,14 @@
            :space-after "11pt"} opts)
    (layout/translations h)])
 
-(defn h1 [h]
-  (heading h (hash [nil h]) {:break-before "odd-page" :font-size "21pt" :role "H1"}))
+(defn h1 [fmt]
+  (heading fmt (hash [fmt]) {:break-before "odd-page" :font-size "21pt" :role "H1"}))
 
-(defn h2 [fmt h]
-  (heading h (hash [fmt h]) {:font-size "17pt" :role "H2"}))
+(defn h2 [fmt genre]
+  (heading genre (hash [fmt genre]) {:font-size "17pt" :role "H2"}))
 
-(defn h3 [fmt genre h]
-  (heading h (hash [fmt genre h]) {:font-size "15pt" :role "H3"}))
-
-(defn h4 [fmt genre subgenre h]
-  (heading h (hash [fmt genre subgenre h]) {:font-size "13pt" :role "H3"}))
+(defn h3 [fmt genre subgenre]
+  (heading subgenre (hash [fmt genre subgenre]) {:font-size "15pt" :role "H3"}))
 
 (def ^:private running-header-class-name "running-header")
 
