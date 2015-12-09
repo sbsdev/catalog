@@ -61,10 +61,10 @@
 (defn toc-entry [items fmt]
   (when (fmt items)
     [:fo:block {:text-align-last "justify"}
-     [:fo:basic-link {:internal-destination (hash [nil fmt])}
+     [:fo:basic-link {:internal-destination (hash [fmt])}
       (str (layout/translations fmt) " ")
       [:fo:leader {:leader-pattern "dots"}]
-      [:fo:page-number-citation {:ref-id (hash [nil fmt])}]]]))
+      [:fo:page-number-citation {:ref-id (hash [fmt])}]]]))
 
 (defn toc [items formats]
   [:fo:block
