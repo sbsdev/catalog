@@ -349,9 +349,8 @@
      (mapcat #(format-sexp items %) layout/formats)]]])
 
 (defn document [items]
-  (with-open [out (io/writer "catalog.xml")]
-    (-> (document-sexp items {})
-        xml/sexp-as-element)))
+  (-> (document-sexp items {})
+      xml/sexp-as-element))
 
 (defn generate-pdf [document out]
   (with-open [out (BufferedOutputStream. (FileOutputStream. out))]
