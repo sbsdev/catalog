@@ -91,7 +91,7 @@
 
 (defn sub-toc [items fmt]
   [:fo:block
-   (keep #(sub-toc-entry items fmt %) layout/genres)])
+   (keep #(sub-toc-entry items fmt %) (if (= fmt :braille) layout/braille-genres layout/genres))])
 
 (def wrap (layout/wrapper ""))
 
