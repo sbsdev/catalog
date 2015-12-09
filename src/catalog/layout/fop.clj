@@ -71,13 +71,23 @@
    (h1 :inhalt)
    (keep #(toc-entry items %) formats)])
 
-(defn sub-toc-entry [items fmt genre]
-  (when (genre items)
-    [:fo:block {:text-align-last "justify"}
-     [:fo:basic-link {:internal-destination (hash [fmt genre])}
-      (str (layout/translations genre) " ")
+(defn- sub-sub-toc-entry [items fmt genre subgenre]
+  (when-let [items (subgenre items)]
+    [:fo:block {:text-align-last "justify" :start-indent "1em"}
+     [:fo:basic-link {:internal-destination (hash [fmt genre subgenre])}
+      (str (layout/translations subgenre) " ")
       [:fo:leader {:leader-pattern "dots"}]
-      [:fo:page-number-citation {:ref-id (hash [fmt genre])}]]]))
+      [:fo:page-number-citation {:ref-id (hash [fmt genre subgenre])}]]]))
+
+(defn- sub-toc-entry [items fmt genre]
+  (when-let [items (genre items)]
+    [:fo:block
+     [:fo:block {:text-align-last "justify"}
+      [:fo:basic-link {:internal-destination (hash [fmt genre])}
+       (str (layout/translations genre) " ")
+       [:fo:leader {:leader-pattern "dots"}]
+       [:fo:page-number-citation {:ref-id (hash [fmt genre])}]]]
+     (keep #(sub-sub-toc-entry items fmt genre %) layout/subgenres)]))
 
 (defn sub-toc [items fmt]
   [:fo:block
