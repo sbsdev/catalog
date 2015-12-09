@@ -11,6 +11,11 @@
            javax.xml.transform.stream.StreamSource
            [org.apache.fop.apps FopFactory MimeConstants]))
 
+(def ^:private region-body-margin-top 15)
+
+(defn- to-mm [n]
+  (format "%smm" n))
+
 (defn simple-page-master
   [{:keys [master-name page-height page-width
            margin-bottom margin-top
@@ -25,8 +30,10 @@
                            :margin-top margin-top
                            :margin-left margin-left
                            :margin-right margin-right}
-   [:fo:region-body {:margin-top "15mm"}]
-   [:fo:region-before {:region-name (format "xsl-region-before-%s" master-name)}]])
+   [:fo:region-body {:margin-top (to-mm region-body-margin-top)}]
+   [:fo:region-before {:region-name (format "xsl-region-before-%s" master-name)
+                       ;; extent should be smaller than margin-top of region-body
+                       :extent (to-mm (dec region-body-margin-top))}]])
 
 (defn heading [h hash opts]
   [:fo:block
