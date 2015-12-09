@@ -144,6 +144,10 @@
   (when signature
     (block {:keep-with-previous "always"} (bold "Ausleihe:") " " signature)))
 
+(defn- ausleihe-multi [signatures]
+  (when signatures
+    (block {:keep-with-previous "always"} (bold "Ausleihe:") " " (layout/braille-signatures signatures))))
+
 (defn- verkauf [product-number price]
   (when product-number
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price ", " (layout/braille-signatures product-number))))
@@ -173,8 +177,7 @@
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (block producer-brief (if rucksackbuch? (str ", Rucksackbuch Nr. " rucksackbuch-number) "") ".")
-   (when library-signature
-     (block {:keep-with-previous "always"} (bold "Ausleihe:") " " (layout/braille-signatures library-signature)))
+   (ausleihe-multi library-signature)
    (verkauf product-number price)))
 
 (defmethod entry-sexp :grossdruck
@@ -233,8 +236,8 @@
    (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
    (block (wrap description))
    (block (wrap producer-brief))
-   (ausleihe library-signature))
-   (verkauf product-number price))
+   (ausleihe-multi library-signature)
+   (verkauf product-number price)))
 
 (defmethod entry-sexp :taktilesbuch
   [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
