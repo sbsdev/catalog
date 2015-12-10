@@ -86,7 +86,7 @@
 
 (defn- sub-toc-entry [items fmt genre]
   (when-let [items (genre items)]
-    [:fo:block {:line-height "150%"}
+    [:fo:block
      [:fo:block {:text-align-last "justify"}
       [:fo:basic-link {:internal-destination (hash [fmt genre])}
        (str (layout/translations genre) " ")
@@ -95,7 +95,7 @@
      (keep #(sub-sub-toc-entry items fmt genre %) layout/subgenres)]))
 
 (defn sub-toc [items fmt]
-  [:fo:block
+  [:fo:block {:line-height "150%"}
    (keep #(sub-toc-entry items fmt %)
          (if (= fmt :braille) layout/braille-genres layout/genres))])
 
