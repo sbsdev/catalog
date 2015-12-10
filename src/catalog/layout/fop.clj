@@ -1,14 +1,12 @@
 (ns catalog.layout.fop
   (:require [catalog.layout.common :as layout]
             [clojure.data.xml :as xml]
-            [clojure.java
-             [io :as io]
-             [shell :as shell]]
+            [clojure.java.io :as io]
             [clojure.string :as string])
-  (:import [java.io BufferedOutputStream FileOutputStream StringReader]
-           javax.xml.transform.TransformerFactory
+  (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
+           javax.xml.transform.TransformerFactory
            [org.apache.fop.apps FopFactory MimeConstants]))
 
 (def ^:private region-body-margin-top 15)
@@ -371,9 +369,17 @@
         (xml/indent out))))
 
 (defn generate-pdf [document out]
-  (with-open [out (BufferedOutputStream. (FileOutputStream. out))]
-    (.transform (.newTransformer (TransformerFactory/newInstance))
-                (StreamSource. (StringReader. (xml/emit-str document)))
-                (SAXResult. (.getDefaultHandler
-                             (.newFop (FopFactory/newInstance (io/file (io/resource "fop.xconf")))
-                                      MimeConstants/MIME_PDF out))))))
+  ;; generate PDF according to https://xmlgraphics.apache.org/fop/2.0/embedding.html#basics
+  (with-open [out (io/output-stream out)]
+    (let [;; Construct a FopFactory by specifying a reference to the configuration file
+          factory (FopFactory/newInstance (io/file (io/resource "fop.xconf")))
+          ;; Construct fop with desired output format
+          fop (.newFop factory MimeConstants/MIME_PDF out)
+          ;; Setup JAXP using identity transformer
+          transformer (.newTransformer (TransformerFactory/newInstance))
+          ;; Setup input and output for XSLT transformation
+          source (StreamSource. (StringReader. (xml/emit-str document)))
+          ;; Resulting SAX events (the generated FO) must be piped through to FOP
+          saxresult (SAXResult. (.getDefaultHandler fop))]
+      ;; Start XSLT transformation and FOP processing
+      (.transform transformer source saxresult))))
