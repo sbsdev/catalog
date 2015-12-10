@@ -311,6 +311,22 @@
       [:fo:leader]
       (if recto? (page-number) (retrieve-marker))]]))
 
+(defn- declarations
+  [title creator description]
+  [:fo:declarations
+    [:x:xmpmeta {:xmlns:x "adobe:ns:meta/"}
+     [:rdf:RDF {:xmlns:rdf"http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
+      [:rdf:Description {:rdf:about ""
+                         :xmlns:dc "http://purl.org/dc/elements/1.1/"}
+       ;; Dublin Core properties
+       [:dc:title title]
+       [:dc:creator creator]
+       [:dc:description description]]
+      [:rdf:Description {:rdf:about ""
+                         :xmlns:xmp "http://ns.adobe.com/xap/1.0/"}
+       ;; XMP properties
+       [:xmp:CreatorTool "Apache FOP"]]]]])
+
 (defn document-sexp
   [items {:keys [title creator description date]
     :or {title "Neu im Sortiment"
@@ -328,19 +344,7 @@
      [:fo:repeatable-page-master-alternatives
       [:fo:conditional-page-master-reference {:master-reference "verso" :odd-or-even "even"}]
       [:fo:conditional-page-master-reference {:master-reference "recto" :odd-or-even "odd"}]]]]
-   [:fo:declarations
-    [:x:xmpmeta {:xmlns:x "adobe:ns:meta/"}
-     [:rdf:RDF {:xmlns:rdf"http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
-      [:rdf:Description {:rdf:about ""
-                         :xmlns:dc "http://purl.org/dc/elements/1.1/"}
-       ;; Dublin Core properties
-       [:dc:title title]
-       [:dc:creator creator]
-       [:dc:description description]]
-      [:rdf:Description {:rdf:about ""
-                         :xmlns:xmp "http://ns.adobe.com/xap/1.0/"}
-       ;; XMP properties
-       [:xmp:CreatorTool "Apache FOP"]]]]]
+   (declarations title creator description)
    [:fo:page-sequence {:master-reference "main"
                        :language "de"}
     [:fo:flow {:flow-name "xsl-region-body"}
