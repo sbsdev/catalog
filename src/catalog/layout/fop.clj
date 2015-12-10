@@ -328,13 +328,15 @@
        [:xmp:CreatorTool "Apache FOP"]]]]])
 
 (defn document-sexp
-  [items {:keys [title creator description date]
+  [items {:keys [title creator description date font font-size]
     :or {title "Neu im Sortiment"
          creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-         description "Katalog der neu erschienenen Bücher"}}]
+         description "Katalog der neu erschienenen Bücher"
+         font "Verdana"
+         font-size "11pt"}}]
   [:fo:root {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-             :font-family "Verdana"
-             :font-size "11pt"
+             :font-family font
+             :font-size font-size
              :line-height "130%"
              :xml:lang "de"}
    [:fo:layout-master-set
@@ -361,9 +363,9 @@
      (toc items layout/formats)
      (mapcat #(format-sexp items %) layout/formats)]]])
 
-(defn document [items]
+(defn document [items & args]
   (-> items
-      (document-sexp {})
+      (document-sexp args)
       xml/sexp-as-element))
 
 (defn generate-document [items out]
