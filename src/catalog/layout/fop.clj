@@ -98,7 +98,8 @@
 
 (defn sub-toc [items fmt]
   [:fo:block
-   (keep #(sub-toc-entry items fmt %) (if (= fmt :braille) layout/braille-genres layout/genres))])
+   (keep #(sub-toc-entry items fmt %)
+         (if (= fmt :braille) layout/braille-genres layout/genres))])
 
 (def wrap (layout/wrapper ""))
 
@@ -160,11 +161,13 @@
 
 (defn- ausleihe-multi [signatures]
   (when signatures
-    (block {:keep-with-previous "always"} (bold "Ausleihe:") " " (layout/braille-signatures signatures))))
+    (block {:keep-with-previous "always"}
+           (bold "Ausleihe:") " " (layout/braille-signatures signatures))))
 
 (defn- verkauf [product-number price]
   (when product-number
-     (block {:keep-with-previous "always"} (bold "Verkauf:") " " price ", " (layout/braille-signatures product-number))))
+    (block {:keep-with-previous "always"}
+           (bold "Verkauf:") " " price ", " (layout/braille-signatures product-number))))
 
 (defmulti entry-sexp (fn [{fmt :format}] fmt))
 
@@ -202,7 +205,8 @@
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (when library-signature
-     (block {:keep-with-previous "always"} (bold "Ausleihe:") " " library-signature (wrap volumes ", " " Bd. " false)))
+     (block {:keep-with-previous "always"}
+            (bold "Ausleihe:") " " library-signature (wrap volumes ", " " Bd. " false)))
    (when product-number
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price))))
 
