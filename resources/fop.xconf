@@ -30,6 +30,15 @@
 	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/Verdana_Italic.ttf" embedding-mode="subset">
 	  <font-triplet name="Verdana" style="italic" weight="normal"/>
 	</font>
+	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont.ttf" embedding-mode="subset">
+	  <font-triplet name="Tiresias" style="normal" weight="normal"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_bold.ttf" embedding-mode="subset">
+	  <font-triplet name="Tiresias" style="normal" weight="bold"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf" embedding-mode="subset">
+	  <font-triplet name="Tiresias" style="italic" weight="normal"/>
+	</font>
       </fonts>
     </renderer>
 
