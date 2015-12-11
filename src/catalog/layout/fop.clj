@@ -80,34 +80,23 @@
       (set/subset? items (set layout/subgenres))
       (keep items layout/subgenres))))
 
-(defn- toc-entry [items path]
-  [:fo:block (if (<= (count path) 2)
-               {:text-align-last "justify"}
-               {:text-align-last "justify" :start-indent "1em"})
-   [:fo:basic-link {:internal-destination (hash path)}
-    (str (layout/translations (last path)) " ")
-    [:fo:leader {:leader-pattern "dots"}]
-    [:fo:page-number-citation {:ref-id (hash path)}]]])
+(defn- toc-entry [items path to-depth]
+  (let [depth (count path)]
+    [:fo:block (if (<= depth 2)
+                 {:text-align-last "justify"}
+                 {:text-align-last "justify" :start-indent "1em"})
+     [:fo:basic-link {:internal-destination (hash path)}
+      (str (layout/translations (last path)) " ")
+      [:fo:leader {:leader-pattern "dots"}]
+      [:fo:page-number-citation {:ref-id (hash path)}]]
+     (when (and (map? items) (< depth to-depth))
+       (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items))))]))
 
-(defn toc [items]
-  [:fo:block {:line-height "150%"}
-   (h1 :inhalt)
-   (keep #(toc-entry items [%]) (order (keys items)))])
-
-(defn- sub-toc-entry [items path]
-  [:fo:block
-   [:fo:block {:text-align-last "justify"}
-    [:fo:basic-link {:internal-destination (hash path)}
-     (str (layout/translations (last path)) " ")
-     [:fo:leader {:leader-pattern "dots"}]
-     [:fo:page-number-citation {:ref-id (hash path)}]]]
-   (when (map? items)
-     (keep #(toc-entry items (conj path %)) (order (keys items))))])
-
-(defn sub-toc [items path]
+(defn toc [items path to-depth & {:keys [heading?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"}
-     (keep #(sub-toc-entry (% items) (conj path %)) (order (keys items)))]))
+     (when heading? (h1 :inhalt))
+     (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items)))]))
 
 (def wrap (layout/wrapper ""))
 
@@ -301,7 +290,7 @@
 (defn format-sexp [items fmt]
   (when-let [items (fmt items)]
     [(h1 fmt)
-     (sub-toc items [fmt])
+     (toc items [fmt] 3)
      (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
