@@ -26,6 +26,9 @@
    (layout.fop/generate-pdf! out)))
 
 (defn neu-in-braille [in]
-  (spit (io/file "/tmp/catalog.xml")
-        (layout.dtbook/dtbook
-         (:braille (vubis/order-and-group (vubis/read-file in))))))
+  (->> in
+   vubis/read-file
+   vubis/order-and-group
+   :braille
+   layout.dtbook/dtbook
+   (spit (io/file "/tmp/catalog.xml"))))
