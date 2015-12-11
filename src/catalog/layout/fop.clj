@@ -35,23 +35,20 @@
                        ;; extent should be smaller than margin-top of region-body
                        :extent (to-mm (dec region-body-margin-top))}]])
 
-(defn heading [h hash opts]
+(def ^:private ^:dynamic *heading-attrs*
+  {:h1 {:break-before "odd-page" :font-size "26pt" :role "H1"}
+   :h2 {:font-size "17pt" :role "H2"}
+   :h3 {:font-size "15pt" :role "H3"}})
+
+(defn heading [level title path]
   [:fo:block
    (merge {:font-weight "bold"
            :keep-with-next "always"
-           :id hash
+           :id (hash path)
            :space-before "11pt"
-           :space-after "11pt"} opts)
-   (layout/translations h)])
-
-(defn h1 [fmt]
-  (heading fmt (hash [fmt]) {:break-before "odd-page" :font-size "21pt" :role "H1"}))
-
-(defn h2 [fmt genre]
-  (heading genre (hash [fmt genre]) {:font-size "17pt" :role "H2"}))
-
-(defn h3 [fmt genre subgenre]
-  (heading subgenre (hash [fmt genre subgenre]) {:font-size "15pt" :role "H3"}))
+           :space-after "11pt"}
+          (level *heading-attrs*))
+   (layout/translations title)])
 
 (def ^:private running-header-class-name "running-header")
 
@@ -95,7 +92,7 @@
 (defn toc [items path to-depth & {:keys [heading?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"}
-     (when heading? (h1 :inhalt))
+     (when heading? (heading :h1 :inhalt []))
      (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items)))]))
 
 (def wrap (layout/wrapper ""))
@@ -270,7 +267,7 @@
 
 (defn subgenre-sexp [items fmt genre subgenre]
   (when-let [items (subgenre items)]
-    [(h3 fmt genre subgenre)
+    [(heading :h3 subgenre [fmt genre subgenre])
      (when-not (#{:kinder-und-jugendbücher} genre)
        (set-marker (layout/translations subgenre)))
      (entries-sexp items)]))
@@ -280,7 +277,7 @@
 
 (defn genre-sexp [items fmt genre]
   (when-let [items (genre items)]
-    [(h2 fmt genre)
+    [(heading :h2 genre [fmt genre])
      (set-marker (layout/translations genre))
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre)
@@ -289,7 +286,7 @@
 
 (defn format-sexp [items fmt]
   (when-let [items (fmt items)]
-    [(h1 fmt)
+    [(heading :h1 fmt [fmt])
      (toc items [fmt] 3)
      (set-marker (layout/translations fmt))
      (case fmt
@@ -348,7 +345,7 @@
    [:fo:page-sequence {:master-reference "main"
                        :language "de"}
     [:fo:flow {:flow-name "xsl-region-body"}
-     [:fo:block {:font-size "26pt"} title]
+     [:fo:block {:font-size "26pt" :font-weight "bold"} title]
      [:fo:block {:space-before "20mm"} date]
      [:fo:block {:space-before "170mm"} creator]]]
    [:fo:page-sequence {:master-reference "main"
@@ -357,9 +354,20 @@
     (header :recto)
     (header :verso)
 
-    [:fo:flow {:flow-name "xsl-region-body"}
-     (toc items)
-     (mapcat #(format-sexp items %) (order (keys items)))]]])
+    (if (= (count items) 1)
+      ;; if we have only one format we assume a slightly different output is wanted
+      (binding [*heading-attrs* {:h1 {:break-before "odd-page" :font-size "26pt" :role "H1"}
+                                 :h2 {:break-before "odd-page" :font-size "26pt" :role "H1"}
+                                 :h3 {:font-size "21" :role "H2"}}]
+        (let [fmt (first (keys items))
+              subitems (fmt items)]
+          [:fo:flow {:flow-name "xsl-region-body"}
+           (toc subitems [fmt] 3 :heading? true)
+           (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))]))
+      ;; otherwise we use the default output that lists all formats
+      [:fo:flow {:flow-name "xsl-region-body"}
+       (toc items [] 1 :heading? true)
+       (mapcat #(format-sexp items %) (order (keys items)))])]])
 
 (defn document [items & args]
   (-> items
