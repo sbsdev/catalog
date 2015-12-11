@@ -1,8 +1,10 @@
 (ns catalog.layout.fop
   (:require [catalog.layout.common :as layout]
+            [clojure
+             [set :as set]
+             [string :as string]]
             [clojure.data.xml :as xml]
-            [clojure.java.io :as io]
-            [clojure.string :as string])
+            [clojure.java.io :as io])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -63,41 +65,49 @@
   [:fo:block {:keep-with-next "always"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
-(defn toc-entry [items fmt]
-  (when (fmt items)
-    [:fo:block {:text-align-last "justify"}
-     [:fo:basic-link {:internal-destination (hash [fmt])}
-      (str (layout/translations fmt) " ")
-      [:fo:leader {:leader-pattern "dots"}]
-      [:fo:page-number-citation {:ref-id (hash [fmt])}]]]))
+(defn- order
+  "Return `items` ordered. Checks first if `items` are either a subset
+  of `layout/formats`, `layout/braille-genres` or `layout/subgenres`
+  and consequently orders accordingly. Return nil if `items` are not a
+  subset of either."
+  [items]
+  (let [items (set (remove nil? items))]
+    (cond
+      (set/subset? items (set layout/formats))
+      (keep items layout/formats)
+      (set/subset? items (set layout/braille-genres))
+      (keep items layout/braille-genres)
+      (set/subset? items (set layout/subgenres))
+      (keep items layout/subgenres))))
 
-(defn toc [items formats]
+(defn- toc-entry [items path]
+  [:fo:block (if (<= (count path) 2)
+               {:text-align-last "justify"}
+               {:text-align-last "justify" :start-indent "1em"})
+   [:fo:basic-link {:internal-destination (hash path)}
+    (str (layout/translations (last path)) " ")
+    [:fo:leader {:leader-pattern "dots"}]
+    [:fo:page-number-citation {:ref-id (hash path)}]]])
+
+(defn toc [items]
   [:fo:block {:line-height "150%"}
    (h1 :inhalt)
-   (keep #(toc-entry items %) formats)])
+   (keep #(toc-entry items [%]) (order (keys items)))])
 
-(defn- sub-sub-toc-entry [items fmt genre subgenre]
-  (when-let [items (subgenre items)]
-    [:fo:block {:text-align-last "justify" :start-indent "1em"}
-     [:fo:basic-link {:internal-destination (hash [fmt genre subgenre])}
-      (str (layout/translations subgenre) " ")
-      [:fo:leader {:leader-pattern "dots"}]
-      [:fo:page-number-citation {:ref-id (hash [fmt genre subgenre])}]]]))
+(defn- sub-toc-entry [items path]
+  [:fo:block
+   [:fo:block {:text-align-last "justify"}
+    [:fo:basic-link {:internal-destination (hash path)}
+     (str (layout/translations (last path)) " ")
+     [:fo:leader {:leader-pattern "dots"}]
+     [:fo:page-number-citation {:ref-id (hash path)}]]]
+   (when (map? items)
+     (keep #(toc-entry items (conj path %)) (order (keys items))))])
 
-(defn- sub-toc-entry [items fmt genre]
-  (when-let [items (genre items)]
-    [:fo:block
-     [:fo:block {:text-align-last "justify"}
-      [:fo:basic-link {:internal-destination (hash [fmt genre])}
-       (str (layout/translations genre) " ")
-       [:fo:leader {:leader-pattern "dots"}]
-       [:fo:page-number-citation {:ref-id (hash [fmt genre])}]]]
-     (keep #(sub-sub-toc-entry items fmt genre %) layout/subgenres)]))
-
-(defn sub-toc [items fmt]
-  [:fo:block {:line-height "150%"}
-   (keep #(sub-toc-entry items fmt %)
-         (if (= fmt :braille) layout/braille-genres layout/genres))])
+(defn sub-toc [items path]
+  (when (map? items)
+    [:fo:block {:line-height "150%"}
+     (keep #(sub-toc-entry (% items) (conj path %)) (order (keys items)))]))
 
 (def wrap (layout/wrapper ""))
 
@@ -277,7 +287,7 @@
      (entries-sexp items)]))
 
 (defn subgenres-sexp [items fmt genre]
-  (mapcat #(subgenre-sexp items fmt genre %) layout/subgenres))
+  (mapcat #(subgenre-sexp items fmt genre %) (order (keys items))))
 
 (defn genre-sexp [items fmt genre]
   (when-let [items (genre items)]
@@ -291,12 +301,11 @@
 (defn format-sexp [items fmt]
   (when-let [items (fmt items)]
     [(h1 fmt)
-     (sub-toc items fmt)
+     (sub-toc items [fmt])
      (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
-       (mapcat #(genre-sexp items fmt %)
-               (if (= fmt :braille) layout/braille-genres layout/genres)))]))
+       (mapcat #(genre-sexp items fmt %) (order (keys items))))]))
 
 (defn- page-number []
   [:fo:inline
@@ -360,8 +369,8 @@
     (header :verso)
 
     [:fo:flow {:flow-name "xsl-region-body"}
-     (toc items layout/formats)
-     (mapcat #(format-sexp items %) layout/formats)]]])
+     (toc items)
+     (mapcat #(format-sexp items %) (order (keys items)))]]])
 
 (defn document [items & args]
   (-> items
