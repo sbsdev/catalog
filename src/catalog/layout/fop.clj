@@ -383,7 +383,7 @@
         document
         (xml/indent out))))
 
-(defn generate-pdf [document out]
+(defn generate-pdf! [document out]
   ;; generate PDF according to https://xmlgraphics.apache.org/fop/2.0/embedding.html#basics
   (with-open [out (io/output-stream out)]
     (let [;; Construct a FopFactory by specifying a reference to the configuration file
