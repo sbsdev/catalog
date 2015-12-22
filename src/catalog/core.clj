@@ -20,10 +20,10 @@
    (layout.fop/document :title "Neue Grossdruckbücher":font "Tiresias" :font-size "17pt")
    (layout.fop/generate-pdf! out)))
 
-(defn neu-in-braille [in]
+(defn neu-in-braille [in out]
   (->> in
    vubis/read-file
    vubis/order-and-group
    :braille
    layout.dtbook/dtbook
-   (spit (io/file "/tmp/catalog.xml"))))
+   (spit (io/file out))))
