@@ -1,8 +1,7 @@
 (ns catalog.core
   (:require [catalog.layout
              [dtbook :as layout.dtbook]
-             [fop :as layout.fop]
-             [latex :as layout.latex]]
+             [fop :as layout.fop]]
             [catalog.vubis :as vubis]
             [clojure.java.io :as io]))
 
@@ -12,10 +11,6 @@
    vubis/order-and-group
    layout.fop/document
    (layout.fop/generate-pdf! out)))
-
-(defn neu-im-sortiment-old [in]
-  (layout.latex/generate-latex (vubis/order-and-group (vubis/read-file in)))
-  (:err (layout.latex/generate-pdf)))
 
 (defn neu-in-grossdruck [in out]
   (-> in
