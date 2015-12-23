@@ -394,6 +394,7 @@
 
     [:fo:flow {:flow-name "xsl-region-body"}
      (toc items [] 1 :heading? true)
+     (block {:break-before "odd-page"}) ;; the very first format should start on recto
      (mapcat #(format-sexp items %) (order (keys items)))]]])
 
 (defn document [items & args]
