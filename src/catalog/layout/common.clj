@@ -125,4 +125,4 @@
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 
 (defn render-subtitles [subtitles]
-  (periodify (string/join ". " subtitles)))
+  (string/join " " (map periodify subtitles)))
