@@ -106,11 +106,12 @@
        (str prefix (if period? (periodify s) s) postfix))
      "")))
 
-(defn- braille-signature [[signature grade volumes double-spaced? :as item]]
+(defn- braille-signature [[signature grade volumes double-spaced? accompanying-material :as item]]
   (when item
     (->>
-     [(wrap (translations [grade double-spaced?]) "" "" false)
+     [(wrap (translations [grade (boolean double-spaced?)]) "" "" false)
       (wrap volumes "" " Bd." false)
+      (wrap accompanying-material "" "" false)
       signature]
      (remove string/blank?)
      (string/join ", "))))

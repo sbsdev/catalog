@@ -283,7 +283,7 @@
   the value of the first key is non-nil"
   [ks item]
   (when ((first ks) item)
-    (-> item (select-keys ks) vals)))
+    (reduce #(conj %1 (item %2)) [] ks)))
 
 (defn fourth [coll] (first (next (next (next coll)))))
 
@@ -298,13 +298,13 @@
    (assoc-some
     :product-number
     (->> items
-         (map #(select-vals [:product-number :braille-grade :volumes :double-spaced?] %))
+         (map #(select-vals [:product-number :braille-grade :volumes :double-spaced? :accompanying-material] %))
          (remove empty?)
          (group-by (juxt second #(boolean (fourth %)))) ; group by grade and line spacing
          not-empty) ; only pick entries that are non-empty
     :library-signature
     (->> items
-         (map #(select-vals [:library-signature :braille-grade :volumes :double-spaced?] %))
+         (map #(select-vals [:library-signature :braille-grade :volumes :double-spaced? :accompanying-material] %))
          (remove empty?)
          (group-by (juxt second #(boolean (fourth %)))) ; group by grade and line spacing
          not-empty)) ; only pick entries that are non-empty

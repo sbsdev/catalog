@@ -22,7 +22,8 @@
   [(s/one s/Str "signature")
    (s/optional BrailleGrade "grade")
    (s/optional s/Int "volumes")
-   (s/optional s/Bool "double-spaced?")])
+   (s/optional s/Bool "double-spaced?")
+   (s/optional s/Str "accompanying-material")])
 
 (def SignatureKey
   [(s/one (s/maybe (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade))) "grade")
