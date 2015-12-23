@@ -2,13 +2,12 @@
   "Render catalog items as [DTBook
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html) to be
   converted to Braille later in the tool chain"
-  (:require [catalog.layout.common :as layout]
+  (:require [catalog.layout.common :as layout :refer [wrap]]
             [clj-time.coerce :as time.coerce]
             [clj-time.core :as time.core]
             [clojure.data.xml :as xml]
             [clojure.string :as string]))
 
-(def wrap (layout/wrapper ""))
 (def translations (merge layout/translations
                          {[:kurzschrift false] "K"
                           [:vollschrift false] "V"

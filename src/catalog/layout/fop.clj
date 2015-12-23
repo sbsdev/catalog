@@ -1,5 +1,5 @@
 (ns catalog.layout.fop
-  (:require [catalog.layout.common :as layout]
+  (:require [catalog.layout.common :as layout :refer [wrap]]
             [clojure
              [set :as set]
              [string :as string]]
@@ -94,8 +94,6 @@
     [:fo:block {:line-height "150%"}
      (when heading? (heading :h1 :inhalt []))
      (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items)))]))
-
-(def wrap (layout/wrapper ""))
 
 (defn- to-url
   "Return an url given a `record-id`"

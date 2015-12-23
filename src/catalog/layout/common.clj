@@ -89,25 +89,21 @@
     (string/blank? s) s
     :else (str s ".")))
 
-(defn wrapper
-  "Return a function that adds a period to `s` and wrap it in `prefix`
-  and `postfix`. If `s` is a sequence the contained strings are joined
-  with \", \" as a separator"
-  [postfix]
-  (fn wrap
-    ([s]
-     (wrap s ""))
-    ([s prefix]
-     (wrap s prefix postfix))
-    ([s prefix postfix]
-     (wrap s prefix postfix true))
-    ([s prefix postfix period?]
-     (if s
-       (let [s (if (seq? s) (string/join ", " s) s)]
-         (str prefix (if period? (periodify s) s) postfix))
-       ""))))
-
-(def wrap (wrapper " \\\\ "))
+(defn wrap
+  "Adds a period to `s` and wrap it in `prefix` and `postfix`. If `s`
+  is a sequence the contained strings are joined with \", \" as a
+  separator"
+  ([s]
+   (wrap s ""))
+  ([s prefix]
+   (wrap s prefix ""))
+  ([s prefix postfix]
+   (wrap s prefix postfix true))
+  ([s prefix postfix period?]
+   (if s
+     (let [s (if (seq? s) (string/join ", " s) s)]
+       (str prefix (if period? (periodify s) s) postfix))
+     "")))
 
 (defn- braille-signature [[signature grade volumes double-spaced? :as item]]
   (when item
