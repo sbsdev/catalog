@@ -275,7 +275,7 @@
    (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
    (block (wrap description))
    (block (wrap producer-brief))
-   (block (bold "Ausleihe:") " " (layout/braille-signatures library-signature))
+   (ausleihe-multi library-signature)
    (verkauf product-number price)))
 
 (defn entries-sexp [items]

@@ -272,7 +272,8 @@
       :taktilesbuch (-> item
                         (assoc-some
                          :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
-                         :double-spaced? double-spaced?))
+                         :double-spaced? double-spaced?
+                         :accompanying-material accompanying-material))
       ; default case that shouldn't really happen. When the MARC21
       ; entry contains a faulty format then just return the item with
       ; the faulty format. The validation will filter the item out.
@@ -308,7 +309,7 @@
          (remove empty?)
          (group-by (juxt second #(boolean (fourth %)))) ; group by grade and line spacing
          not-empty)) ; only pick entries that are non-empty
-   (dissoc :volumes :braille-grade)))
+   (dissoc :volumes :braille-grade :double-spaced? :accompanying-material)))
 
 (defn collate-duplicate-items [items]
   (->> items

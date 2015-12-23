@@ -20,10 +20,10 @@
 
 (def SignatureTuple
   [(s/one s/Str "signature")
-   (s/optional BrailleGrade "grade")
-   (s/optional s/Int "volumes")
-   (s/optional s/Bool "double-spaced?")
-   (s/optional s/Str "accompanying-material")])
+   (s/one (s/maybe BrailleGrade) "grade")
+   (s/one (s/maybe s/Int) "volumes")
+   (s/one (s/maybe s/Bool) "double-spaced?")
+   (s/one (s/maybe s/Str) "accompanying-material")])
 
 (def SignatureKey
   [(s/one (s/maybe (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade))) "grade")
@@ -45,7 +45,6 @@
     :library-signature LibrarySignature
     (s/optional-key :product-number) LibrarySignature
     (s/optional-key :price) s/Str
-    (s/optional-key :accompanying-material) s/Str
     (s/optional-key :language) Language
     }))
 
@@ -70,7 +69,6 @@
   :genre-text s/Str
   :producer-brief ProducerBrief
   :rucksackbuch? s/Bool
-  :double-spaced? s/Bool
   (s/optional-key :rucksackbuch-number) s/Int})
 
 (abstract-map/extend-schema
@@ -123,6 +121,7 @@
   :source-date s/Inst
   :genre (s/eq :spiel)
   :genre-text s/Str
+  (s/optional-key :accompanying-material) s/Str
   :game-description s/Str})
 
 (defn distinct-titles? [items]
