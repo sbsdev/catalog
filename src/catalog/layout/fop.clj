@@ -16,6 +16,36 @@
 (defn- to-mm [n]
   (format "%smm" n))
 
+(def ^:private default-stylesheet
+  {:font {:font-family "Verdana" :font-size "11pt"}
+   :block {:text-align "start" :hyphenate "false"}
+   :h1 {:font-weight "bold" :keep-with-next "always" :space-before "11pt" :space-after "11pt"
+        :break-before "page" :font-size "26pt" :role "H1"}
+   :h2 {:font-weight "bold" :keep-with-next "always" :space-before "26pt" :space-after "11pt"
+        :font-size "17pt" :role "H2"}
+   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "17pt" :space-after "11pt"
+        :font-size "15pt" :role "H3"}
+   :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
+
+(def ^:private large-print-stylesheet
+  {:font {:font-family "Tiresias" :font-size "17pt"}
+   :block {:text-align "start" :hyphenate "false"}
+   :h1 {:font-weight "bold" :keep-with-next "always" :space-before "11pt" :space-after "11pt"
+        :break-before "page" :font-size "26pt" :role "H1"}
+   :h2 {:font-weight "bold" :keep-with-next "always" :space-before "26pt" :space-after "11pt"
+        :font-size "17pt" :role "H2"}
+   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "17pt" :space-after "11pt"
+        :font-size "15pt" :role "H3"}
+   :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
+
+(def ^:private ^:dynamic *stylesheet* default-stylesheet)
+
+(defn style
+  ([class]
+   (style class {}))
+  ([class attrs]
+   (merge (*stylesheet* class {}) attrs)))
+
 (defn simple-page-master
   [{:keys [master-name page-height page-width
            margin-bottom margin-top
@@ -35,19 +65,9 @@
                        ;; extent should be smaller than margin-top of region-body
                        :extent (to-mm (dec region-body-margin-top))}]])
 
-(def ^:private ^:dynamic *heading-attrs*
-  {:h1 {:break-before "odd-page" :font-size "26pt" :role "H1"}
-   :h2 {:font-size "17pt" :role "H2"}
-   :h3 {:font-size "15pt" :role "H3"}})
-
 (defn heading [level title path]
-  [:fo:block
-   (merge {:font-weight "bold"
-           :keep-with-next "always"
-           :id (hash path)
-           :space-before "11pt"
-           :space-after "11pt"}
-          (level *heading-attrs*))
+  [:fo:block (style level
+                    {:id (hash path)})
    (layout/translations title)])
 
 (def ^:private running-header-class-name "running-header")
@@ -109,10 +129,9 @@
    title])
 
 (defn- block [& args]
-  (let [default {:text-align "justify" :hyphenate "true"}]
-    (if (map? (first args))
-      [:fo:block (merge default (first args)) (rest args)]
-      [:fo:block default args])))
+  (if (map? (first args))
+    [:fo:block (style :block (first args)) (rest args)]
+    [:fo:block (style :block) args]))
 
 (defn- inline [& args]
   (let [default {}]
@@ -299,7 +318,7 @@
   (let [recto? (= side :recto)]
     [:fo:static-content {:flow-name (if recto? "xsl-region-before-recto" "xsl-region-before-verso")
                          :role "artifact"}
-     [:fo:block {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}
+     [:fo:block (style :header)
       (if recto? (retrieve-marker) (page-number))
       [:fo:leader]
       (if recto? (page-number) (retrieve-marker))]]))
@@ -320,18 +339,45 @@
        ;; XMP properties
        [:xmp:CreatorTool "Apache FOP"]]]]])
 
-(defn document-sexp
-  [items {:keys [title creator description date font font-size]
+(defmulti document-sexp (fn [items options] (if (= (count items) 1) :large-print :default)))
+
+(defmethod document-sexp :large-print
+  [items {:keys [title creator description date]
+          :or {title "Neu im Sortiment"
+               creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"}}]
+  (binding [*stylesheet* large-print-stylesheet]
+    [:fo:root (style :font
+                     {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+                      :line-height "130%"
+                      :xml:lang "de"})
+     [:fo:layout-master-set
+      (simple-page-master {:master-name "recto"})
+      (simple-page-master {:master-name "verso"})
+      [:fo:page-sequence-master {:master-name "main"}
+       [:fo:repeatable-page-master-alternatives
+        [:fo:conditional-page-master-reference {:master-reference "verso" :odd-or-even "even"}]
+        [:fo:conditional-page-master-reference {:master-reference "recto" :odd-or-even "odd"}]]]]
+     (declarations title creator description)
+     [:fo:page-sequence {:master-reference "main"
+                         :initial-page-number "1"
+                         :language "de"}
+      (header :recto)
+      (header :verso)
+
+      (let [fmt (first (keys items))
+            subitems (fmt items)]
+        [:fo:flow {:flow-name "xsl-region-body"}
+         (toc subitems [fmt] 3 :heading? true)
+         (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]]))
+
+(defmethod document-sexp :default
+  [items {:keys [title creator description date]
     :or {title "Neu im Sortiment"
-         creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-         description "Katalog der neu erschienenen Bücher"
-         font "Verdana"
-         font-size "11pt"}}]
-  [:fo:root {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-             :font-family font
-             :font-size font-size
-             :line-height "130%"
-             :xml:lang "de"}
+         creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"}}]
+  [:fo:root (style :font
+                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+                    :line-height "130%"
+                    :xml:lang "de"})
    [:fo:layout-master-set
     (simple-page-master {:master-name "recto"})
     (simple-page-master {:master-name "verso"})
@@ -341,31 +387,14 @@
       [:fo:conditional-page-master-reference {:master-reference "recto" :odd-or-even "odd"}]]]]
    (declarations title creator description)
    [:fo:page-sequence {:master-reference "main"
-                       :language "de"}
-    [:fo:flow {:flow-name "xsl-region-body"}
-     [:fo:block {:font-size "26pt" :font-weight "bold"} title]
-     [:fo:block {:space-before "20mm"} date]
-     [:fo:block {:space-before "170mm"} creator]]]
-   [:fo:page-sequence {:master-reference "main"
                        :initial-page-number "1"
                        :language "de"}
     (header :recto)
     (header :verso)
 
-    (if (= (count items) 1)
-      ;; if we have only one format we assume a slightly different output is wanted
-      (binding [*heading-attrs* {:h1 {:break-before "odd-page" :font-size "26pt" :role "H1"}
-                                 :h2 {:break-before "odd-page" :font-size "26pt" :role "H1"}
-                                 :h3 {:font-size "21" :role "H2"}}]
-        (let [fmt (first (keys items))
-              subitems (fmt items)]
-          [:fo:flow {:flow-name "xsl-region-body"}
-           (toc subitems [fmt] 3 :heading? true)
-           (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))]))
-      ;; otherwise we use the default output that lists all formats
-      [:fo:flow {:flow-name "xsl-region-body"}
-       (toc items [] 1 :heading? true)
-       (mapcat #(format-sexp items %) (order (keys items)))])]])
+    [:fo:flow {:flow-name "xsl-region-body"}
+     (toc items [] 1 :heading? true)
+     (mapcat #(format-sexp items %) (order (keys items)))]]])
 
 (defn document [items & args]
   (-> items

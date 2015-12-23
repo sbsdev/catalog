@@ -17,7 +17,7 @@
    vubis/read-file
    vubis/order-and-group
    (select-keys [:grossdruck])
-   (layout.fop/document :title "Neue Grossdruckbücher":font "Tiresias" :font-size "17pt")
+   (layout.fop/document :title "Neue Grossdruckbücher")
    (layout.fop/generate-pdf! out)))
 
 (defn neu-in-braille [in out]
