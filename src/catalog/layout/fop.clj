@@ -46,25 +46,6 @@
   ([class attrs]
    (merge (*stylesheet* class {}) attrs)))
 
-(defn simple-page-master
-  [{:keys [master-name page-height page-width
-           margin-bottom margin-top
-           margin-left margin-right]
-    :or {page-height "297mm" page-width "210mm"
-         margin-bottom "20mm" margin-top "20mm"
-         margin-left "25mm" margin-right "25mm"}}]
-  [:fo:simple-page-master {:master-name master-name
-                           :page-height page-height
-                           :page-width page-width
-                           :margin-bottom margin-bottom
-                           :margin-top margin-top
-                           :margin-left margin-left
-                           :margin-right margin-right}
-   [:fo:region-body {:margin-top (to-mm region-body-margin-top)}]
-   [:fo:region-before {:region-name (format "xsl-region-before-%s" master-name)
-                       ;; extent should be smaller than margin-top of region-body
-                       :extent (to-mm (dec region-body-margin-top))}]])
-
 (defn heading [level title path]
   [:fo:block (style level
                     {:id (hash path)})
@@ -323,6 +304,42 @@
       [:fo:leader]
       (if recto? (page-number) (retrieve-marker))]]))
 
+(defn- simple-page-master
+  [{:keys [master-name page-height page-width
+           margin-bottom margin-top
+           margin-left margin-right]
+    :or {page-height "297mm" page-width "210mm"
+         margin-bottom "20mm" margin-top "20mm"
+         margin-left "25mm" margin-right "25mm"}}]
+  [:fo:simple-page-master {:master-name master-name
+                           :page-height page-height
+                           :page-width page-width
+                           :margin-bottom margin-bottom
+                           :margin-top margin-top
+                           :margin-left margin-left
+                           :margin-right margin-right}
+   [:fo:region-body {:margin-top (to-mm region-body-margin-top)}]
+   [:fo:region-before {:region-name (format "xsl-region-before-%s" master-name)
+                       ;; extent should be smaller than margin-top of region-body
+                       :extent (to-mm (dec region-body-margin-top))}]])
+
+(defn- layout-master-set []
+  [:fo:layout-master-set
+   (simple-page-master {:master-name "recto"})
+   (simple-page-master {:master-name "verso"})
+   (simple-page-master {:master-name "blank"})
+   (simple-page-master {:master-name "first"})
+   [:fo:page-sequence-master {:master-name "main"}
+    [:fo:repeatable-page-master-alternatives
+     [:fo:conditional-page-master-reference
+      {:master-reference "first" :page-position "first"}]
+     [:fo:conditional-page-master-reference
+      {:master-reference "verso" :odd-or-even "even" :blank-or-not-blank "not-blank"}]
+     [:fo:conditional-page-master-reference
+      {:master-reference "recto" :odd-or-even "odd" :blank-or-not-blank "not-blank"}]
+     [:fo:conditional-page-master-reference
+      {:master-reference "blank" :blank-or-not-blank "blank"}]]]])
+
 (defn- declarations
   [title creator description]
   [:fo:declarations
@@ -350,13 +367,7 @@
                      {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                       :line-height "130%"
                       :xml:lang "de"})
-     [:fo:layout-master-set
-      (simple-page-master {:master-name "recto"})
-      (simple-page-master {:master-name "verso"})
-      [:fo:page-sequence-master {:master-name "main"}
-       [:fo:repeatable-page-master-alternatives
-        [:fo:conditional-page-master-reference {:master-reference "verso" :odd-or-even "even"}]
-        [:fo:conditional-page-master-reference {:master-reference "recto" :odd-or-even "odd"}]]]]
+     (layout-master-set)
      (declarations title creator description)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
@@ -378,13 +389,7 @@
                    {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                     :line-height "130%"
                     :xml:lang "de"})
-   [:fo:layout-master-set
-    (simple-page-master {:master-name "recto"})
-    (simple-page-master {:master-name "verso"})
-    [:fo:page-sequence-master {:master-name "main"}
-     [:fo:repeatable-page-master-alternatives
-      [:fo:conditional-page-master-reference {:master-reference "verso" :odd-or-even "even"}]
-      [:fo:conditional-page-master-reference {:master-reference "recto" :odd-or-even "odd"}]]]]
+   (layout-master-set)
    (declarations title creator description)
    [:fo:page-sequence {:master-reference "main"
                        :initial-page-number "1"
