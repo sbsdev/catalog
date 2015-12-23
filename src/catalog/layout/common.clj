@@ -12,9 +12,10 @@
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
 (def braille-genres (conj genres :musiknoten :taktilesbuch))
 (def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
-                :gesellschaftsromane :historische-romane :hörspiele :krimis
+                :gesellschaftsromane :glaube-und-philosophie
+                :historische-romane :hörspiele :krimis
                 :lebensgeschichten-und-schicksale :literarische-gattungen
-                :literatur-in-fremdsprachen :mundart-heimat-natur :glaube-und-philosophie
+                :literatur-in-fremdsprachen :mundart-heimat-natur
                 :biografien :freizeit-haus-garten :geschichte-und-gegenwart
                 :kunst-kultur-medien :lebensgestaltung-gesundheit-erziehung
                 :philosophie-religion-esoterik :reisen-natur-tiere :sprache
