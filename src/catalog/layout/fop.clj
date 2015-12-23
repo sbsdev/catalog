@@ -83,8 +83,8 @@
                  {:text-align-last "justify"}
                  {:text-align-last "justify" :start-indent "1em"})
      [:fo:basic-link {:internal-destination (hash path)}
-      (str (layout/translations (last path)) " ")
-      [:fo:leader {:leader-pattern "dots"}]
+      (layout/translations (last path))
+      " " [:fo:leader {:leader-pattern "dots"}] " "
       [:fo:page-number-citation {:ref-id (hash path)}]]
      (when (and (map? items) (< depth to-depth))
        (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items))))]))
