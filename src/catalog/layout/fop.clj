@@ -19,22 +19,22 @@
 (def ^:private default-stylesheet
   {:font {:font-family "Verdana" :font-size "11pt"}
    :block {:text-align "start" :hyphenate "false"}
-   :h1 {:font-weight "bold" :keep-with-next "always" :space-before "11pt" :space-after "11pt"
+   :h1 {:font-weight "bold" :keep-with-next "always" :space-after "25pt"
         :break-before "page" :font-size "25pt" :role "H1"}
-   :h2 {:font-weight "bold" :keep-with-next "always" :space-before "26pt" :space-after "11pt"
+   :h2 {:font-weight "bold" :keep-with-next "always" :space-before "25pt" :space-after "11pt"
         :font-size "17pt" :role "H2"}
-   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "17pt" :space-after "11pt"
+   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "11pt" :space-after "14pt"
         :font-size "14pt" :role "H3"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
 (def ^:private large-print-stylesheet
   {:font {:font-family "Tiresias" :font-size "17pt"}
    :block {:text-align "start" :hyphenate "false"}
-   :h1 {:font-weight "bold" :keep-with-next "always" :space-before "17pt" :space-after "17pt"
-        :break-before "page" :font-size "36pt" :role "H1" :line-height "110%"}
-   :h2 {:font-weight "bold" :keep-with-next "always" :space-before "36pt" :space-after "17pt"
-        :font-size "36pt" :role "H2" :line-height "110%"}
-   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "25pt" :space-after "17pt"
+   :h1 {:font-weight "bold" :keep-with-next "always" :space-after "25pt"
+        :break-before "odd-page" :font-size "36pt" :role "H1" :line-height "110%"}
+   :h2 {:font-weight "bold" :keep-with-next "always" :space-after "25pt"
+        :break-before "odd-page" :font-size "36pt" :role "H2" :line-height "110%"}
+   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "30pt" :space-after "25pt"
         :font-size "25pt" :role "H3"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
