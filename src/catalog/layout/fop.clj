@@ -23,7 +23,7 @@
         :break-before "page" :font-size "25pt" :role "H1"}
    :h2 {:font-weight "bold" :keep-with-next "always" :space-before "25pt" :space-after "11pt"
         :font-size "17pt" :role "H2"}
-   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "11pt" :space-after "14pt"
+   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "14pt" :space-after "14pt"
         :font-size "14pt" :role "H3"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
