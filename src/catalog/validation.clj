@@ -18,8 +18,10 @@
 (def BrailleGrade
   (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade)))
 
+(def SignatureRE #"(DS |GDB |BG |ED |PS|DY|GD)\d{4,6}")
+
 (def SignatureTuple
-  [(s/one s/Str "signature")
+  [(s/one SignatureRE "signature")
    (s/one (s/maybe BrailleGrade) "grade")
    (s/one (s/maybe s/Int) "volumes")
    (s/one (s/maybe s/Bool) "double-spaced?")
@@ -30,7 +32,7 @@
    (s/one s/Bool "double-spaced?")])
 
 (def LibrarySignature
-  (s/if map? {SignatureKey [SignatureTuple]} s/Str))
+  (s/if map? {SignatureKey [SignatureTuple]} SignatureRE))
 
 (s/defschema CatalogItem
   (abstract-map/abstract-map-schema
