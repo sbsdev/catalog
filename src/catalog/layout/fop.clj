@@ -241,11 +241,10 @@
 
 (defmethod entry-sexp :musiknoten
   [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-           description instrument producer-brief library-signature product-number price]}]
+           description producer-brief library-signature product-number price]}]
   (list-item
    (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
    (block (wrap description))
-   (block (wrap instrument))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
    (verkauf product-number price)))
