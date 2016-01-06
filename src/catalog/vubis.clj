@@ -46,7 +46,6 @@
    :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
    :game-description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
-   :instrument [:datafield (attr= :tag "099") :subfield (attr= :code "e")] ; Instrumentangaben in Musikdaten
    })
 
 (def iso-639-2-to-iso-639-1
@@ -204,7 +203,6 @@
            game-description double-spaced?
            braille-grade
            directed-by actors
-           instrument
            accompanying-material braille-music-grade] :as item
     :or {genre "x01" ; an invalid genre
          genre-code "x0"}}] ; an invalid genre-code
@@ -278,8 +276,7 @@
                       (assoc-some
                        :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade)
                        :volumes (parse-int volumes)
-                       :accompanying-material accompanying-material
-                       :instrument instrument))
+                       :accompanying-material accompanying-material))
       :taktilesbuch (-> item
                         (assoc-some
                          :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
