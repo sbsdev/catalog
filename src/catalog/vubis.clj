@@ -120,7 +120,8 @@
    25 "CAB, Landschlacht"
    40 "BIT, München"
    50 "BSVÖ, Wien"
-   103 "Paderborn"})
+   103 "Paderborn"
+   111 "RNIB, London"})
 
 (def genre-code-to-genre
   "Mapping between genre-code and genre. Used for movies"
