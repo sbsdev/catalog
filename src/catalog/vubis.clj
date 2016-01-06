@@ -218,7 +218,8 @@
                   :language (iso-639-2-to-iso-639-1 language)
                   :genre (or (genre-raw-to-genre (subs genre 0 1))
                              (genre-code-to-genre (subs genre-code 0 2)))
-                  :sub-genre (genre-raw-to-subgenre (subs genre 0 3))
+                  :sub-genre (and (>= (count genre) 3)
+                                  (genre-raw-to-subgenre (subs genre 0 3)))
                   :genre-text genre-text
                   :format fmt
                   :producer-brief (producer-raw-to-producer (parse-int producer))
