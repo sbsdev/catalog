@@ -172,6 +172,13 @@
       (string/replace #"[\p{Punct}]+$" "")
       (string/replace #"^[\p{Punct}]+" "")))
 
+(defn- trunc
+  "Get the first `n` chars of `s`. If `s` has fewer chars than `n`
+  then just return `s`."
+  ;; http://stackoverflow.com/questions/20747112/simple-way-to-truncate-a-string-in-clojure
+  [s n]
+  (subs s 0 (min (count s) n)))
+
 (defn get-personel [s]
   (-> s
       trim-punctuation
@@ -217,10 +224,9 @@
                   :source-publisher source-publisher
                   :source source
                   :language (iso-639-2-to-iso-639-1 language)
-                  :genre (or (genre-raw-to-genre (subs genre 0 1))
-                             (genre-code-to-genre (subs genre-code 0 2)))
-                  :sub-genre (and (>= (count genre) 3)
-                                  (genre-raw-to-subgenre (subs genre 0 3)))
+                  :genre (or (genre-raw-to-genre (trunc genre 1))
+                             (genre-code-to-genre (trunc genre-code 2)))
+                  :sub-genre (genre-raw-to-subgenre (trunc genre 3))
                   :genre-text genre-text
                   :format fmt
                   :producer-brief (producer-raw-to-producer (parse-int producer))
