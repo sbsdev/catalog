@@ -80,19 +80,19 @@
 
 (defn- toc-entry [items path to-depth]
   (let [depth (count path)]
-    [:fo:block (if (<= depth 2)
-                 {:text-align-last "justify"}
-                 {:text-align-last "justify" :start-indent "1em"})
+    [:fo:block (-> {:text-align-last "justify" :role "TOCI"}
+                   (cond-> (<= depth 2) (assoc :start-indent "1em")))
      [:fo:basic-link {:internal-destination (hash path)}
-      (layout/translations (last path))
-      " " [:fo:leader {:leader-pattern "dots"}] " "
-      [:fo:page-number-citation {:ref-id (hash path)}]]
+      (inline {:role "Reference"} (layout/translations (last path)))
+      " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
+      [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
      (when (and (map? items) (< depth to-depth))
        (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items))))]))
 
 (defn toc [items path to-depth & {:keys [heading?]}]
   (when (map? items)
-    [:fo:block {:line-height "150%"}
+    [:fo:block {:line-height "150%"
+                :role "TOC"}
      (when heading? (heading :h1 :inhalt []))
      (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items)))]))
 
