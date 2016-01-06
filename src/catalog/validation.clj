@@ -85,7 +85,8 @@
  {:source-publisher s/Str
   :source-date s/Inst
   :producer-brief ProducerBrief
-  :genre-text s/Str})
+  :genre-text s/Str
+  :instrument s/Str})
 
 (abstract-map/extend-schema
  Grossdruck CatalogItem [:grossdruck]
