@@ -194,7 +194,7 @@
   "Return a proper production based on a raw item, e.g.
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [record-id source description source-publisher
-           library-signature title subtitles creator
+           library-signature title subtitles name-of-part creator
            price product-number language format producer
            genre genre-code genre-text
            produced-commercially? source-date general-note
@@ -217,6 +217,7 @@
                   :record-id record-id
                   :title (remove-nonprintable-chars title)
                   :subtitles (seq (map remove-nonprintable-chars subtitles))
+                  :name-of-part name-of-part
                   :creator creator
                   :description description
                   :source-publisher source-publisher
