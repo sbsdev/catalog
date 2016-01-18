@@ -244,7 +244,7 @@
                                               (parse-int series-volume))
                      double-spaced? (boolean
                                       (and double-spaced?
-                                           (re-find #"^Weitzeiliger Druck" double-spaced?)))]
+                                           (re-find #"^Weitzeilig" double-spaced?)))]
                  (-> item
                      (assoc-some
                       :rucksackbuch-number rucksackbuch-number
