@@ -217,7 +217,7 @@
                   :record-id record-id
                   :title (remove-nonprintable-chars title)
                   :subtitles (seq (map remove-nonprintable-chars subtitles))
-                  :name-of-part name-of-part
+                  :name-of-part (remove-nonprintable-chars name-of-part)
                   :creator creator
                   :description description
                   :source-publisher source-publisher
