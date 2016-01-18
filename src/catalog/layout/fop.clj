@@ -140,9 +140,9 @@
   (block {:keep-with-next "always"}
      (bold (wrap creator "" ": " false)
            (external-link record-id (layout/periodify title)))
-     (when (or subtitles name-of-part) " ")
+     (when subtitles " ")
      (layout/render-subtitles subtitles)
-     (layout/periodify name-of-part)
+     (wrap name-of-part " ")
      (when (or source-publisher source-date) " - ")
      (wrap source-publisher "" (if source-date ", " "") false)
      (wrap (layout/year source-date))))
