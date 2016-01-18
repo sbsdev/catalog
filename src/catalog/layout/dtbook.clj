@@ -49,8 +49,8 @@
 
 (defn subgenre-entry [subgenre items]
   (when-let [items (subgenre items)]
-    [:level2
-     [:h2 (layout/translations subgenre "FIXME")]
+    [:level3
+     [:h3 (layout/translations subgenre "FIXME")]
      (catalog-entries items)]))
 
 (defn subgenre-entries [items]
@@ -58,8 +58,8 @@
 
 (defn genre-entries [genre items]
   (when-let [items (genre items)]
-    [:level1
-     [:h1 (layout/translations genre "FIXME")]
+    [:level2
+     [:h2 (layout/translations genre "FIXME")]
      (cond
        (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
        :else (catalog-entries items))]))
@@ -94,7 +94,9 @@
       [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
     [:bodymatter
      [:level1 [:h1 "Editorial"] [:p "..."]]
-     (for [genre layout/braille-genres] (genre-entries genre items))]]])
+     [:level1 [:h1 "Buchtipps"] [:p "..."]]
+     [:level1 [:h1 "Neue Braillebücher"]
+      (for [genre layout/braille-genres] (genre-entries genre items))]]]])
 
 (defn dtbook
   [items]
