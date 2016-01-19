@@ -95,8 +95,18 @@
     [:bodymatter
      [:level1 [:h1 "Editorial"] [:p "..."]]
      [:level1 [:h1 "Buchtipps"] [:p "..."]]
-     [:level1 [:h1 "Neue Braillebücher"]
-      (for [genre layout/braille-genres] (genre-entries genre items))]]]])
+     (when-let [items (not-empty
+                       (select-keys
+                        items
+                        [:belletristik :kinder-und-jugendbücher :sachbücher]))]
+       [:level1 [:h1 "Neue Braillebücher"]
+        (for [genre layout/braille-genres] (genre-entries genre items))])
+     (when-let [items (not-empty (:musiknoten items))]
+       [:level1 [:h1 "Neue Braille-Musiknoten"]
+        (catalog-entries items)])
+     (when-let [items (not-empty (:taktilesbuch items))]
+       [:level1 [:h1 "Neue Taktile Bücher"]
+        (catalog-entries items)])]]])
 
 (defn dtbook
   [items]
