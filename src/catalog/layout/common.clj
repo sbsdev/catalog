@@ -65,7 +65,10 @@
                              [:kurzschrift false] "Kurzschrift"
                              [:vollschrift false] "Vollschrift"
                              [:kurzschrift true] "Weitzeilige Kurzschrift"
-                             [:vollschrift true] "Weitzeilige Vollschrift"})
+                             [:vollschrift true] "Weitzeilige Vollschrift"
+                             :editorial "Editorial"
+                             :recommendation "Buchtipp"
+                             :recommendations "Buchtipps"})
 
 (defn volume-number [date]
   (let [month (.getMonthOfYear date)]

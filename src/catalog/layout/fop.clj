@@ -89,12 +89,17 @@
      (when (and (map? items) (< depth to-depth))
        (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items))))]))
 
-(defn toc [items path to-depth & {:keys [heading?]}]
+(defn toc [items path to-depth & {:keys [heading? editorial? recommendation-at-end?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
      (when heading? (heading :h1 :inhalt []))
-     (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items)))]))
+     (let [entries (order (keys items))
+           entries (cond
+                     recommendation-at-end? (concat [:editorial] entries [:recommendations])
+                     editorial? (concat [:editorial :recommendations] entries)
+                     :else entries)]
+       (keep #(toc-entry (get items %) (conj path %) to-depth) entries))]))
 
 (defn- to-url
   "Return an url given a `record-id`"
@@ -375,7 +380,9 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (toc subitems [fmt] 3 :heading? true)
+         (toc subitems [fmt] 3 :heading? true :editorial? true)
+         (heading :h1 :editorial [fmt :editorial])
+         (heading :h1 :recommendation [fmt :recommendations])
          (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
@@ -394,9 +401,12 @@
 
     (let [subitems (get items fmt)]
       [:fo:flow {:flow-name "xsl-region-body"}
-       (toc subitems [fmt] 3 :heading? true)
+       (toc subitems [fmt] 3 :heading? true :editorial? true :recommendation-at-end? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]])
+       (heading :h1 :editorial [fmt :editorial])
+       (heading :h1 :hörbuch [fmt :hörbuch])
+       (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))
+       (heading :h1 :recommendations [fmt :recommendations])])]])
 
 (defmethod document-sexp :all-formats
   [items _ {:keys [description date]}]
