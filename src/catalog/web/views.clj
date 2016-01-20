@@ -4,6 +4,7 @@
              [validation :as validation]
              [vubis :as vubis]]
             [catalog.layout
+             [common :refer [translations]]
              [dtbook :as layout.dtbook]
              [fop :as layout.fop]]
             [catalog.web.layout :as layout]
@@ -27,16 +28,18 @@
     (layout/common
      identity
      [:div.row
-      [:div.col-md-4
-       [:h2 "Neu im Sortiment"]
+      [:div.col-md-3
+       [:h2 (translations :all-formats)]
        (icon-button "/neu-im-sortiment.pdf" "download" "Download")]
-      [:div.col-md-4
-       [:h2 "Neu in Grossdruck"]
-       (icon-button "/editorial" "pencil" "Edit")
-       (icon-button "/neu-in-grossdruck.pdf" "download" "Download")]
-      [:div.col-md-4
-       [:h2 "Neu in Braille "]
-       (icon-button "/neu-in-braille.xml" "download" "Download")]]
+      [:div.col-md-3
+       [:h2 (translations :grossdruck)]
+       (icon-button "/neue-grossdruckbücher.pdf" "download" "Download")]
+      [:div.col-md-3
+       [:h2 (translations :braille)]
+       (icon-button "/neue-braillebücher.xml" "download" "Download")]
+      [:div.col-md-3
+       [:h2 (translations :hörbuch)]
+       (icon-button "/neue-hörbücher.xml" "download" "Download")]]
      )))
 
 (defn read-catalog [f]
