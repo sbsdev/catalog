@@ -2,9 +2,11 @@
   (:require [catalog.layout.common :as layout :refer [wrap]]
             [clojure
              [set :as set]
-             [string :as string]]
+             [string :as string]
+             [walk :as walk]]
             [clojure.data.xml :as xml]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [endophile.core :as endophile])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -363,6 +365,26 @@
                          :xmlns:xmp "http://ns.adobe.com/xap/1.0/"}
        ;; XMP properties
        [:xmp:CreatorTool "Apache FOP"]]]]])
+
+(defmulti to-fop (fn [{:keys [tag attrs content]}] tag))
+(defmethod to-fop :p [{content :content}] (block {:space-before "17pt"} content))
+(defmethod to-fop :a [{content :content {href :href} :attrs}] (apply #(external-link href %) content))
+;; map markdown headings to lower headings
+(defmethod to-fop :h1 [{content :content}] [:fo:block (style :h3) content])
+(defmethod to-fop :h2 [{content :content}] [:fo:block (style :h3) content])
+(defmethod to-fop :default [{content :content}] (apply block content)) ; just assume :p
+
+(defn- visitor [node]
+  (if (and (map? node) (:tag node))
+    (to-fop node)
+    node))
+
+(defn md-to-fop [markdown]
+  (->>
+   markdown
+   endophile/mp
+   endophile/to-clj
+   (walk/postwalk visitor)))
 
 (defmulti document-sexp (fn [items fmt options] fmt))
 

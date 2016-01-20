@@ -17,7 +17,8 @@
                  [ring/ring-core "1.4.0"]
                  [ring/ring-devel "1.4.0"]
                  [com.cemerick/friend "0.2.1"]
-                 [compojure "1.4.0"]]
+                 [compojure "1.4.0"]
+                 [endophile "0.1.2"]]
   :plugins [[cider/cider-nrepl "0.11.0-SNAPSHOT"]
             [refactor-nrepl "2.0.0-SNAPSHOT"]]
   :main ^:skip-aot catalog.core
