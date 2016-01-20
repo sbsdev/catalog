@@ -109,10 +109,13 @@
             api-key
             (string/replace record-id "/" "."))))
 
-(defn- external-link [record-id title]
-  [:fo:basic-link {:external-destination (to-url record-id)
-                   :indicate-destination true}
+(defn- external-link [url title]
+  [:fo:basic-link
+   {:external-destination url :indicate-destination true}
    title])
+
+(defn- link-to-online-catalog [record-id title]
+  (external-link (to-url record-id) title))
 
 (defn- block [& args]
   (if (map? (first args))
@@ -144,7 +147,7 @@
   [creator record-id title subtitles name-of-part source-publisher source-date]
   (block {:keep-with-next "always"}
      (bold (wrap creator "" ": " false)
-           (external-link record-id (layout/periodify title)))
+           (link-to-online-catalog record-id (layout/periodify title)))
      (when subtitles " ")
      (layout/render-subtitles subtitles)
      (wrap name-of-part " ")
@@ -221,7 +224,7 @@
            description producer library-signature]}]
   (list-item
    (block {:keep-with-next "always"}
-     (bold (external-link record-id (layout/periodify title)))
+     (bold (link-to-online-catalog record-id (layout/periodify title)))
      (layout/render-subtitles subtitles))
    (block (wrap directed-by "Regie: " "") (wrap actors " Schauspieler: " ""))
    (block (wrap movie_country))
@@ -235,7 +238,7 @@
            game-description accompanying-material library-signature]}]
   (list-item
    (block {:keep-with-next "always"}
-     (bold (external-link record-id (layout/periodify title)))
+     (bold (link-to-online-catalog record-id (layout/periodify title)))
      (layout/render-subtitles subtitles)
      (layout/wrap creator " "))
    (block (wrap source-publisher))
