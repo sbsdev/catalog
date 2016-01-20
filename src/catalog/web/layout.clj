@@ -77,7 +77,10 @@
      [:a.navbar-brand {:href "/"} "Catalog"]]
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
-     [:ul.nav.navbar-nav (dropdown-menu identity)]
+     [:ul.nav.navbar-nav
+      [:li.active [:a {:href "/"} "Download"]]
+      [:li [:a {:href "/editorial"} "Editorials"]]
+      [:li [:a {:href "/upload"} "Upload"]]]
      [:ul.nav.navbar-nav.navbar-right (loginbar identity)]]]])
 
 (defn common
