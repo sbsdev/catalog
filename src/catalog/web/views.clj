@@ -27,15 +27,6 @@
     (layout/common
      identity
      [:div.row
-      (form/form-to
-      {:enctype "multipart/form-data"
-       :class "form-inline"}
-      [:post "/upload-confirm"]
-      (anti-forgery-field)
-      (form/file-upload #_{:title "Browse..." } "file")
-      " "
-      (form/submit-button {:class "btn btn-default"} "Upload"))]
-     [:div.row
       [:div.col-md-4
        [:h2 "Neu im Sortiment"]
        (icon-button "/neu-im-sortiment.pdf" "download" "Download")]
