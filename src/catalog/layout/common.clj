@@ -23,6 +23,7 @@
                 :kinderbücher-ab-6 :kinderbücher-ab-10 :jugendbücher :kinder-und-jugendsachbücher])
 
 (def ^:dynamic translations {:inhalt "Inhaltsverzeichnis"
+                             :sbs "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                              :all-formats "Neu im Sortiment"
                              :hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"

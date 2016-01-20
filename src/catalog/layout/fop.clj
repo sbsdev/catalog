@@ -341,7 +341,7 @@
       {:master-reference "blank" :blank-or-not-blank "blank"}]]]])
 
 (defn- declarations
-  [title creator description]
+  [title description]
   [:fo:declarations
     [:x:xmpmeta {:xmlns:x "adobe:ns:meta/"}
      [:rdf:RDF {:xmlns:rdf"http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
@@ -349,7 +349,7 @@
                          :xmlns:dc "http://purl.org/dc/elements/1.1/"}
        ;; Dublin Core properties
        [:dc:title title]
-       [:dc:creator creator]
+       [:dc:creator (layout/translations :sbs)]
        [:dc:description description]]
       [:rdf:Description {:rdf:about ""
                          :xmlns:xmp "http://ns.adobe.com/xap/1.0/"}
@@ -359,16 +359,14 @@
 (defmulti document-sexp (fn [items options] (if (= (count items) 1) :large-print :default)))
 
 (defmethod document-sexp :large-print
-  [items {:keys [title creator description date]
-          :or {title "Neu im Sortiment"
-               creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"}}]
+  [items {:keys [description date]}]
   (binding [*stylesheet* large-print-stylesheet]
     [:fo:root (style :font
                      {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                       :line-height "130%"
                       :xml:lang "de"})
      (layout-master-set)
-     (declarations title creator description)
+     (declarations (layout/translations :grossdruck) description)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :language "de"}
@@ -382,15 +380,13 @@
          (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :default
-  [items {:keys [title creator description date]
-    :or {title "Neu im Sortiment"
-         creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"}}]
+  [items {:keys [description date]}]
   [:fo:root (style :font
                    {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                     :line-height "130%"
                     :xml:lang "de"})
    (layout-master-set)
-   (declarations title creator description)
+   (declarations (layout/translations :all-formats) description)
    [:fo:page-sequence {:master-reference "main"
                        :initial-page-number "1"
                        :language "de"}
