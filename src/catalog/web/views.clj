@@ -136,10 +136,10 @@
       (anti-forgery-field)
       [:div.form-group
        (form/label "editorial" "Editorial:")
-       (form/text-area {:class "form-control"} "editorial")]
+       (form/text-area {:class "form-control" :data-provide "markdown" :data-hidden-buttons "cmdImage cmdCode" :data-resize "vertical" :rows 20} "editorial")]
       [:div.form-group
        (form/label "recommended" "Buchtipps:")
-       (form/text-area {:class "form-control"} "recommended")]
+       (form/text-area {:class "form-control" :data-provide "markdown" :data-hidden-buttons "cmdImage cmdCode" :data-resize "vertical" :rows 20} "recommended")]
       (form/submit-button {:class "btn btn-default"} "Submit")))))
 
 (defn editorial [request editorial recommended]
