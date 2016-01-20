@@ -39,7 +39,7 @@
        (icon-button "/neue-braillebücher.xml" "download" "Download")]
       [:div.col-md-3
        [:h2 (translations :hörbuch)]
-       (icon-button "/neue-hörbücher.xml" "download" "Download")]]
+       (icon-button "/neue-hörbücher.pdf" "download" "Download")]]
      )))
 
 (defn read-catalog [f]
@@ -49,30 +49,39 @@
   (let [temp-file (java.io.File/createTempFile "neu-im-sortiment" ".pdf")]
     (-> "catalog.edn"
         read-catalog
-        layout.fop/document
+        (layout.fop/document :all-formats)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
         (response/content-type "application/pdf"))))
 
-(defn neu-in-grossdruck []
-  (let [temp-file (java.io.File/createTempFile "neu-im-grossdruck" ".pdf")]
+(defn neue-grossdruckbücher []
+  (let [temp-file (java.io.File/createTempFile "neue-grossdruckbücher" ".pdf")]
     (-> "catalog.edn"
         read-catalog
-        (select-keys [:grossdruck])
-        (layout.fop/document :title "Neue Grossdruckbücher")
+        (layout.fop/document :grossdruck)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
         (response/content-type "application/pdf"))))
 
-(defn neu-in-braille []
+(defn neue-braillebücher []
   (-> "catalog.edn"
       read-catalog
       :braille
       layout.dtbook/dtbook
       response/response
       (response/content-type "application/xml")))
+
+(defn neue-hörbücher []
+  (let [temp-file (java.io.File/createTempFile "neue-hörbücher" ".pdf")]
+    (-> "catalog.edn"
+        read-catalog
+        (layout.fop/document :hörbuch)
+        (layout.fop/generate-pdf! temp-file))
+    (-> temp-file
+        response/response
+        (response/content-type "application/pdf"))))
 
 (defn upload-form [request & [errors]]
   (let [identity (friend/identity request)]

@@ -9,21 +9,28 @@
   (-> in
    vubis/read-file
    vubis/order-and-group
-   layout.fop/document
+   (layout.fop/document :all-formats)
    (layout.fop/generate-pdf! out)))
 
-(defn neu-in-grossdruck [in out]
+(defn neue-grossdruckbücher [in out]
   (-> in
    vubis/read-file
    vubis/order-and-group
-   (select-keys [:grossdruck])
-   (layout.fop/document :title "Neue Grossdruckbücher")
+   (layout.fop/document :grossdruck)
    (layout.fop/generate-pdf! out)))
 
-(defn neu-in-braille [in out]
+(defn neue-hörbücher [in out]
+  (-> in
+   vubis/read-file
+   vubis/order-and-group
+   (layout.fop/document :hörbuch)
+   (layout.fop/generate-pdf! out)))
+
+(defn neue-braillebücher [in out]
   (->> in
    vubis/read-file
    vubis/order-and-group
    :braille
    layout.dtbook/dtbook
    (spit (io/file out))))
+

@@ -356,10 +356,10 @@
        ;; XMP properties
        [:xmp:CreatorTool "Apache FOP"]]]]])
 
-(defmulti document-sexp (fn [items options] (if (= (count items) 1) :large-print :default)))
+(defmulti document-sexp (fn [items fmt options] fmt))
 
-(defmethod document-sexp :large-print
-  [items {:keys [description date]}]
+(defmethod document-sexp :grossdruck
+  [items fmt {:keys [description date]}]
   (binding [*stylesheet* large-print-stylesheet]
     [:fo:root (style :font
                      {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
@@ -373,14 +373,33 @@
       (header :recto)
       (header :verso)
 
-      (let [fmt (first (keys items))
-            subitems (fmt items)]
+      (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
          (toc subitems [fmt] 3 :heading? true)
          (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]]))
 
-(defmethod document-sexp :default
-  [items {:keys [description date]}]
+(defmethod document-sexp :hörbuch
+  [items fmt {:keys [description date]}]
+  [:fo:root (style :font
+                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+                    :line-height "130%"
+                    :xml:lang "de"})
+   (layout-master-set)
+   (declarations (layout/translations :hörbuch) description)
+   [:fo:page-sequence {:master-reference "main"
+                       :initial-page-number "1"
+                       :language "de"}
+    (header :recto)
+    (header :verso)
+
+    (let [subitems (get items fmt)]
+      [:fo:flow {:flow-name "xsl-region-body"}
+       (toc subitems [fmt] 3 :heading? true)
+       (block {:break-before "odd-page"}) ;; the very first format should start on recto
+       (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]])
+
+(defmethod document-sexp :all-formats
+  [items _ {:keys [description date]}]
   [:fo:root (style :font
                    {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                     :line-height "130%"
@@ -398,15 +417,15 @@
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
      (mapcat #(format-sexp items %) (order (keys items)))]]])
 
-(defn document [items & args]
+(defn document [items fmt & args]
   (-> items
-      (document-sexp args)
+      (document-sexp fmt args)
       xml/sexp-as-element))
 
-(defn generate-document [items out]
+(defn generate-document [items fmt out]
   (with-open [out (io/writer out)]
     (-> items
-        document
+        (document fmt)
         (xml/indent out))))
 
 (defn generate-pdf! [document out]
