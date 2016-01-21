@@ -269,33 +269,36 @@
   [:fo:list-block
    (for [item items] (entry-sexp item))])
 
-(defn subgenre-sexp [items fmt genre subgenre]
+(defn- level-to-h [level]
+  (keyword (str "h" level)))
+
+(defn subgenre-sexp [items fmt genre subgenre level]
   (when-let [items (subgenre items)]
-    [(heading :h3 subgenre [fmt genre subgenre])
+    [(heading (level-to-h level) subgenre [fmt genre subgenre])
      (when-not (#{:kinder-und-jugendbücher} genre)
        (set-marker (layout/translations subgenre)))
      (entries-sexp items)]))
 
-(defn subgenres-sexp [items fmt genre]
-  (mapcat #(subgenre-sexp items fmt genre %) (order (keys items))))
+(defn subgenres-sexp [items fmt genre level]
+  (mapcat #(subgenre-sexp items fmt genre % level) (order (keys items))))
 
-(defn genre-sexp [items fmt genre]
+(defn genre-sexp [items fmt genre level]
   (when-let [items (genre items)]
-    [(heading :h2 genre [fmt genre])
+    [(heading (level-to-h level) genre [fmt genre])
      (set-marker (layout/translations genre))
      (cond
-       (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre)
-       (#{:hörbuch} fmt) (subgenres-sexp items fmt genre)
+       (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level))
+       (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level))
        :else (entries-sexp items))]))
 
-(defn format-sexp [items fmt]
+(defn format-sexp [items fmt level]
   (when-let [items (fmt items)]
-    [(heading :h1 fmt [fmt])
+    [(heading (level-to-h level) fmt [fmt])
      (toc items [fmt] 3)
      (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
-       (mapcat #(genre-sexp items fmt %) (order (keys items))))]))
+       (mapcat #(genre-sexp items fmt % (inc level)) (order (keys items))))]))
 
 (defn- page-number []
   [:fo:inline
@@ -404,7 +407,7 @@
          (toc subitems [fmt] 3 :heading? true :editorial? true)
          (heading :h1 :editorial [fmt :editorial])
          (heading :h1 :recommendation [fmt :recommendations])
-         (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))])]]))
+         (mapcat #(genre-sexp subitems fmt % 1) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
   [items fmt {:keys [description date]}]
@@ -426,7 +429,7 @@
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (heading :h1 :editorial [fmt :editorial])
        (heading :h1 :hörbuch [fmt :hörbuch])
-       (mapcat #(genre-sexp subitems fmt %) (order (keys subitems)))
+       (mapcat #(genre-sexp subitems fmt % 1) (order (keys subitems)))
        (heading :h1 :recommendations [fmt :recommendations])])]])
 
 (defmethod document-sexp :all-formats
@@ -446,7 +449,7 @@
     [:fo:flow {:flow-name "xsl-region-body"}
      (toc items [] 1 :heading? true)
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
-     (mapcat #(format-sexp items %) (order (keys items)))]]])
+     (mapcat #(format-sexp items % 1) (order (keys items)))]]])
 
 (defn document [items fmt & args]
   (-> items
