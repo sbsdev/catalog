@@ -18,26 +18,22 @@
 (defn- to-mm [n]
   (format "%smm" n))
 
+;; 3:4 perfect fourth scale (http://www.modularscale.com/?11&pt&1.333&web&table)
 (def ^:private default-stylesheet
   {:font {:font-family "Verdana" :font-size "11pt"}
    :block {:text-align "start" :hyphenate "false"}
-   :h1 {:font-weight "bold" :keep-with-next "always" :space-after "25pt"
-        :break-before "page" :font-size "25pt" :role "H1"}
-   :h2 {:font-weight "bold" :keep-with-next "always" :space-before "25pt" :space-after "11pt"
-        :font-size "17pt" :role "H2"}
-   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "14pt" :space-after "14pt"
-        :font-size "14pt" :role "H3"}
+   :h1 {:font-size "26.05pt" :font-weight "bold" :space-after "26pt" :keep-with-next "always" :break-before "page" :role "H1"}
+   :h2 {:font-size "19.55pt" :font-weight "bold" :space-after "11pt" :space-before "25pt" :keep-with-next "always" :role "H2"}
+   :h3 {:font-size "14.66pt" :font-weight "bold" :space-after "14pt" :space-before "14pt" :keep-with-next "always" :role "H3"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
+;; 3:4 perfect fourth scale (http://www.modularscale.com/?17&pt&1.333&web&table)
 (def ^:private large-print-stylesheet
   {:font {:font-family "Tiresias" :font-size "17pt"}
    :block {:text-align "start" :hyphenate "false"}
-   :h1 {:font-weight "bold" :keep-with-next "always" :space-after "25pt"
-        :break-before "odd-page" :font-size "36pt" :role "H1" :line-height "110%"}
-   :h2 {:font-weight "bold" :keep-with-next "always" :space-after "25pt"
-        :break-before "odd-page" :font-size "36pt" :role "H2" :line-height "110%"}
-   :h3 {:font-weight "bold" :keep-with-next "always" :space-before "30pt" :space-after "25pt"
-        :font-size "25pt" :role "H3"}
+   :h1 {:font-size "40.3pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H1" :line-height "110%" :break-before "odd-page" }
+   :h2 {:font-size "30.2pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H2" :line-height "110%"}
+   :h3 {:font-size "22.6pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H3" :line-height "110%"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
 (def ^:private ^:dynamic *stylesheet* default-stylesheet)
