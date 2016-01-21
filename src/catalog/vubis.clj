@@ -3,13 +3,17 @@
   (:require [clj-time
              [coerce :as time.coerce]
              [format :as time.format]]
+            [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
+            [clojure.java.io :as io]
             [clojure
              [string :as string]
              [xml :as xml]
              [zip :as zip]]
-            [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
-            [clojure.java.io :as io]
-            [medley.core :refer [assoc-some]]))
+            [medley.core :refer [assoc-some]])
+  (:import java.text.Collator
+           java.util.Locale))
+
+(def ^:private collator (Collator/getInstance (Locale. "de_CH")))
 
 (def ^:private param-mapping
   "Mapping from Marc21 XML to parameters. See [MARC 21 Format for Bibliographic Data](http://www.loc.gov/marc/bibliographic/)"
@@ -339,12 +343,38 @@
      (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items])
      others)))
 
+(defn locale-compare [x y]
+  (cond
+    (and (nil? x) (nil? y)) 0
+    (nil? x) -1
+    (nil? y) 1
+    :else (. collator compare x y)))
+
+(defn- by-vector [v1 v2]
+  (let [c1 (count v1)
+        c2 (count v2)]
+    (cond
+      (< c1 c2) -1
+      (> c1 c2) 1
+      :else (reduce
+             (fn [_ [s1 s2]]
+               (let [comparison (locale-compare s1 s2)]
+                 (if (not= 0 comparison)
+                   (reduced comparison)
+                   comparison)))
+             nil (partition 2 (interleave v1 v2))))))
+
 (defn order-and-group [items]
   (->>
    items
    collate-all-duplicate-items
-   ;; sort by creator, title. If there is no creator then sort just by title
-   (sort-by (juxt #(or (:creator %) (:title %)) :title))
+   ;; sort by creator, title, subtitles and name-of-part. If there is
+   ;; no creator then sort just by title. Likewise if there are no
+   ;; subtitles then sort by name-of-part.
+   (sort-by (juxt #(or (:creator %) (:title %))
+                  :title
+                  #(or (and (:subtitles %) (string/join (:subtitles %))) (:name-of-part %))
+                  :name-of-part) by-vector)
    (reduce
     (fn [m {:keys [format genre sub-genre] :as item}]
       (let [update-keys
