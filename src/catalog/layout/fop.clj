@@ -87,15 +87,15 @@
      (when (and (map? items) (< depth to-depth))
        (keep #(toc-entry (% items) (conj path %) to-depth) (order (keys items))))]))
 
-(defn toc [items path to-depth & {:keys [heading? editorial? recommendation-at-end?]}]
+(defn toc [items path to-depth & {:keys [heading? editorial? recommendation-at-end? single-recommendation?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
      (when heading? (heading :h1 :inhalt []))
      (let [entries (order (keys items))
            entries (cond
-                     recommendation-at-end? (concat [:editorial] entries [:recommendations])
-                     editorial? (concat [:editorial :recommendations] entries)
+                     recommendation-at-end? (concat [:editorial] entries [(if single-recommendation? :recommendation :recommendations)])
+                     editorial? (concat [:editorial (if single-recommendation? :recommendation :recommendations)] entries)
                      :else entries)]
        (keep #(toc-entry (get items %) (conj path %) to-depth) entries))]))
 
@@ -421,9 +421,11 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (toc subitems [fmt] 3 :heading? true :editorial? true)
+         (toc subitems [fmt] 3 :heading? true :editorial? true :single-recommendation? true)
          (heading :h1 :editorial [fmt :editorial])
-         (heading :h1 :recommendation [fmt :recommendations])
+         (md-to-fop (slurp "/home/eglic/src/catalog/samples/editorial.md"))
+         (heading :h1 :recommendation [fmt :recommendation])
+         (md-to-fop (slurp "/home/eglic/src/catalog/samples/recommendations.md"))
          (mapcat #(genre-sexp subitems fmt % 1) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
