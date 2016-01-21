@@ -298,7 +298,7 @@
 (defn format-sexp [items fmt level]
   (when-let [items (fmt items)]
     [(heading (level-to-h level) fmt [fmt])
-     (toc items [fmt] 3 4)
+     (toc items [fmt] 3 3)
      (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
