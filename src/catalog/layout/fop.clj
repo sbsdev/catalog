@@ -94,8 +94,12 @@
      (when heading? (heading :h1 :inhalt []))
      (let [entries (order (keys items))
            entries (cond
-                     recommendation-at-end? (concat [:editorial] entries [(if single-recommendation? :recommendation :recommendations)])
-                     editorial? (concat [:editorial (if single-recommendation? :recommendation :recommendations)] entries)
+                     recommendation-at-end? (concat [:editorial] entries [(if single-recommendation?
+                                                                            :recommendation
+                                                                            :recommendations)])
+                     editorial? (concat [:editorial (if single-recommendation?
+                                                      :recommendation
+                                                      :recommendations)] entries)
                      :else entries)]
        (keep #(toc-entry (get items %) (conj path %) to-depth) entries))]))
 
