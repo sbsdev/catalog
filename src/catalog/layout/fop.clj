@@ -365,16 +365,33 @@
        ;; XMP properties
        [:xmp:CreatorTool "Apache FOP"]]]]])
 
+(defn- bullet-list [& body]
+  [:fo:list-item
+   [:fo:list-item-label
+    {:end-indent "label-end()"}
+    [:fo:block (inline {:font-family "Symbol"} "•")]]
+   [:fo:list-item-body
+    {:start-indent "body-start()"}
+    (block body)]])
+
 (defmulti to-fop (fn [{:keys [tag attrs content]}] tag))
 (defmethod to-fop :p [{content :content}] (block {:space-before "17pt"} content))
 (defmethod to-fop :a [{content :content {href :href} :attrs}] (apply #(external-link href %) content))
-;; map markdown headings to lower headings
-(defmethod to-fop :h1 [{content :content}] [:fo:block (style :h3) content])
-(defmethod to-fop :h2 [{content :content}] [:fo:block (style :h3) content])
+(defmethod to-fop :h1 [{content :content}] [:fo:block (style :h1) content])
+(defmethod to-fop :h2 [{content :content}] [:fo:block (style :h2) content])
+(defmethod to-fop :h3 [{content :content}] [:fo:block (style :h3) content])
+(defmethod to-fop :ul [{content :content}] [:fo:list-block content])
+(defmethod to-fop :li [{content :content}] (bullet-list content))
+(defmethod to-fop :em [{content :content}] (inline {:font-style "italic"} content))
+(defmethod to-fop :strong [{content :content}] (inline {:font-weight "bold"} content))
+(defmethod to-fop :br [_] [:fo:block ])
 (defmethod to-fop :default [{content :content}] (apply block content)) ; just assume :p
 
+(defn- node? [node]
+  (and (map? node) (or (set/subset? #{:tag :content} (set (keys node))) (= (:tag node) :br))))
+
 (defn- visitor [node]
-  (if (and (map? node) (:tag node))
+  (if (node? node)
     (to-fop node)
     node))
 
