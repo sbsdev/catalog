@@ -76,32 +76,34 @@
       (set/subset? items (set layout/subgenres))
       (keep items layout/subgenres))))
 
-(defn- toc-entry [items path to-depth indent-depth]
-  (let [depth (count path)]
-    [:fo:block (-> {:text-align-last "justify" :role "TOCI"}
-                   (cond-> (>= depth indent-depth) (assoc :start-indent "1em")))
-     [:fo:basic-link {:internal-destination (hash path)}
-      (inline {:role "Reference"} (layout/translations (last path)))
-      " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
-      [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
-     (when (and (map? items) (< depth to-depth))
-       (keep #(toc-entry (% items) (conj path %) to-depth indent-depth) (order (keys items))))]))
+(defn- toc-entry
+  ([items path depth]
+   (toc-entry items path depth 1))
+  ([items path depth current-depth]
+   [:fo:block (-> {:text-align-last "justify" :role "TOCI"}
+                  (cond-> (> current-depth 1) (assoc :start-indent "1em")))
+    [:fo:basic-link {:internal-destination (hash path)}
+     (inline {:role "Reference"} (layout/translations (last path)))
+     " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
+     [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
+    (when (and (map? items) (< current-depth depth))
+      (keep #(toc-entry (% items) (conj path %) depth (inc current-depth)) (order (keys items))))]))
 
-(defn toc [items path to-depth indent-depth & {:keys [heading? editorial? recommendation-at-end? single-recommendation?]}]
+(defn- add-extra-headings [entries editorial? recommendation-at-end? single-recommendation?]
+  (let [recommendation (if single-recommendation? :recommendation :recommendations)]
+    (cond
+      recommendation-at-end? (concat [:editorial] entries [recommendation])
+      editorial? (concat [:editorial recommendation] entries)
+      :else entries)))
+
+(defn toc [items path depth & {:keys [heading? editorial? recommendation-at-end? single-recommendation?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
      (when heading? (heading :h1 :inhalt []))
-     (let [entries (order (keys items))
-           entries (cond
-                     recommendation-at-end? (concat [:editorial] entries [(if single-recommendation?
-                                                                            :recommendation
-                                                                            :recommendations)])
-                     editorial? (concat [:editorial (if single-recommendation?
-                                                      :recommendation
-                                                      :recommendations)] entries)
-                     :else entries)]
-       (keep #(toc-entry (get items %) (conj path %) to-depth indent-depth) entries))]))
+     (let [entries (-> items keys order
+                    (add-extra-headings editorial? recommendation-at-end? single-recommendation?))]
+       (keep #(toc-entry (get items %) (conj path %) depth) entries))]))
 
 (defn- to-url
   "Return an url given a `record-id`"
@@ -298,7 +300,7 @@
 (defn format-sexp [items fmt level]
   (when-let [items (fmt items)]
     [(heading (level-to-h level) fmt [fmt])
-     (toc items [fmt] 3 3)
+     (toc items [fmt] 2)
      (set-marker (layout/translations fmt))
      (case fmt
        (:hörfilm :ludo) (entries-sexp items)
@@ -425,7 +427,7 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (toc subitems [fmt] 3 3 :heading? true :editorial? true :single-recommendation? true)
+         (toc subitems [fmt] 2 :heading? true :editorial? true :single-recommendation? true)
          (heading :h1 :editorial [fmt :editorial])
          (md-to-fop (slurp "/home/eglic/src/catalog/samples/editorial.md"))
          (heading :h1 :recommendation [fmt :recommendation])
@@ -448,11 +450,11 @@
 
     (let [subitems (get items fmt)]
       [:fo:flow {:flow-name "xsl-region-body"}
-       (toc subitems [fmt] 3 3 :heading? true :editorial? true :recommendation-at-end? true)
+       (toc subitems [fmt] 2 :heading? true :editorial? true :recommendation-at-end? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (heading :h1 :editorial [fmt :editorial])
        (heading :h1 :hörbuch [fmt :hörbuch])
-       (mapcat #(genre-sexp subitems fmt % 1) (order (keys subitems)))
+       (mapcat #(genre-sexp subitems fmt % 2) (order (keys subitems)))
        (heading :h1 :recommendations [fmt :recommendations])])]])
 
 (defmethod document-sexp :all-formats
@@ -470,7 +472,7 @@
     (header :verso)
 
     [:fo:flow {:flow-name "xsl-region-body"}
-     (toc items [] 1 2 :heading? true)
+     (toc items [] 1 :heading? true)
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
      (mapcat #(format-sexp items % 1) (order (keys items)))]]])
 
