@@ -12,21 +12,21 @@
    (layout.fop/document :all-formats)
    (layout.fop/generate-pdf! out)))
 
-(defn neue-grossdruckbücher [in out]
+(defn neu-in-grossdruck [in out]
   (-> in
    vubis/read-file
    vubis/order-and-group
    (layout.fop/document :grossdruck)
    (layout.fop/generate-pdf! out)))
 
-(defn neue-hörbücher [in out]
+(defn neu-als-hörbuch [in out]
   (-> in
    vubis/read-file
    vubis/order-and-group
    (layout.fop/document :hörbuch)
    (layout.fop/generate-pdf! out)))
 
-(defn neue-braillebücher [in out]
+(defn neu-in-braille [in out]
   (->> in
    vubis/read-file
    vubis/order-and-group
