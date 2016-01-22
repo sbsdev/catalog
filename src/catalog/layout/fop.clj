@@ -421,6 +421,7 @@
      (declarations (layout/translations :grossdruck) description)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
+                         :force-page-count "end-on-even"
                          :language "de"}
       (header :recto)
       (header :verso)
