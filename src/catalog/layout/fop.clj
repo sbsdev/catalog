@@ -340,7 +340,7 @@
 
 (defn- layout-master-set []
   [:fo:layout-master-set
-   (simple-page-master {:master-name "recto"})
+   (simple-page-master {:master-name "recto" :margin-left "28mm" :margin-right "22mm"})
    (simple-page-master {:master-name "verso"})
    (simple-page-master {:master-name "blank"})
    (simple-page-master {:master-name "first"})
