@@ -9,28 +9,29 @@
   (-> in
    vubis/read-file
    vubis/order-and-group
-   (layout.fop/document :all-formats)
+   (layout.fop/document :all-formats nil nil)
    (layout.fop/generate-pdf! out)))
 
-(defn neu-in-grossdruck [in out]
+(defn neu-in-grossdruck [in out editorial recommendations]
   (-> in
    vubis/read-file
    vubis/order-and-group
-   (layout.fop/document :grossdruck)
+   (layout.fop/document :grossdruck (slurp editorial) (slurp recommendations) )
    (layout.fop/generate-pdf! out)))
 
-(defn neu-als-hörbuch [in out]
+(defn neu-in-grossdruck [in out editorial recommendations]
   (-> in
    vubis/read-file
    vubis/order-and-group
-   (layout.fop/document :hörbuch)
+   (layout.fop/generate-document :grossdruck (slurp editorial) (slurp recommendations) out)))
+
    (layout.fop/generate-pdf! out)))
 
-(defn neu-in-braille [in out]
+(defn neu-in-braille [in out editorial recommendations]
   (->> in
    vubis/read-file
    vubis/order-and-group
    :braille
-   layout.dtbook/dtbook
+   layout.dtbook/dtbook (slurp editorial) (slurp recommendations)
    (spit (io/file out))))
 

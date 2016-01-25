@@ -64,7 +64,7 @@
        (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
        :else (catalog-entries items))]))
 
-(defn document [title items &
+(defn document [items title editorial recommendations &
                 {:keys [creator volume date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       volume (layout/volume-number (time.core/today))
@@ -109,7 +109,7 @@
         (catalog-entries items)])]]])
 
 (defn dtbook
-  [items]
-  (-> (document "Neu in Braille" items)
+  [items editorial recommendations]
+  (-> (document items "Neu in Braille" editorial recommendations)
       xml/sexp-as-element
       xml/indent-str))

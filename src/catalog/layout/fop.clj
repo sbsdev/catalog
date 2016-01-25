@@ -427,10 +427,10 @@
    endophile/to-clj
    (walk/postwalk visitor)))
 
-(defmulti document-sexp (fn [items fmt options] fmt))
+(defmulti document-sexp (fn [items fmt editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
-  [items fmt {:keys [description date]}]
+  [items fmt editorial recommendations {:keys [description date]}]
   (binding [*stylesheet* large-print-stylesheet]
     [:fo:root (style :font
                      {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
@@ -449,13 +449,13 @@
         [:fo:flow {:flow-name "xsl-region-body"}
          (toc subitems [fmt] 2 :heading? true :editorial? true :single-recommendation? true)
          (heading :h1 :editorial [fmt :editorial])
-         (md-to-fop (slurp "/home/eglic/src/catalog/samples/editorial.md"))
+         (md-to-fop editorial)
          (heading :h1 :recommendation [fmt :recommendation])
-         (md-to-fop (slurp "/home/eglic/src/catalog/samples/recommendations.md"))
+         (md-to-fop recommendations)
          (mapcat #(genre-sexp (get subitems %) fmt % 1) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
-  [items fmt {:keys [description date]}]
+  [items fmt editorial recommendations {:keys [description date]}]
   [:fo:root (style :font
                    {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                     :line-height "130%"
@@ -474,14 +474,16 @@
             :heading? true :editorial? true :recommendation-at-end? true :numbered? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (heading :h1 :editorial [:editorial] [1])
+       (md-to-fop editorial)
        (heading :h1 :hörbuch [:hörbuch] [2])
        (letfn [(numbered-genre [number genre]
                  (genre-sexp (get subitems genre) fmt genre 2 (add-number [2] number)))]
          (apply concat (map-indexed #(numbered-genre %1 %2) (order (keys subitems)))))
-       (heading :h1 :recommendations [:recommendations] [3])])]])
+       (heading :h1 :recommendations [:recommendations] [3])
+       (md-to-fop recommendations)])]])
 
 (defmethod document-sexp :all-formats
-  [items _ {:keys [description date]}]
+  [items _ _ _ {:keys [description date]}]
   [:fo:root (style :font
                    {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                     :line-height "130%"
@@ -499,15 +501,15 @@
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
      (mapcat #(format-sexp (get items %) % 1) (order (keys items)))]]])
 
-(defn document [items fmt & args]
+(defn document [items fmt editorial recommendations & args]
   (-> items
       (document-sexp fmt args)
       xml/sexp-as-element))
 
-(defn generate-document [items fmt out]
+(defn generate-document [items fmt editorial recommendations out]
   (with-open [out (io/writer out)]
     (-> items
-        (document fmt)
+        (document fmt editorial recommendations)
         (xml/indent out))))
 
 (defn generate-pdf! [document out]
