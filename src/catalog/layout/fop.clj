@@ -105,22 +105,12 @@
                            depth (inc current-depth)))]
         (map-indexed #(numbered-toc %1 %2) (order (keys items)))))]))
 
-(defn- add-extra-headings [entries editorial? recommendation-at-end? single-recommendation?]
-  (let [recommendation (if single-recommendation? :recommendation :recommendations)]
-    (cond
-      recommendation-at-end? (concat [:editorial] entries [recommendation])
-      editorial? (concat [:editorial recommendation] entries)
-      :else entries)))
-
-(defn toc [items path depth &
-           {:keys [heading? editorial? recommendation-at-end? single-recommendation? numbered?]}]
+(defn toc [items path depth & {:keys [heading? numbered?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
      (when heading? (heading :h1 :inhalt []))
-     (let [entries (-> items keys order
-                       (add-extra-headings editorial? recommendation-at-end? single-recommendation?))]
-       (map-indexed #(toc-entry (get items %2) (conj path %2) (if numbered? [(inc %1)] []) depth) entries))]))
+     (map-indexed #(toc-entry (get items %2) (conj path %2) (if numbered? [(inc %1)] []) depth) (order (keys items)))]))
 
 (defn- to-url
   "Return an url given a `record-id`"
@@ -447,7 +437,11 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (toc subitems [fmt] 2 :heading? true :editorial? true :single-recommendation? true)
+         (-> subitems
+             ;; add editorial and recommendation to the subitems
+             (assoc :editorial true :recommendation true)
+             ;; so that they are displayed in the toc
+             (toc [fmt] 2 :heading? true))
          (heading :h1 :editorial [fmt :editorial])
          (md-to-fop editorial)
          (heading :h1 :recommendation [fmt :recommendation])
@@ -470,8 +464,11 @@
 
     (let [subitems (get items fmt)]
       [:fo:flow {:flow-name "xsl-region-body"}
-       (toc (select-keys items [fmt]) [] 3
-            :heading? true :editorial? true :recommendation-at-end? true :numbered? true)
+       (-> (select-keys items [fmt])
+           ;; add editorial and recommendations to the subitems
+           (assoc :editorial true :recommendations true)
+           ;; so that they are displayed in the toc
+           (toc [] 3 :heading? true :numbered? true))
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (heading :h1 :editorial [:editorial] [1])
        (md-to-fop editorial)

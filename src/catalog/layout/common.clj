@@ -9,7 +9,8 @@
              [string :as string]])
   (:import java.util.Locale))
 
-(def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
+(def formats [:editorial :hörbuch :braille :grossdruck :e-book :hörfilm :ludo :recommendations])
+(def genres [:editorial :recommendations :recommendation :belletristik :sachbücher :kinder-und-jugendbücher])
 (def braille-genres (conj genres :musiknoten :taktilesbuch))
 (def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :glaube-und-philosophie
@@ -127,8 +128,6 @@
     [nil true] [nil false]]
    (keep (fn [k] (braille-signature (first (get items k)))))
    (string/join ". ")))
-
-(def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 
 (defn render-subtitles [subtitles]
   (string/join " " (map periodify subtitles)))
