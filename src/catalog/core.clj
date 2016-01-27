@@ -16,7 +16,7 @@
   (-> in
    vubis/read-file
    vubis/order-and-group
-   (layout.fop/document :grossdruck (slurp editorial) (slurp recommendations) )
+   (layout.fop/document :grossdruck (slurp editorial) (slurp recommendations))
    (layout.fop/generate-pdf! out)))
 
 (defn neu-in-grossdruck [in out editorial recommendations]
