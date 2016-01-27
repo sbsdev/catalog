@@ -19,7 +19,12 @@
    (layout.fop/document :grossdruck (slurp editorial) (slurp recommendations))
    (layout.fop/generate-pdf! out)))
 
-(defn neu-in-grossdruck [in out editorial recommendations]
+(defn neu-in-grossdruck-fop
+  "Generate a FOP document `out` given the Marc21 XML `input` and the
+  markdown `editorial` and `recommendations`. This can be used for
+  debugging. Generally you're better off using `neu-in-grossdruck` as
+  this produces a PDF directly."
+  [in out editorial recommendations]
   (-> in
    vubis/read-file
    vubis/order-and-group
