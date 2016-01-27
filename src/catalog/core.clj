@@ -30,11 +30,11 @@
    vubis/order-and-group
    (layout.fop/generate-document :grossdruck (slurp editorial) (slurp recommendations) out)))
 
-(defn neu-als-hörbuch [in out editorial recommendations]
+(defn neu-als-hörbuch [in out editorial recommendations date]
   (-> in
    vubis/read-file
    (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
-   (layout.fop/document :hörbuch (slurp editorial) (slurp recommendations))
+   (layout.fop/document :hörbuch (slurp editorial) (slurp recommendations) :date date)
    (layout.fop/generate-pdf! out)))
 
 (defn neu-in-braille [in out editorial recommendations]

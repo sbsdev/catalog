@@ -464,6 +464,9 @@
 
     (let [subitems (get items fmt)]
       [:fo:flow {:flow-name "xsl-region-body"}
+       ;; Cover page
+       [:fo:block (style :h1) (format "Neu als Hörbuch Nr. %s" date)]
+       (block {:break-before "odd-page"}) ;; toc should start on recto
        (-> (select-keys items [fmt])
            ;; add editorial and recommendations to the subitems
            (assoc :editorial editorial :recommendations recommendations)
