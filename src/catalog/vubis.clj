@@ -364,29 +364,60 @@
                    comparison)))
              nil (partition 2 (interleave v1 v2))))))
 
-(defn order-and-group [items]
-  (->>
-   items
-   collate-all-duplicate-items
-   ;; sort by creator, title, subtitles and name-of-part. If there is
-   ;; no creator then sort just by title. Likewise if there are no
-   ;; subtitles then sort by name-of-part.
-   (sort-by (juxt #(or (:creator %) (:title %))
-                  :title
-                  #(or (and (:subtitles %) (string/join (:subtitles %))) (:name-of-part %))
-                  :name-of-part) by-vector)
-   (reduce
-    (fn [m {:keys [format genre sub-genre] :as item}]
-      (let [update-keys
-            (cond
-              (= format :hörbuch) [format genre sub-genre]
-              (#{:hörfilm :ludo} format) [format]
-              ;; file tactile books and musiknoten under braille with
-              ;; the original format as genre
-              (#{:taktilesbuch :musiknoten} format) [:braille format]
-              (= genre :kinder-und-jugendbücher) [format genre sub-genre]
-              :else [format genre])]
-        (update-in m update-keys (fnil conj []) item))) {})))
+(defn- get-update-keys
+  "Return the update keys for a given item containing `format`,
+  `genre` and `sub-genre`. The update-key determines where in the tree
+  a particular catalog item will be inserted. This is used to group
+  the catalog items."
+  [{fmt :format genre :genre subgenre :sub-genre}]
+  (cond
+    (= fmt :hörbuch) [fmt genre subgenre]
+    (#{:hörfilm :ludo} fmt) [fmt]
+    ;; file tactile books and musiknoten under braille with
+    ;; the original format as genre
+    (#{:taktilesbuch :musiknoten} fmt) [:braille fmt]
+    (= genre :kinder-und-jugendbücher) [fmt genre subgenre]
+    :else [fmt genre]))
+
+(defn get-update-keys-neu-als-hörbuch
+  "Return the update keys for a given item (see `get-update-keys`).
+  For the neu-als-hörbuch all foreign language books need to ge
+  grouped under `:literatur-in-fremdsprachen`, even kids books, so we
+  need to group not only by `format`, `genre` and `sub-genre` but also
+  by `language`. "
+  [{fmt :format genre :genre subgenre :sub-genre language :language}]
+  (cond
+    (and (= fmt :hörbuch) (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
+    (= fmt :hörbuch) [fmt genre subgenre]
+    (#{:hörfilm :ludo} fmt) [fmt]
+    ;; file tactile books and musiknoten under braille with
+    ;; the original format as genre
+    (#{:taktilesbuch :musiknoten} fmt) [:braille fmt]
+    (= genre :kinder-und-jugendbücher) [fmt genre subgenre]
+    :else [fmt genre]))
+
+(defn order-and-group
+  "Order and group the catalog `items`. Given a sequence of `items`
+  returns a tree where all items are grouped by format, genre and
+  sometimes even subgenre. The exact details of the grouping are
+  determined by the `get-update-keys-fn`."
+  ([items]
+   (order-and-group items get-update-keys))
+  ([items get-update-keys-fn]
+   (->>
+    items
+    collate-all-duplicate-items
+    ;; sort by creator, title, subtitles and name-of-part. If there is
+    ;; no creator then sort just by title. Likewise if there are no
+    ;; subtitles then sort by name-of-part.
+    (sort-by (juxt #(or (:creator %) (:title %))
+                   :title
+                   #(or (and (:subtitles %) (string/join (:subtitles %))) (:name-of-part %))
+                   :name-of-part) by-vector)
+    (reduce
+     (fn [m item]
+       (let [update-keys (get-update-keys-fn item)]
+         (update-in m update-keys (fnil conj []) item))) {}))))
 
 (defn ignore-sine-nomine [s]
   "Return input string `s` unless it contains \"s.n.\" (Sine nomine),
