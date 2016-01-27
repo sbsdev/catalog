@@ -9,6 +9,8 @@
              [string :as string]])
   (:import java.util.Locale))
 
+;; editorial and recommendations/recommendation are just added so that
+;; toc generation can also order these nodes
 (def formats [:editorial :hörbuch :braille :grossdruck :e-book :hörfilm :ludo :recommendations])
 (def genres [:editorial :recommendations :recommendation :belletristik :sachbücher :kinder-und-jugendbücher])
 (def braille-genres (conj genres :musiknoten :taktilesbuch))

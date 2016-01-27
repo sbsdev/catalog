@@ -303,6 +303,8 @@
    [(heading (level-to-h level) genre [fmt genre] numbers)
     (set-marker (layout/translations genre))
     (cond
+      ;; handle the special case where the editorial or the recommendations are passed in the tree
+      (#{:editorial :recommendations :recommendation} genre) (md-to-fop items)
       (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) numbers)
       (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) numbers)
       :else (entries-sexp items))]))
@@ -438,17 +440,12 @@
       (header :recto)
       (header :verso)
 
-      (let [subitems (get items fmt)]
+      (let [subitems (-> items
+                         (get fmt)
+                         (assoc :editorial editorial
+                                :recommendation recommendations))]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (-> subitems
-             ;; add editorial and recommendation to the subitems
-             (assoc :editorial true :recommendation true)
-             ;; so that they are displayed in the toc
-             (toc [fmt] 2 :heading? true))
-         (heading :h1 :editorial [fmt :editorial])
-         (md-to-fop editorial)
-         (heading :h1 :recommendation [fmt :recommendation])
-         (md-to-fop recommendations)
+         (toc subitems [fmt] 2 :heading? true)
          (mapcat #(genre-sexp (get subitems %) fmt % 1) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
@@ -469,7 +466,7 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        (-> (select-keys items [fmt])
            ;; add editorial and recommendations to the subitems
-           (assoc :editorial true :recommendations true)
+           (assoc :editorial editorial :recommendations recommendations)
            ;; so that they are displayed in the toc
            (toc [] 3 :heading? true :numbered? true))
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
@@ -503,7 +500,7 @@
 
 (defn document [items fmt editorial recommendations & args]
   (-> items
-      (document-sexp fmt args)
+      (document-sexp fmt editorial recommendations args)
       xml/sexp-as-element))
 
 (defn generate-document [items fmt editorial recommendations out]
