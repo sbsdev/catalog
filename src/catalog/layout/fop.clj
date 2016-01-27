@@ -49,13 +49,13 @@
     (str (string/join "." numbers) ". ")))
 
 (defn heading
-  ([level title path]
-   (heading level title path []))
-  ([level title path numbers]
+  ([level path]
+   (heading level path []))
+  ([level path numbers]
    [:fo:block (style level
                      {:id (hash path)})
     (section-numbers numbers)
-    (layout/translations title)]))
+    (layout/translations (last path))]))
 
 (def ^:private running-header-class-name "running-header")
 
@@ -109,7 +109,7 @@
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
-     (when heading? (heading :h1 :inhalt []))
+     (when heading? (heading :h1 [:inhalt]))
      (map-indexed #(toc-entry (get items %2) (conj path %2) (if numbered? [(inc %1)] []) depth) (order (keys items)))]))
 
 (defn- to-url
@@ -286,7 +286,7 @@
   (keyword (str "h" level)))
 
 (defn subgenre-sexp [items fmt genre subgenre level numbers]
-  [(heading (level-to-h level) subgenre [fmt genre subgenre] numbers)
+  [(heading (level-to-h level) [fmt genre subgenre] numbers)
    (when-not (#{:kinder-und-jugendbücher} genre)
      (set-marker (layout/translations subgenre)))
    (entries-sexp items)])
@@ -300,7 +300,7 @@
   ([items fmt genre level]
    (genre-sexp items fmt genre level []))
   ([items fmt genre level numbers]
-   [(heading (level-to-h level) genre [fmt genre] numbers)
+   [(heading (level-to-h level) [fmt genre] numbers)
     (set-marker (layout/translations genre))
     (cond
       ;; handle the special case where the editorial or the recommendations are passed in the tree
@@ -310,7 +310,7 @@
       :else (entries-sexp items))]))
 
 (defn format-sexp [items fmt level]
-  [(heading (level-to-h level) fmt [fmt])
+  [(heading (level-to-h level) [fmt])
    (toc items [fmt] 2)
    (set-marker (layout/translations fmt))
    (case fmt
@@ -470,13 +470,13 @@
            ;; so that they are displayed in the toc
            (toc [] 3 :heading? true :numbered? true))
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (heading :h1 :editorial [:editorial] [1])
+       (heading :h1 [:editorial] [1])
        (md-to-fop editorial)
-       (heading :h1 :hörbuch [:hörbuch] [2])
+       (heading :h1 [:hörbuch] [2])
        (letfn [(numbered-genre [number genre]
                  (genre-sexp (get subitems genre) fmt genre 2 (add-number [2] number)))]
          (apply concat (map-indexed #(numbered-genre %1 %2) (order (keys subitems)))))
-       (heading :h1 :recommendations [:recommendations] [3])
+       (heading :h1 [:recommendations] [3])
        (md-to-fop recommendations)])]])
 
 (defmethod document-sexp :all-formats
