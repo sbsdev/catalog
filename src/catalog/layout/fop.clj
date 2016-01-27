@@ -391,7 +391,10 @@
 
 (defmulti to-fop (fn [{:keys [tag attrs content]}] tag))
 (defmethod to-fop :p [{content :content}] (block {:space-before "17pt"} content))
-(defmethod to-fop :a [{content :content {href :href} :attrs}] (apply #(external-link href %) content))
+(defmethod to-fop :a [{content :content {href :href} :attrs}]
+  (if (not-empty content)
+    (apply #(external-link href %) content)
+    (external-link href href)))
 (defmethod to-fop :h1 [{content :content}] [:fo:block (style :h1) content])
 (defmethod to-fop :h2 [{content :content}] [:fo:block (style :h2) content])
 (defmethod to-fop :h3 [{content :content}] [:fo:block (style :h3) content])
