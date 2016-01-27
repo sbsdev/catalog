@@ -480,6 +480,7 @@
                  (genre-sexp (get subitems genre) fmt genre 2 (add-number [2] number)))]
          (apply concat (map-indexed #(numbered-genre %1 %2) (order (keys subitems)))))
        (heading :h1 [:recommendations] [3])
+       (set-marker (layout/translations :recommendations))
        (md-to-fop recommendations)])]])
 
 (defmethod document-sexp :all-formats
