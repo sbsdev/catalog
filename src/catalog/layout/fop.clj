@@ -95,12 +95,17 @@
     [:fo:basic-link {:internal-destination (hash path)}
      (inline {:role "Reference"}
              (when-let [numbers (get path-to-numbers path)] (section-numbers numbers))
-             (layout/translations (last path)))
+             (let [title (last path)]
+               (if (keyword? title) (layout/translations title) title)))
      " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
      [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
-    (when (and (map? items) (< current-depth depth))
+    (cond
+      (and (map? items) (< current-depth depth))
       (map #(toc-entry (get items %) (conj path %) path-to-numbers depth (inc current-depth))
-           (order (keys items))))]))
+           (order (keys items)))
+      (and (string? items) (not-empty (md-extract-headings items))) ; markdown
+      (map #(toc-entry % (conj path %) path-to-numbers depth (inc current-depth))
+           (md-extract-headings items)))]))
 
 (defn toc [items path depth path-to-numbers & {:keys [heading?]}]
   (when (map? items)
