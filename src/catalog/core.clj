@@ -38,10 +38,10 @@
    (layout.fop/generate-pdf! out)))
 
 (defn neu-in-braille [in out editorial recommendations]
-  (->> in
+  (-> in
    vubis/read-file
    vubis/order-and-group
    :braille
-   layout.dtbook/dtbook (slurp editorial) (slurp recommendations)
-   (spit (io/file out))))
+   (layout.dtbook/dtbook (slurp editorial) (slurp recommendations))
+   (->> (spit (io/file out)))))
 
