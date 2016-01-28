@@ -463,9 +463,11 @@
       (order (keys node))))
     (and (string? node) (not-empty (md-extract-headings node)))
     ;; walk the tree with markdown
-    (mapcat-indexed
+    (concat
+     [path numbers]
+     (mapcat-indexed
       (fn [n heading] (tree-walk heading (conj path heading) (conj numbers (inc n))))
-      (md-extract-headings node))
+      (md-extract-headings node)))
     :else [path numbers]))
 
 (defn- path-to-number
