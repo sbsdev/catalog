@@ -51,10 +51,11 @@
 (defn heading
   ([level path]
    (heading level path []))
-  ([level path numbers]
+  ([level path path-to-numbers]
    [:fo:block (style level
                      {:id (hash path)})
-    (section-numbers numbers)
+    (when-let [numbers (get path-to-numbers path)]
+      (section-numbers numbers))
     (layout/translations (last path))]))
 
 (def ^:private running-header-class-name "running-header")
@@ -68,10 +69,6 @@
 (defn- set-marker [title]
   [:fo:block {:keep-with-next "always"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
-
-(defn- add-number [coll number]
-  (when (not-empty coll)
-    (conj coll (inc number))))
 
 (defn- order
   "Return `items` ordered. Checks first if `items` are either a subset
@@ -89,28 +86,27 @@
       (keep items layout/subgenres))))
 
 (defn- toc-entry
-  ([items path numbers depth]
-   (toc-entry items path numbers depth 1))
-  ([items path numbers depth current-depth]
+  ([items path path-to-numbers depth]
+   (toc-entry items path path-to-numbers depth 1))
+  ([items path path-to-numbers depth current-depth]
    [:fo:block {:text-align-last "justify" :role "TOCI"
                :start-indent (str (- current-depth 1) "em")}
     [:fo:basic-link {:internal-destination (hash path)}
-     (inline {:role "Reference"} (section-numbers numbers) (layout/translations (last path)))
+     (inline {:role "Reference"}
+             (when-let [numbers (get path-to-numbers path)] (section-numbers numbers))
+             (layout/translations (last path)))
      " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
      [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
     (when (and (map? items) (< current-depth depth))
-      (letfn [(numbered-toc [number itm]
-                (toc-entry (get items itm) (conj path itm)
-                           (add-number numbers number)
-                           depth (inc current-depth)))]
-        (map-indexed #(numbered-toc %1 %2) (order (keys items)))))]))
+      (map #(toc-entry (get items %) (conj path %) path-to-numbers depth (inc current-depth))
+           (order (keys items))))]))
 
-(defn toc [items path depth & {:keys [heading? numbered?]}]
+(defn toc [items path depth path-to-numbers & {:keys [heading?]}]
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
      (when heading? (heading :h1 [:inhalt]))
-     (map-indexed #(toc-entry (get items %2) (conj path %2) (if numbered? [(inc %1)] []) depth) (order (keys items)))]))
+     (map #(toc-entry (get items %) (conj path %) path-to-numbers depth) (order (keys items)))]))
 
 (defn- to-url
   "Return an url given a `record-id`"
@@ -285,37 +281,40 @@
 (defn- level-to-h [level]
   (keyword (str "h" level)))
 
-(defn subgenre-sexp [items fmt genre subgenre level numbers]
-  [(heading (level-to-h level) [fmt genre subgenre] numbers)
+(defn subgenre-sexp [items fmt genre subgenre level path-to-numbers]
+  [(heading (level-to-h level) [fmt genre subgenre] path-to-numbers)
    (when-not (#{:kinder-und-jugendbücher} genre)
      (set-marker (layout/translations subgenre)))
    (entries-sexp items)])
 
-(defn subgenres-sexp [items fmt genre level numbers]
-  (letfn [(numbered-subgenre [number subgenre]
-            (subgenre-sexp (get items subgenre) fmt genre subgenre level (add-number numbers number)))]
-    (apply concat (map-indexed #(numbered-subgenre %1 %2) (order (keys items))))))
+(defn subgenres-sexp [items fmt genre level path-to-numbers]
+    (mapcat #(subgenre-sexp (get items %) fmt genre % level path-to-numbers) (order (keys items))))
 
 (defn genre-sexp
   ([items fmt genre level]
-   (genre-sexp items fmt genre level []))
-  ([items fmt genre level numbers]
-   [(heading (level-to-h level) [fmt genre] numbers)
+   (genre-sexp items fmt genre level nil))
+  ([items fmt genre level path-to-numbers]
+   [(heading (level-to-h level) [fmt genre] path-to-numbers)
     (set-marker (layout/translations genre))
     (cond
       ;; handle the special case where the editorial or the recommendations are passed in the tree
       (#{:editorial :recommendations :recommendation} genre) (md-to-fop items)
-      (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) numbers)
-      (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) numbers)
+      (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
+      (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
       :else (entries-sexp items))]))
 
-(defn format-sexp [items fmt level]
-  [(heading (level-to-h level) [fmt])
-   (toc items [fmt] 2)
-   (set-marker (layout/translations fmt))
-   (case fmt
-     (:hörfilm :ludo) (entries-sexp items)
-     (mapcat #(genre-sexp (get items %) fmt % (inc level)) (order (keys items))))])
+(defn format-sexp
+  ([items fmt level]
+   (format-sexp items fmt level nil))
+  ([items fmt level path-to-numbers]
+   [(heading (level-to-h level) [fmt] path-to-numbers)
+    (toc items [fmt] 2 nil)
+    (set-marker (layout/translations fmt))
+    (case fmt
+      ;; handle the special case where the editorial or the recommendations are passed in the tree
+      (:editorial :recommendations :recommendation) (md-to-fop items)
+      (:hörfilm :ludo) (entries-sexp items)
+      (mapcat #(genre-sexp (get items %) fmt % (inc level) path-to-numbers) (order (keys items))))]))
 
 (defn- page-number []
   [:fo:inline
@@ -422,6 +421,33 @@
    endophile/to-clj
    (walk/postwalk visitor)))
 
+(defn- branch? [node]
+  (when-let [ks (and (map? node) (keys node))]
+    (or (set/subset? (set ks) (set layout/formats))
+        (set/subset? (set ks) (set layout/braille-genres))
+        (set/subset? (set ks) (set layout/subgenres)))))
+
+(defn- mapcat-indexed [f coll]
+  (apply concat (map-indexed f coll)))
+
+(defn- tree-walk
+  "Walk a tree and build a list of path and corresponding numbering
+  pairs."
+  [node path numbers]
+  (if (branch? node)
+    (concat
+     [path numbers]
+     (mapcat-indexed
+      (fn [n k] (tree-walk (get node k) (conj path k) (conj numbers (inc n))))
+      (order (keys node))))
+    [path numbers]))
+
+(defn- path-to-number
+  "Return a map of path to number vector mapping. This can be used to
+  look up a section number for a given path."
+  [tree]
+  (apply hash-map (tree-walk tree [] [])))
+
 (defmulti document-sexp (fn [items fmt editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
@@ -445,7 +471,7 @@
                          (assoc :editorial editorial
                                 :recommendation recommendations))]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (toc subitems [fmt] 2 :heading? true)
+         (toc subitems [fmt] 2 nil :heading? true)
          (mapcat #(genre-sexp (get subitems %) fmt % 1) (order (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
@@ -462,26 +488,18 @@
     (header :recto)
     (header :verso)
 
-    (let [subitems (get items fmt)]
+    (let [subitems (-> items
+                       (select-keys [fmt])
+                       (assoc :editorial editorial
+                              :recommendations recommendations))
+          path-to-numbers (path-to-number subitems)]
       [:fo:flow {:flow-name "xsl-region-body"}
        ;; Cover page
        [:fo:block (style :h1) (format "Neu als Hörbuch Nr. %s" date)]
        (block {:break-before "odd-page"}) ;; toc should start on recto
-       (-> (select-keys items [fmt])
-           ;; add editorial and recommendations to the subitems
-           (assoc :editorial editorial :recommendations recommendations)
-           ;; so that they are displayed in the toc
-           (toc [] 3 :heading? true :numbered? true))
+       (toc subitems [] 3 path-to-numbers :heading? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (heading :h1 [:editorial] [1])
-       (md-to-fop editorial)
-       (heading :h1 [:hörbuch] [2])
-       (letfn [(numbered-genre [number genre]
-                 (genre-sexp (get subitems genre) fmt genre 2 (add-number [2] number)))]
-         (apply concat (map-indexed #(numbered-genre %1 %2) (order (keys subitems)))))
-       (heading :h1 [:recommendations] [3])
-       (set-marker (layout/translations :recommendations))
-       (md-to-fop recommendations)])]])
+       (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers) (order (keys subitems)))])]])
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
@@ -498,7 +516,7 @@
     (header :verso)
 
     [:fo:flow {:flow-name "xsl-region-body"}
-     (toc items [] 1 :heading? true)
+     (toc items [] 1 nil :heading? true)
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
      (mapcat #(format-sexp (get items %) % 1) (order (keys items)))]]])
 
