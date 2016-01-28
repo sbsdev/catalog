@@ -307,10 +307,11 @@
 
 (defn format-sexp
   ([items fmt level]
-   (format-sexp items fmt level nil))
-  ([items fmt level path-to-numbers]
+   (format-sexp items fmt level nil true))
+  ([items fmt level path-to-numbers with-toc?]
    [(heading (level-to-h level) [fmt] path-to-numbers)
-    (toc items [fmt] 2 nil)
+    (when with-toc?
+      (toc items [fmt] 2 nil))
     (set-marker (layout/translations fmt))
     (case fmt
       ;; handle the special case where the editorial or the recommendations are passed in the tree
@@ -519,7 +520,7 @@
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [] 3 path-to-numbers :heading? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers) (order (keys subitems)))])]])
+       (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (order (keys subitems)))])]])
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
