@@ -299,7 +299,8 @@
     (set-marker (layout/translations genre))
     (cond
       ;; handle the special case where the editorial or the recommendations are passed in the tree
-      (#{:editorial :recommendations :recommendation} genre) (md-to-fop items)
+      (#{:editorial :recommendations :recommendation} genre) (md-to-fop items
+                                                                        [fmt genre] path-to-numbers)
       (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
       (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
       :else (entries-sexp items))]))
@@ -313,7 +314,7 @@
     (set-marker (layout/translations fmt))
     (case fmt
       ;; handle the special case where the editorial or the recommendations are passed in the tree
-      (:editorial :recommendations :recommendation) (md-to-fop items)
+      (:editorial :recommendations :recommendation) (md-to-fop items [fmt] path-to-numbers)
       (:hörfilm :ludo) (entries-sexp items)
       (mapcat #(genre-sexp (get items %) fmt % (inc level) path-to-numbers) (order (keys items))))]))
 
@@ -391,36 +392,40 @@
     {:start-indent "body-start()"}
     (block body)]])
 
-(defmulti to-fop (fn [{:keys [tag attrs content]}] tag))
-(defmethod to-fop :p [{content :content}] (block {:space-before "17pt"} content))
-(defmethod to-fop :a [{content :content {href :href} :attrs}]
+(defmulti to-fop (fn [{:keys [tag attrs content]} _ _] tag))
+(defmethod to-fop :p [{content :content} _ _] (block {:space-before "17pt"} content))
+(defmethod to-fop :a [{content :content {href :href} :attrs} _ _]
   (if (not-empty content)
     (apply #(external-link href %) content)
     (external-link href href)))
-(defmethod to-fop :h1 [{content :content}] [:fo:block (style :h1) content])
-(defmethod to-fop :h2 [{content :content}] [:fo:block (style :h2) content])
-(defmethod to-fop :h3 [{content :content}] [:fo:block (style :h3) content])
-(defmethod to-fop :ul [{content :content}] [:fo:list-block content])
-(defmethod to-fop :li [{content :content}] (bullet-list content))
-(defmethod to-fop :em [{content :content}] (inline {:font-style "italic"} content))
-(defmethod to-fop :strong [{content :content}] (inline {:font-weight "bold"} content))
-(defmethod to-fop :br [_] [:fo:block ])
-(defmethod to-fop :default [{content :content}] (apply block content)) ; just assume :p
+(defmethod to-fop :h1 [{content :content} path path-to-numbers]
+  (heading :h1 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :h2 [{content :content} path path-to-numbers]
+  (heading :h2 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :h3 [{content :content} path path-to-numbers]
+  (heading :h3 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :ul [{content :content} _ _] [:fo:list-block content])
+(defmethod to-fop :li [{content :content} _ _] (bullet-list content))
+(defmethod to-fop :em [{content :content} _ _] (inline {:font-style "italic"} content))
+(defmethod to-fop :strong [{content :content} _ _] (inline {:font-weight "bold"} content))
+(defmethod to-fop :br [_ _ _] [:fo:block ])
+(defmethod to-fop :default [{content :content} _ _] (apply block content)) ; just assume :p
 
 (defn- node? [node]
   (and (map? node) (or (set/subset? #{:tag :content} (set (keys node))) (= (:tag node) :br))))
 
-(defn- visitor [node]
+(defn- visitor [node path path-to-numbers]
   (if (node? node)
-    (to-fop node)
+    (to-fop node path path-to-numbers)
     node))
 
-(defn md-to-fop [markdown]
+(defn md-to-fop [markdown path path-to-numbers]
   (->>
    markdown
    endophile/mp
    endophile/to-clj
-   (walk/postwalk visitor)))
+   (walk/postwalk #(visitor % path path-to-numbers))))
+
 
 (defn- branch? [node]
   (when-let [ks (and (map? node) (keys node))]
