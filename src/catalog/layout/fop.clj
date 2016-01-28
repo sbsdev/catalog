@@ -426,6 +426,13 @@
    endophile/to-clj
    (walk/postwalk #(visitor % path path-to-numbers))))
 
+(defn- md-extract-headings [markdown]
+  (->>
+   markdown
+   endophile/mp
+   endophile/to-clj
+   (filter #(#{:h1 :h2 :h3 :h4} (:tag %)))
+   (map (comp string/join :content))))
 
 (defn- branch? [node]
   (when-let [ks (and (map? node) (keys node))]
@@ -440,13 +447,20 @@
   "Walk a tree and build a list of path and corresponding numbering
   pairs."
   [node path numbers]
-  (if (branch? node)
+  (cond
+    (branch? node)
     (concat
      [path numbers]
+     ;; walk the tree of catalog items
      (mapcat-indexed
       (fn [n k] (tree-walk (get node k) (conj path k) (conj numbers (inc n))))
       (order (keys node))))
-    [path numbers]))
+    (and (string? node) (not-empty (md-extract-headings node)))
+    ;; walk the tree with markdown
+    (mapcat-indexed
+      (fn [n heading] (tree-walk heading (conj path heading) (conj numbers (inc n))))
+      (md-extract-headings node))
+    :else [path numbers]))
 
 (defn- path-to-number
   "Return a map of path to number vector mapping. This can be used to
