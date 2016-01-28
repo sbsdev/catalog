@@ -248,14 +248,26 @@
                                               (parse-int series-volume))
                      double-spaced? (boolean
                                       (and double-spaced?
-                                           (re-find #"^Weitzeilig" double-spaced?)))]
+                                           (re-find #"^Weitzeilig" double-spaced?)))
+                     braille-grade (braille-grade-raw-to-braille-grade braille-grade)
+                     ;; apparently the data in the library re accompanying-material for
+                     ;; braille books is not to be trusted, hence we figure out if there
+                     ;; is some accompanying material based on an elaborate set of
+                     ;; preconditions
+                     accompanying-material (when (and
+                                                  rucksackbuch-number
+                                                  (= (:sub-genre item) :kinderbücher-ab-6)
+                                                  (= braille-grade :vollschrift)
+                                                  (not double-spaced?))
+                                             "inkl. Schwarzschriftbeilage")]
                  (-> item
                      (assoc-some
                       :rucksackbuch-number rucksackbuch-number
                       :rucksackbuch? (boolean rucksackbuch-number)
-                      :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
+                      :braille-grade braille-grade
                       :double-spaced? double-spaced?
-                      :volumes (parse-int volumes))))
+                      :volumes (parse-int volumes)
+                      :accompanying-material accompanying-material)))
       :grossdruck (-> item
                       (assoc-some
                        :volumes (parse-int volumes)))
