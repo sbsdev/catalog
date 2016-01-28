@@ -56,7 +56,8 @@
                      {:id (hash path)})
     (when-let [numbers (get path-to-numbers path)]
       (section-numbers numbers))
-    (layout/translations (last path))]))
+    (let [title (last path)]
+      (if (keyword? title) (layout/translations title) title))]))
 
 (def ^:private running-header-class-name "running-header")
 
