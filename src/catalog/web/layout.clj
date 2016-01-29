@@ -90,8 +90,6 @@
     [:head
      [:title "Catalog"]
      (include-css "/css/bootstrap.min.css")
-     (include-css "/css/datatables.min.css")
-     (include-css "/css/dataTables.bootstrap.min.css")
      (include-css "/css/bootstrap-markdown.min.css")]
     [:body
      [:div.container
@@ -99,8 +97,6 @@
       body]
      (include-js "/js/jquery-1.12.0.min.js")
      (include-js "/js/bootstrap.min.js")
-     (include-js "/js/datatables.min.js")
-     (include-js "/js/dataTables.bootstrap.min.js")
      (include-js "/js/markdown.min.js")
      (include-js "/js/bootstrap-markdown.js")]))
 
