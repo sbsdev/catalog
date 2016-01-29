@@ -504,10 +504,10 @@
     (header :verso)
 
     (let [subitems (-> items
-                       ;; FIXME shouldn't hard code the formats to
-                       ;; remove here. We cannot use select-keys as we
-                       ;; want to retain the sorted map.
-                       (dissoc :braille :grossdruck :e-book :hörfilm :ludo)
+                       ;; remove all formats but fmt. Unfortunately we
+                       ;; cannot use select-keys as we need to retain
+                       ;; the sorted map.
+                       (#(apply dissoc % (remove #{fmt} (keys %))))
                        (assoc :editorial editorial
                               :recommendations recommendations))
           path-to-numbers (path-to-number subitems)]
