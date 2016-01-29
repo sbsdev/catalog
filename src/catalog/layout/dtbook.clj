@@ -45,24 +45,22 @@
 
 (defn catalog-entries [items]
   [:div {:brl:class "list"}
-   (for [item items] (catalog-entry item))])
+   (map catalog-entry items)])
 
-(defn subgenre-entry [subgenre items]
-  (when-let [items (subgenre items)]
-    [:level3
-     [:h3 (layout/translations subgenre "FIXME")]
-     (catalog-entries items)]))
+(defn subgenre-entry [[subgenre items]]
+  [:level3
+   [:h3 (layout/translations subgenre "FIXME")]
+   (catalog-entries items)])
 
 (defn subgenre-entries [items]
-  (for [subgenre layout/subgenres] (subgenre-entry subgenre items)))
+  (map subgenre-entry items))
 
-(defn genre-entries [genre items]
-  (when-let [items (genre items)]
-    [:level2
-     [:h2 (layout/translations genre "FIXME")]
-     (cond
-       (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
-       :else (catalog-entries items))]))
+(defn genre-entry [[genre items]]
+  [:level2
+   [:h2 (layout/translations genre "FIXME")]
+   (cond
+     (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
+     :else (catalog-entries items))])
 
 (defn document [items title editorial recommendations &
                 {:keys [creator volume date language]
@@ -96,11 +94,9 @@
      [:level1 [:h1 "Editorial"] [:p "..."]]
      [:level1 [:h1 "Buchtipps"] [:p "..."]]
      (when-let [items (not-empty
-                       (select-keys
-                        items
-                        [:belletristik :kinder-und-jugendbücher :sachbücher]))]
+                       (dissoc items :musiknoten :taktilesbuch))]
        [:level1 [:h1 "Neue Braillebücher"]
-        (for [genre layout/braille-genres] (genre-entries genre items))])
+        (map genre-entry items)])
      (when-let [items (not-empty (:musiknoten items))]
        [:level1 [:h1 "Neue Braille-Musiknoten"]
         (catalog-entries items)])

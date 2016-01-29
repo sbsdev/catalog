@@ -1,6 +1,7 @@
 (ns catalog.vubis
   "Import XML files from the library system"
-  (:require [clj-time
+  (:require [catalog.layout.common :as layout]
+            [clj-time
              [coerce :as time.coerce]
              [format :as time.format]]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
@@ -409,6 +410,26 @@
     (= genre :kinder-und-jugendbücher) [fmt genre subgenre]
     :else [fmt genre]))
 
+(def ^:private sort-order
+  (apply hash-map
+         (interleave
+          (concat [:editorial :recommendation]
+                  layout/formats layout/braille-genres layout/subgenres
+                  [:recommendations])
+          (iterate inc 0))))
+
+(defn- by-format-genre-subgenre [x y]
+  (compare (sort-order x) (sort-order y)))
+
+(defn- update-in-sorted
+  "Similar to `update-in` but adds sortedmaps instead of hashmaps for
+  non-existing levels."
+  ([m [k & ks] f & args]
+   (let [empty-map (sorted-map-by by-format-genre-subgenre)]
+     (if ks
+       (assoc m k (apply update-in-sorted (get m k empty-map) ks f args))
+       (assoc m k (apply f (get m k) args))))))
+
 (defn order-and-group
   "Order and group the catalog `items`. Given a sequence of `items`
   returns a tree where all items are grouped by format, genre and
@@ -430,7 +451,8 @@
     (reduce
      (fn [m item]
        (let [update-keys (get-update-keys-fn item)]
-         (update-in m update-keys (fnil conj []) item))) {}))))
+         (update-in-sorted m update-keys (fnil conj []) item)))
+     (sorted-map-by by-format-genre-subgenre)))))
 
 (defn ignore-sine-nomine [s]
   "Return input string `s` unless it contains \"s.n.\" (Sine nomine),

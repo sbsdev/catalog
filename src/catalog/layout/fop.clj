@@ -71,21 +71,6 @@
   [:fo:block {:keep-with-next "always"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
-(defn- order
-  "Return `items` ordered. Checks first if `items` are either a subset
-  of `layout/formats`, `layout/braille-genres` or `layout/subgenres`
-  and consequently orders accordingly. Return nil if `items` are not a
-  subset of either."
-  [items]
-  (let [items (set (remove nil? items))]
-    (cond
-      (set/subset? items (set layout/formats))
-      (keep items layout/formats)
-      (set/subset? items (set layout/braille-genres))
-      (keep items layout/braille-genres)
-      (set/subset? items (set layout/subgenres))
-      (keep items layout/subgenres))))
-
 (defn- toc-entry
   ([items path path-to-numbers depth]
    (toc-entry items path path-to-numbers depth 1))
@@ -102,8 +87,13 @@
     (cond
       (and (map? items) (< current-depth depth))
       (map #(toc-entry (get items %) (conj path %) path-to-numbers depth (inc current-depth))
-           (order (keys items)))
-      (and (string? items) (not-empty (md-extract-headings items))) ; markdown
+           (keys items))
+      ;; check for headings in markdown
+      (and (string? items)
+           ;; only show in the toc if there are multiple headings (I
+           ;; guess this is a weird way of saying we don't want any
+           ;; subheadings in the toc for :grossdruck)
+           (< 1 (count (md-extract-headings items))))
       (map #(toc-entry % (conj path %) path-to-numbers depth (inc current-depth))
            (md-extract-headings items)))]))
 
@@ -112,7 +102,7 @@
     [:fo:block {:line-height "150%"
                 :role "TOC"}
      (when heading? (heading :h1 [:inhalt]))
-     (map #(toc-entry (get items %) (conj path %) path-to-numbers depth) (order (keys items)))]))
+     (map #(toc-entry (get items %) (conj path %) path-to-numbers depth) (keys items))]))
 
 (defn- to-url
   "Return an url given a `record-id`"
@@ -294,7 +284,7 @@
    (entries-sexp items)])
 
 (defn subgenres-sexp [items fmt genre level path-to-numbers]
-    (mapcat #(subgenre-sexp (get items %) fmt genre % level path-to-numbers) (order (keys items))))
+    (mapcat #(subgenre-sexp (get items %) fmt genre % level path-to-numbers) (keys items)))
 
 (defn genre-sexp
   ([items fmt genre level]
@@ -322,7 +312,7 @@
       ;; handle the special case where the editorial or the recommendations are passed in the tree
       (:editorial :recommendations :recommendation) (md-to-fop items [fmt] path-to-numbers)
       (:hörfilm :ludo) (entries-sexp items)
-      (mapcat #(genre-sexp (get items %) fmt % (inc level) path-to-numbers) (order (keys items))))]))
+      (mapcat #(genre-sexp (get items %) fmt % (inc level) path-to-numbers) (keys items)))]))
 
 (defn- page-number []
   [:fo:inline
@@ -441,10 +431,7 @@
    (map (comp string/join :content))))
 
 (defn- branch? [node]
-  (when-let [ks (and (map? node) (keys node))]
-    (or (set/subset? (set ks) (set layout/formats))
-        (set/subset? (set ks) (set layout/braille-genres))
-        (set/subset? (set ks) (set layout/subgenres)))))
+  (map? node))
 
 (defn- mapcat-indexed [f coll]
   (apply concat (map-indexed f coll)))
@@ -460,7 +447,7 @@
      ;; walk the tree of catalog items
      (mapcat-indexed
       (fn [n k] (tree-walk (get node k) (conj path k) (conj numbers (inc n))))
-      (order (keys node))))
+      (keys node)))
     (and (string? node) (not-empty (md-extract-headings node)))
     ;; walk the tree with markdown
     (concat
@@ -500,7 +487,7 @@
                                 :recommendation recommendations))]
         [:fo:flow {:flow-name "xsl-region-body"}
          (toc subitems [fmt] 2 nil :heading? true)
-         (mapcat #(genre-sexp (get subitems %) fmt % 1) (order (keys subitems)))])]]))
+         (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]]))
 
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]}]
@@ -517,7 +504,10 @@
     (header :verso)
 
     (let [subitems (-> items
-                       (select-keys [fmt])
+                       ;; FIXME shouldn't hard code the formats to
+                       ;; remove here. We cannot use select-keys as we
+                       ;; want to retain the sorted map.
+                       (dissoc :braille :grossdruck :e-book :hörfilm :ludo)
                        (assoc :editorial editorial
                               :recommendations recommendations))
           path-to-numbers (path-to-number subitems)]
@@ -527,7 +517,7 @@
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [] 3 path-to-numbers :heading? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (order (keys subitems)))])]])
+       (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
@@ -546,7 +536,7 @@
     [:fo:flow {:flow-name "xsl-region-body"}
      (toc items [] 1 nil :heading? true)
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
-     (mapcat #(format-sexp (get items %) % 1) (order (keys items)))]]])
+     (mapcat #(format-sexp (get items %) % 1) (keys items))]]])
 
 (defn document [items fmt editorial recommendations & args]
   (-> items
