@@ -487,7 +487,15 @@
                                 :recommendation recommendations))]
         [:fo:flow {:flow-name "xsl-region-body"}
          (toc subitems [fmt] 2 nil :heading? true)
-         (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]]))
+         ;; FIXME: there is a subtle bug to do with bindings and lazy
+         ;; sequences. Since we return a lazy seq here the mapcat
+         ;; might be realized outside the binding scope and might get
+         ;; the wrong *stylesheet*. So as a workaround we make sure
+         ;; the sequence is fully realized with `doall` (see also
+         ;; http://cemerick.com/2009/11/03/be-mindful-of-clojures-binding/).
+         ;; Maybe the binding solution isn't the bees knees after all.
+         (doall
+          (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]}]
