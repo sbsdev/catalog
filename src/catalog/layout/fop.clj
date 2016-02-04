@@ -170,7 +170,7 @@
 (defn- verkauf [product-number price]
   (when product-number
     (block {:keep-with-previous "always"}
-           (bold "Verkauf:") " " price ", " (layout/braille-signatures product-number))))
+           (bold "Verkauf:") " " price ". " (layout/braille-signatures product-number))))
 
 (defmulti entry-sexp (fn [{fmt :format}] fmt))
 
