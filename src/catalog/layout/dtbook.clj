@@ -21,8 +21,9 @@
       false))
 
 (defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
-                             source-date genre-text description producer-brief rucksackbuch?
-                             rucksackbuch-number library-signature product-number price]}]
+                             source-date genre genre-text description producer-brief
+                             rucksackbuch? rucksackbuch-number
+                             library-signature product-number price]}]
   [:div {:brl:class "ps"}
    [:p {:brl:class "tit"} (wrap creator "" ": " false)
     (->> [(wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part)]
@@ -31,7 +32,9 @@
          (string/join " "))
     " - "
     (wrap source-publisher "" ", " false) (wrap (layout/year source-date))]
-   [:p {:brl:class "gen"} (wrap genre-text "Genre: ")]
+   (when ((set layout/genres) genre)
+     ;; don't show the genre for :musiknoten and :taktilesbuch
+     [:p {:brl:class "gen"} (wrap genre-text "Genre: ")])
    [:p {:brl:class "ann"} (wrap description)]
    (if rucksackbuch?
      [:p {:brl:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
