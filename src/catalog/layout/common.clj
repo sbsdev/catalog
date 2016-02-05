@@ -6,13 +6,15 @@
             [clojure
              [string :as string]]
             [clojure
-             [string :as string]])
+             [string :as string]]
+            [clj-time.core :as time.core])
   (:import java.util.Locale))
 
 ;; editorial and recommendations/recommendation are just added so that
 ;; toc generation can also order these nodes
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
+(def movie-genres [:spielfilm :mundartfilm :dokumentarfilm])
 (def braille-genres (conj genres :musiknoten :taktilesbuch))
 (def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :glaube-und-philosophie
@@ -61,6 +63,9 @@
                              :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
                              :kinderbücher-ab-6 "Kinderbücher (ab 6)"
                              :kinderbücher-ab-10 "Kinderbücher (ab 10)"
+                             :spielfilm "Spielfilme"
+                             :mundartfilm "Mundartfilme"
+                             :dokumentarfilm "Dokumentarfilme"
                              :jugendbücher "Jugendbücher (ab 14)"
                              :musiknoten "Braille-Musiknoten"
                              :taktilesbuch "Taktile Bücher"
@@ -74,7 +79,7 @@
                              :recommendations "Buchtipps"})
 
 (defn volume-number [date]
-  (let [month (.getMonthOfYear date)]
+  (let [month (time.core/month date)]
     (quot (inc month) 2)))
 
 (defn format-date [date]
@@ -84,8 +89,7 @@
 
 (defn year [date]
   (when date
-    (time.format/unparse
-     (time.format/formatters :year) (time.coerce/from-date date))))
+    (time.core/year date)))
 
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in

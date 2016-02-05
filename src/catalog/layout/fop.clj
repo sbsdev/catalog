@@ -6,7 +6,8 @@
              [walk :as walk]]
             [clojure.data.xml :as xml]
             [clojure.java.io :as io]
-            [endophile.core :as endophile])
+            [endophile.core :as endophile]
+            [clj-time.core :as time.core])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -71,6 +72,93 @@
   [:fo:block {:keep-with-next "always"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
+(defn- external-link [url title]
+  [:fo:basic-link
+   {:external-destination url :indicate-destination true}
+   title])
+
+(defn- to-url
+  "Return an url given a `record-id`"
+  [record-id]
+  (let [api-key "c97386a2-914a-40c2-bd8d-df4c273175e6"]
+    (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search%%23RecordId=%s"
+            api-key
+            (string/replace record-id "/" "."))))
+
+(defn- link-to-online-catalog [record-id title]
+  (external-link (to-url record-id) title))
+
+(defn- block [& args]
+  (if (map? (first args))
+    [:fo:block (style :block (first args)) (rest args)]
+    [:fo:block (style :block) args]))
+
+(defn- inline [& args]
+  (let [default {}]
+    (if (map? (first args))
+      [:fo:inline (merge default (first args)) (rest args)]
+      [:fo:inline default args])))
+
+(defn- list-item [& args]
+  [:fo:list-item {:space-after "1em"}
+   [:fo:list-item-label [:fo:block]]
+   [:fo:list-item-body
+    args]])
+
+(defn- bold [& args]
+  (inline {:font-weight "bold"} args))
+
+(defn- bullet-list [& body]
+  [:fo:list-item
+   [:fo:list-item-label
+    {:end-indent "label-end()"}
+    [:fo:block (inline {:font-family "Symbol"} "•")]]
+   [:fo:list-item-body
+    {:start-indent "body-start()"}
+    (block body)]])
+
+(defmulti to-fop (fn [{:keys [tag attrs content]} _ _] tag))
+(defmethod to-fop :p [{content :content} _ _] (block {:space-before "17pt"} content))
+(defmethod to-fop :a [{content :content {href :href} :attrs} _ _]
+  (if (not-empty content)
+    (apply #(external-link href %) content)
+    (external-link href href)))
+(defmethod to-fop :h1 [{content :content} path path-to-numbers]
+  (heading :h1 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :h2 [{content :content} path path-to-numbers]
+  (heading :h2 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :h3 [{content :content} path path-to-numbers]
+  (heading :h3 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :ul [{content :content} _ _] [:fo:list-block content])
+(defmethod to-fop :li [{content :content} _ _] (bullet-list content))
+(defmethod to-fop :em [{content :content} _ _] (inline {:font-style "italic"} content))
+(defmethod to-fop :strong [{content :content} _ _] (inline {:font-weight "bold"} content))
+(defmethod to-fop :br [_ _ _] [:fo:block ])
+(defmethod to-fop :default [{content :content} _ _] (apply block content)) ; just assume :p
+
+(defn- node? [node]
+  (and (map? node) (or (set/subset? #{:tag :content} (set (keys node))) (= (:tag node) :br))))
+
+(defn- visitor [node path path-to-numbers]
+  (if (node? node)
+    (to-fop node path path-to-numbers)
+    node))
+
+(defn md-to-fop [markdown path path-to-numbers]
+  (->>
+   markdown
+   endophile/mp
+   endophile/to-clj
+   (walk/postwalk #(visitor % path path-to-numbers))))
+
+(defn- md-extract-headings [markdown]
+  (->>
+   markdown
+   endophile/mp
+   endophile/to-clj
+   (filter #(#{:h1 :h2 :h3 :h4} (:tag %)))
+   (map (comp string/join :content))))
+
 (defn- toc-entry
   ([items path path-to-numbers depth]
    (toc-entry items path path-to-numbers depth 1))
@@ -103,42 +191,6 @@
                 :role "TOC"}
      (when heading? (heading :h1 [:inhalt]))
      (map #(toc-entry (get items %) (conj path %) path-to-numbers depth) (keys items))]))
-
-(defn- to-url
-  "Return an url given a `record-id`"
-  [record-id]
-  (let [api-key "c97386a2-914a-40c2-bd8d-df4c273175e6"]
-    (format "http://online.sbs.ch/iguana/www.main.cls?v=%s&amp;sUrl=search%%23RecordId=%s"
-            api-key
-            (string/replace record-id "/" "."))))
-
-(defn- external-link [url title]
-  [:fo:basic-link
-   {:external-destination url :indicate-destination true}
-   title])
-
-(defn- link-to-online-catalog [record-id title]
-  (external-link (to-url record-id) title))
-
-(defn- block [& args]
-  (if (map? (first args))
-    [:fo:block (style :block (first args)) (rest args)]
-    [:fo:block (style :block) args]))
-
-(defn- inline [& args]
-  (let [default {}]
-    (if (map? (first args))
-      [:fo:inline (merge default (first args)) (rest args)]
-      [:fo:inline default args])))
-
-(defn- list-item [& args]
-  [:fo:list-item {:space-after "1em"}
-   [:fo:list-item-label [:fo:block]]
-   [:fo:list-item-body
-    args]])
-
-(defn- bold [& args]
-  (inline {:font-weight "bold"} args))
 
 (defn- narrators-sexp [narrators]
   (let [narrator (first narrators)]
@@ -379,57 +431,6 @@
        ;; XMP properties
        [:xmp:CreatorTool "Apache FOP"]]]]])
 
-(defn- bullet-list [& body]
-  [:fo:list-item
-   [:fo:list-item-label
-    {:end-indent "label-end()"}
-    [:fo:block (inline {:font-family "Symbol"} "•")]]
-   [:fo:list-item-body
-    {:start-indent "body-start()"}
-    (block body)]])
-
-(defmulti to-fop (fn [{:keys [tag attrs content]} _ _] tag))
-(defmethod to-fop :p [{content :content} _ _] (block {:space-before "17pt"} content))
-(defmethod to-fop :a [{content :content {href :href} :attrs} _ _]
-  (if (not-empty content)
-    (apply #(external-link href %) content)
-    (external-link href href)))
-(defmethod to-fop :h1 [{content :content} path path-to-numbers]
-  (heading :h1 (conj path (string/join content)) path-to-numbers))
-(defmethod to-fop :h2 [{content :content} path path-to-numbers]
-  (heading :h2 (conj path (string/join content)) path-to-numbers))
-(defmethod to-fop :h3 [{content :content} path path-to-numbers]
-  (heading :h3 (conj path (string/join content)) path-to-numbers))
-(defmethod to-fop :ul [{content :content} _ _] [:fo:list-block content])
-(defmethod to-fop :li [{content :content} _ _] (bullet-list content))
-(defmethod to-fop :em [{content :content} _ _] (inline {:font-style "italic"} content))
-(defmethod to-fop :strong [{content :content} _ _] (inline {:font-weight "bold"} content))
-(defmethod to-fop :br [_ _ _] [:fo:block ])
-(defmethod to-fop :default [{content :content} _ _] (apply block content)) ; just assume :p
-
-(defn- node? [node]
-  (and (map? node) (or (set/subset? #{:tag :content} (set (keys node))) (= (:tag node) :br))))
-
-(defn- visitor [node path path-to-numbers]
-  (if (node? node)
-    (to-fop node path path-to-numbers)
-    node))
-
-(defn md-to-fop [markdown path path-to-numbers]
-  (->>
-   markdown
-   endophile/mp
-   endophile/to-clj
-   (walk/postwalk #(visitor % path path-to-numbers))))
-
-(defn- md-extract-headings [markdown]
-  (->>
-   markdown
-   endophile/mp
-   endophile/to-clj
-   (filter #(#{:h1 :h2 :h3 :h4} (:tag %)))
-   (map (comp string/join :content))))
-
 (defn- branch? [node]
   (map? node))
 
@@ -526,6 +527,56 @@
        (toc subitems [] 3 path-to-numbers :heading? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
+
+(defn- image [path]
+  [:fo:block
+   [:fo:external-graphic {:src path}]])
+
+(defn- impressum [date]
+  (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
+    [:fo:block-container
+     (block "Herausgeber:")
+     (block creator)
+     (block "Grubenstrasse 12")
+     (block "CH-8045 Zürich")
+     (block "Fon +41 43 333 32 32")
+     (block "Fax +41 43 333 32 33")
+     (block (external-link "http://www.sbs.ch" "www.sbs.ch"))
+     (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"))
+     (block (format "© %s %s" (layout/year date) creator))]))
+
+(defn- cover-page [titles date]
+  [:fo:block-container
+   (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %)
+        (concat titles [(format "Stand 1.1.%s" (layout/year date))]))
+   (image (io/resource "images/sbs_logo.png"))
+   (impressum date)])
+
+(defmethod document-sexp :hörfilm
+  [items fmt _ _ {:keys [description date]
+                  :or {date (time.core/today)}}]
+  [:fo:root (style :font
+                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+                    :line-height "130%"
+                    :xml:lang "de"})
+   (layout-master-set)
+   (declarations (layout/translations :hörbuch) description)
+   [:fo:page-sequence {:master-reference "main"
+                       :initial-page-number "1"
+                       :language "de"}
+    (header :recto)
+    (header :verso)
+
+    (let [subitems (get items fmt)]
+      [:fo:flow {:flow-name "xsl-region-body"}
+       (cover-page ["Hörfilme in der SBS"
+                    "Filme mit Audiodeskription"
+                    "Gesamtkatalog"]
+                   date)
+       (block {:break-before "odd-page"}) ;; toc should start on recto
+       (toc subitems [fmt] 1 nil :heading? true)
+       (block {:break-before "odd-page"}) ;; the very first format should start on recto
+       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]

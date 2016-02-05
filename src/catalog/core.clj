@@ -45,3 +45,11 @@
    (layout.dtbook/dtbook (slurp editorial) (slurp recommendations))
    (->> (spit (io/file out)))))
 
+(defn hörfilme [in out]
+  (-> in
+   vubis/read-file
+   (vubis/order-and-group vubis/get-update-keys-hörfilm)
+   (layout.fop/document :hörfilm nil nil)
+   (layout.fop/generate-pdf! out)))
+
+

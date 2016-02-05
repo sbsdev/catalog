@@ -156,8 +156,7 @@
   parsed."
   [s]
   (when-let [year (and s (re-find #"\d{4}" s))]
-    (time.coerce/to-date
-     (time.format/parse (time.format/formatters :year) year))))
+    (time.format/parse (time.format/formatters :year) year)))
 
 (defn remove-nonprintable-chars [s]
   (and s (string/replace s #"[¶¬]" "")))
@@ -398,23 +397,27 @@
   For the neu-als-hörbuch all foreign language books need to ge
   grouped under `:literatur-in-fremdsprachen`, even kids books, so we
   need to group not only by `format`, `genre` and `sub-genre` but also
-  by `language`. "
-  [{fmt :format genre :genre subgenre :sub-genre language :language}]
+  by `language`."
+  [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
   (cond
-    (and (= fmt :hörbuch) (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
-    (= fmt :hörbuch) [fmt genre subgenre]
-    (#{:hörfilm :ludo} fmt) [fmt]
-    ;; file tactile books and musiknoten under braille with
-    ;; the original format as genre
-    (#{:taktilesbuch :musiknoten} fmt) [:braille fmt]
-    (= genre :kinder-und-jugendbücher) [fmt genre subgenre]
-    :else [fmt genre]))
+    (and (= fmt :hörbuch)
+         (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
+    :else (get-update-keys item)))
+
+(defn get-update-keys-hörfilm
+  "Return the update keys for a given item (see `get-update-keys`).
+  For the hörfilm catalog we need to group the :hörfilm items by genre."
+  [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
+  (cond
+    (#{:hörfilm} fmt) [fmt genre]
+    :else (get-update-keys item)))
 
 (def ^:private sort-order
   (apply hash-map
          (interleave
           (concat [:editorial :recommendation]
-                  layout/formats layout/braille-genres layout/subgenres
+                  layout/formats layout/braille-genres
+                  layout/movie-genres layout/subgenres
                   [:recommendations])
           (iterate inc 0))))
 
