@@ -560,7 +560,7 @@
                     :line-height "130%"
                     :xml:lang "de"})
    (layout-master-set)
-   (declarations (layout/translations :hörbuch) description)
+   (declarations (layout/translations fmt) description)
    [:fo:page-sequence {:master-reference "main"
                        :initial-page-number "1"
                        :language "de"}
