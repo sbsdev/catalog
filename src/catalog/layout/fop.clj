@@ -529,12 +529,12 @@
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
 (defn- image [path]
-  [:fo:block
+  [:fo:block {:space-before "120mm"}
    [:fo:external-graphic {:src path}]])
 
 (defn- impressum [date]
   (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
-    [:fo:block-container
+    [:fo:block-container {:space-before "10mm"}
      (block "Herausgeber:")
      (block creator)
      (block "Grubenstrasse 12")
