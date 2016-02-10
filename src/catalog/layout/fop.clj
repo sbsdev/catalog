@@ -198,17 +198,26 @@
       (wrap narrator "gelesen von: " " u.a. " false)
       (wrap narrator "gelesen von: "))))
 
-(defn- entry-heading-sexp
-  [creator record-id title subtitles name-of-part source-publisher source-date]
+(defmulti entry-heading-sexp (fn [{fmt :format}] fmt))
+(defmethod entry-heading-sexp :ludo
+  [{:keys [creator record-id title subtitles]}]
   (block {:keep-with-next "always"}
-     (bold (wrap creator "" ": " false)
-           (link-to-online-catalog record-id (layout/periodify title)))
-     (when subtitles " ")
-     (layout/render-subtitles subtitles)
-     (wrap name-of-part " ")
-     (when (or source-publisher source-date) " - ")
-     (wrap source-publisher "" (if source-date ", " "") false)
-     (wrap (layout/year source-date))))
+         (bold (link-to-online-catalog record-id (layout/periodify title)))
+         (when subtitles " ")
+         (layout/render-subtitles subtitles)
+         (wrap creator " " "" false)))
+
+(defmethod entry-heading-sexp :default
+  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date]}]
+  (block {:keep-with-next "always"}
+         (bold (wrap creator "" ": " false)
+               (link-to-online-catalog record-id (layout/periodify title)))
+         (when subtitles " ")
+         (layout/render-subtitles subtitles)
+         (wrap name-of-part " ")
+         (when (or source-publisher source-date) " - ")
+         (wrap source-publisher "" (if source-date ", " "") false)
+         (wrap (layout/year source-date))))
 
 (defn- ausleihe [signature]
   (when signature
@@ -227,11 +236,10 @@
 (defmulti entry-sexp (fn [{fmt :format}] fmt))
 
 (defmethod entry-sexp :hörbuch
-  [{:keys [creator record-id title subtitles name-of-part source-publisher
-           source-date genre-text description duration narrators producer-brief
-           produced-commercially? library-signature product-number price]}]
+  [{:keys [genre-text description duration narrators producer-brief
+           produced-commercially? library-signature product-number price] :as item}]
   (list-item
-   (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
+   (entry-heading-sexp item)
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (block (wrap duration "" " Min., " false) (narrators-sexp narrators))
@@ -241,11 +249,10 @@
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " product-number ", " price))))
 
 (defmethod entry-sexp :braille
-  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-           genre-text description producer-brief rucksackbuch? rucksackbuch-number
-           library-signature product-number price]}]
+  [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
+           library-signature product-number price] :as item}]
   (list-item
-   (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
+   (entry-heading-sexp item)
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (block producer-brief (if rucksackbuch? (str ", Rucksackbuch Nr. " rucksackbuch-number) "") ".")
@@ -253,10 +260,9 @@
    (verkauf product-number price)))
 
 (defmethod entry-sexp :grossdruck
-  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-           genre-text description library-signature volumes product-number price]}]
+  [{:keys [genre-text description library-signature volumes product-number price] :as item}]
   (list-item
-   (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
+   (entry-heading-sexp item)
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (when library-signature
@@ -266,21 +272,18 @@
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price))))
 
 (defmethod entry-sexp :e-book
-  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-           genre-text description library-signature]}]
+  [{:keys [genre-text description library-signature] :as item}]
   (list-item
-   (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
+   (entry-heading-sexp item)
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (ausleihe library-signature)))
 
 (defmethod entry-sexp :hörfilm
-  [{:keys [record-id title subtitles directed-by actors movie_country genre-text
-           description producer library-signature]}]
+  [{:keys [directed-by actors movie_country genre-text
+           description producer library-signature] :as item}]
   (list-item
-   (block {:keep-with-next "always"}
-     (bold (link-to-online-catalog record-id (layout/periodify title)))
-     (layout/render-subtitles subtitles))
+   (entry-heading-sexp item)
    (block (wrap directed-by "Regie: " "") (wrap actors " Schauspieler: " ""))
    (block (wrap movie_country))
    (block (wrap genre-text))
@@ -289,13 +292,10 @@
    (ausleihe library-signature)))
 
 (defmethod entry-sexp :ludo
-  [{:keys [record-id title subtitles creator source-publisher genre-text description
-           game-description accompanying-material library-signature]}]
+  [{:keys [source-publisher genre-text description
+           game-description accompanying-material library-signature] :as item}]
   (list-item
-   (block {:keep-with-next "always"}
-     (bold (link-to-online-catalog record-id (layout/periodify title)))
-     (layout/render-subtitles subtitles)
-     (layout/wrap creator " "))
+   (entry-heading-sexp item)
    (block (wrap source-publisher))
    (block (wrap genre-text))
    (block (wrap description))
@@ -303,20 +303,18 @@
    (ausleihe library-signature)))
 
 (defmethod entry-sexp :musiknoten
-  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-           description producer-brief library-signature product-number price]}]
+  [{:keys [description producer-brief library-signature product-number price] :as item}]
   (list-item
-   (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
+   (entry-heading-sexp item)
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
    (verkauf product-number price)))
 
 (defmethod entry-sexp :taktilesbuch
-  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date
-           description producer-brief library-signature product-number price]}]
+  [{:keys [description producer-brief library-signature product-number price] :as item}]
   (list-item
-   (entry-heading-sexp creator record-id title subtitles name-of-part source-publisher source-date)
+   (entry-heading-sexp item)
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
