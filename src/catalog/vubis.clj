@@ -407,7 +407,7 @@
   grouped under `:literatur-in-fremdsprachen`, even kids books, so we
   need to group not only by `format`, `genre` and `sub-genre` but also
   by `language`."
-  [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
+  [{fmt :format language :language :as item}]
   (cond
     (and (= fmt :hörbuch)
          (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
@@ -416,7 +416,7 @@
 (defn get-update-keys-hörfilm
   "Return the update keys for a given item (see `get-update-keys`).
   For the hörfilm catalog we need to group the :hörfilm items by genre."
-  [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
+  [{fmt :format genre :genre :as item}]
   (cond
     (#{:hörfilm} fmt) [fmt genre]
     :else (get-update-keys item)))
@@ -425,7 +425,7 @@
   "Return the update keys for a given item (see `get-update-keys`).
   For the ludo catalog we need to group all other formats under the
   genre :bücher-über-spiel."
-  [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
+  [{fmt :format genre :genre :as item}]
   (cond
     (not= fmt :ludo) [:ludo :bücher-über-spiel]
     :else [fmt genre]))
