@@ -528,9 +528,14 @@
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
-(defn- image [path]
+(defn- logo []
   [:fo:block
-   [:fo:external-graphic {:src path}]])
+   [:fo:external-graphic
+    {:src (io/resource "images/sbs_logo.jpg")
+     :height "25mm"
+     :scaling "uniform"
+     :content-width "scale-to-fit"
+     :content-height "scale-to-fit"}]])
 
 (defn- impressum [date]
   (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
@@ -549,7 +554,7 @@
   [:fo:block-container
    (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %)
         (concat titles [(format "Stand 1.1.%s" (layout/year date))]))
-   (image (io/resource "images/sbs_logo.png"))
+   (logo)
    (impressum date)])
 
 (defmethod document-sexp :hörfilm
