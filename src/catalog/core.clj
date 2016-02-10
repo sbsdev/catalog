@@ -48,8 +48,13 @@
 (defn hörfilme-all [in out]
   (-> in
    vubis/read-file
-   (vubis/order-and-group vubis/get-update-keys-hörfilm)
+   (vubis/order-and-group vubis/get-update-keys-hörfilm-ludo)
    (layout.fop/document :hörfilm nil nil)
    (layout.fop/generate-pdf! out)))
 
-
+(defn ludo-all [in out]
+  (-> in
+   vubis/read-file
+   (vubis/order-and-group vubis/get-update-keys-hörfilm-ludo)
+   (layout.fop/document :ludo nil nil)
+   (layout.fop/generate-pdf! out)))

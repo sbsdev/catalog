@@ -15,6 +15,9 @@
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
 (def movie-genres [:spielfilm :mundartfilm :dokumentarfilm])
+(def game-genres [:lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
+                  :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
+                  :bücher-über-spiel])
 (def braille-genres (conj genres :musiknoten :taktilesbuch))
 (def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :glaube-und-philosophie

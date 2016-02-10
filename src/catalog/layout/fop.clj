@@ -528,9 +528,14 @@
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
-(defn- image [path]
+(defn- logo []
   [:fo:block {:space-before "120mm"}
-   [:fo:external-graphic {:src path}]])
+   [:fo:external-graphic
+    {:src (io/resource "images/sbs_logo.jpg")
+     :height "25mm"
+     :scaling "uniform"
+     :content-width "scale-to-fit"
+     :content-height "scale-to-fit"}]])
 
 (defn- impressum [date]
   (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
@@ -549,7 +554,7 @@
   [:fo:block-container
    (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %)
         (concat titles [(format "Stand 1.1.%s" (layout/year date))]))
-   (image (io/resource "images/sbs_logo.png"))
+   (logo)
    (impressum date)])
 
 (defmethod document-sexp :hörfilm
@@ -572,6 +577,30 @@
        (cover-page ["Hörfilme in der SBS"
                     "Filme mit Audiodeskription"
                     "Gesamtkatalog"]
+                   date)
+       (block {:break-before "odd-page"}) ;; toc should start on recto
+       (toc subitems [fmt] 1 nil :heading? true)
+       (block {:break-before "odd-page"}) ;; the very first format should start on recto
+       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
+
+(defmethod document-sexp :ludo
+  [items fmt _ _ {:keys [description date]
+                  :or {date (time.core/today)}}]
+  [:fo:root (style :font
+                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+                    :line-height "130%"
+                    :xml:lang "de"})
+   (layout-master-set)
+   (declarations (layout/translations fmt) description)
+   [:fo:page-sequence {:master-reference "main"
+                       :initial-page-number "1"
+                       :language "de"}
+    (header :recto)
+    (header :verso)
+
+    (let [subitems (get items fmt)]
+      [:fo:flow {:flow-name "xsl-region-body"}
+       (cover-page ["Spiele in der SBS" "Gesamtkatalog"]
                    date)
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 nil :heading? true)
