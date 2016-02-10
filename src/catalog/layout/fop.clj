@@ -527,10 +527,10 @@
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
 (defn- logo []
-  [:fo:block {:space-before "120mm"}
+  [:fo:block {:space-before "110mm"}
    [:fo:external-graphic
     {:src (io/resource "images/sbs_logo.jpg")
-     :height "25mm"
+     :height "35mm"
      :scaling "uniform"
      :content-width "scale-to-fit"
      :content-height "scale-to-fit"}]])
