@@ -55,6 +55,6 @@
 (defn ludo-all [in out]
   (-> in
    vubis/read-file
-   (vubis/order-and-group vubis/get-update-keys-hörfilm-ludo)
+   (vubis/order-and-group vubis/get-update-keys-ludo)
    (layout.fop/document :ludo nil nil)
    (layout.fop/generate-pdf! out)))

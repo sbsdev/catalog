@@ -413,13 +413,22 @@
          (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
     :else (get-update-keys item)))
 
-(defn get-update-keys-hörfilm-ludo
+(defn get-update-keys-hörfilm
   "Return the update keys for a given item (see `get-update-keys`).
   For the hörfilm catalog we need to group the :hörfilm items by genre."
   [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
   (cond
-    (#{:hörfilm :ludo} fmt) [fmt genre]
+    (#{:hörfilm} fmt) [fmt genre]
     :else (get-update-keys item)))
+
+(defn get-update-keys-ludo
+  "Return the update keys for a given item (see `get-update-keys`).
+  For the ludo catalog we need to group all other formats under the
+  genre :bücher-über-spiel."
+  [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
+  (cond
+    (not= fmt :ludo) [:ludo :bücher-über-spiel]
+    :else [fmt genre]))
 
 (def ^:private sort-order
   (apply hash-map
