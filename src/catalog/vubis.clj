@@ -68,6 +68,19 @@
    "s" :sachbücher
    "k" :kinder-und-jugendbücher})
 
+(def genre-raw-to-ludo-genre
+  "Mapping between genre-raw and ludo genre"
+  {"l01" :lernspiel
+   "l02" :solitairspiel
+   "l03" :denkspiel
+   "l04" :geschicklichkeitsspiel
+   "l05" :kartenspiel
+   "l06" :legespiel
+   "l07" :rollenspiel
+   "l08" :würfelspiel
+   "l09" :ratespiel
+   "l10" :bücher-über-spiel})
+
 (def genre-raw-to-subgenre
   "Mapping between genre-raw and subgenre"
   {"b01" :action-und-thriller
@@ -229,6 +242,7 @@
                   :source source
                   :language (iso-639-2-to-iso-639-1 language)
                   :genre (or (genre-raw-to-genre (trunc genre 1))
+                             (genre-raw-to-ludo-genre (trunc genre 3))
                              (genre-code-to-genre (trunc genre-code 2)))
                   :sub-genre (genre-raw-to-subgenre (trunc genre 3))
                   :genre-text genre-text
@@ -281,11 +295,6 @@
                     :actors actors))
       :ludo (-> item
                 (assoc-some
-                 ;; FIXME: in the future we will have the genre of the
-                 ;; game encoded in MARC21 but this hasn't been done
-                 ;; in the libary. So for now just say it is of
-                 ;; genre :spiel
-                 :genre :spiel
                  :game-description game-description
                  :accompanying-material accompanying-material))
 
@@ -404,12 +413,12 @@
          (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
     :else (get-update-keys item)))
 
-(defn get-update-keys-hörfilm
+(defn get-update-keys-hörfilm-ludo
   "Return the update keys for a given item (see `get-update-keys`).
   For the hörfilm catalog we need to group the :hörfilm items by genre."
   [{fmt :format genre :genre subgenre :sub-genre language :language :as item}]
   (cond
-    (#{:hörfilm} fmt) [fmt genre]
+    (#{:hörfilm :ludo} fmt) [fmt genre]
     :else (get-update-keys item)))
 
 (def ^:private sort-order
@@ -417,6 +426,7 @@
          (interleave
           (concat [:editorial :recommendation]
                   layout/formats layout/braille-genres
+                  layout/game-genres
                   layout/movie-genres layout/subgenres
                   [:recommendations])
           (iterate inc 0))))

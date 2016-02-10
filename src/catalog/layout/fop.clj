@@ -578,6 +578,30 @@
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
 
+(defmethod document-sexp :ludo
+  [items fmt _ _ {:keys [description date]
+                  :or {date (time.core/today)}}]
+  [:fo:root (style :font
+                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+                    :line-height "130%"
+                    :xml:lang "de"})
+   (layout-master-set)
+   (declarations (layout/translations fmt) description)
+   [:fo:page-sequence {:master-reference "main"
+                       :initial-page-number "1"
+                       :language "de"}
+    (header :recto)
+    (header :verso)
+
+    (let [subitems (get items fmt)]
+      [:fo:flow {:flow-name "xsl-region-body"}
+       (cover-page ["Spiele in der SBS" "Gesamtkatalog"]
+                   date)
+       (block {:break-before "odd-page"}) ;; toc should start on recto
+       (toc subitems [fmt] 1 nil :heading? true)
+       (block {:break-before "odd-page"}) ;; the very first format should start on recto
+       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
+
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
   [:fo:root (style :font
