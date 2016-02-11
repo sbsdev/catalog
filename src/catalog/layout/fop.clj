@@ -314,9 +314,10 @@
    (verkauf product-number price)))
 
 (defmethod entry-sexp :taktilesbuch
-  [{:keys [description producer-brief library-signature product-number price] :as item}]
+  [{:keys [genre-text description producer-brief library-signature product-number price] :as item}]
   (list-item
    (entry-heading-sexp item)
+   (block (wrap genre-text "Genre: "))
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
