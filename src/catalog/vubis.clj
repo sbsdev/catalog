@@ -430,6 +430,15 @@
     (not= fmt :ludo) [:ludo :bücher-über-spiel]
     :else [fmt genre]))
 
+(defn get-update-keys-taktil
+  "Return the update keys for a given item (see `get-update-keys`).
+  For the ludo catalog we need to group all other formats under the
+  genre :bücher-über-spiel."
+  [{fmt :format genre :genre :as item}]
+  (cond
+    (= fmt :taktilesbuch) [fmt genre]
+    :else (get-update-keys item)))
+
 (def ^:private sort-order
   (apply hash-map
          (interleave

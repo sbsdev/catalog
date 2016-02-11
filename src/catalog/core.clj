@@ -58,3 +58,10 @@
    (vubis/order-and-group vubis/get-update-keys-ludo)
    (layout.fop/document :ludo nil nil)
    (layout.fop/generate-pdf! out)))
+
+(defn taktil-all [in out]
+  (-> in
+   vubis/read-file
+   (vubis/order-and-group vubis/get-update-keys-taktil)
+   (layout.fop/document :taktilesbuch nil nil)
+   (layout.fop/generate-pdf! out)))
