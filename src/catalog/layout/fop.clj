@@ -255,7 +255,9 @@
    (entry-heading-sexp item)
    (block (wrap genre-text "Genre: "))
    (block (wrap description))
-   (block producer-brief (if rucksackbuch? (str ", Rucksackbuch Nr. " rucksackbuch-number) "") ".")
+   (block (wrap producer-brief "" (if rucksackbuch?
+                                    (str ", Rucksackbuch Nr. " rucksackbuch-number)
+                                    "")))
    (ausleihe-multi library-signature)
    (verkauf product-number price)))
 
