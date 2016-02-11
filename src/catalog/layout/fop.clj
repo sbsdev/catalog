@@ -16,6 +16,8 @@
 
 (def ^:private region-body-margin-top 15)
 
+(def ^:dynamic *show-genre* true)
+
 (defn- to-mm [n]
   (format "%smm" n))
 
@@ -240,7 +242,8 @@
            produced-commercially? library-signature product-number price] :as item}]
   (list-item
    (entry-heading-sexp item)
-   (block (wrap genre-text "Genre: "))
+   (when *show-genre*
+     (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (block (wrap duration "" " Min., " false) (narrators-sexp narrators))
    (block producer-brief (if produced-commercially? ", Hörbuch aus dem Handel" "") ".")
@@ -253,7 +256,8 @@
            library-signature product-number price] :as item}]
   (list-item
    (entry-heading-sexp item)
-   (block (wrap genre-text "Genre: "))
+   (when *show-genre*
+     (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (block (wrap producer-brief "" (if rucksackbuch?
                                     (str ", Rucksackbuch Nr. " rucksackbuch-number)
@@ -265,7 +269,8 @@
   [{:keys [genre-text description library-signature volumes product-number price] :as item}]
   (list-item
    (entry-heading-sexp item)
-   (block (wrap genre-text "Genre: "))
+   (when *show-genre*
+     (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (when library-signature
      (block {:keep-with-previous "always"}
@@ -277,7 +282,8 @@
   [{:keys [genre-text description library-signature] :as item}]
   (list-item
    (entry-heading-sexp item)
-   (block (wrap genre-text "Genre: "))
+   (when *show-genre*
+     (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (ausleihe library-signature)))
 
@@ -288,7 +294,8 @@
    (entry-heading-sexp item)
    (block (wrap directed-by "Regie: " "") (wrap actors " Schauspieler: " ""))
    (block (wrap movie_country))
-   (block (wrap genre-text))
+   (when *show-genre*
+     (block (wrap genre-text)))
    (block (wrap description))
    (block (wrap producer))
    (ausleihe library-signature)))
@@ -299,7 +306,8 @@
   (list-item
    (entry-heading-sexp item)
    (block (wrap source-publisher))
-   (block (wrap genre-text))
+   (when *show-genre*
+     (block (wrap genre-text)))
    (block (wrap description))
    (block (wrap game-description))
    (ausleihe library-signature)))
@@ -317,7 +325,8 @@
   [{:keys [genre-text description producer-brief library-signature product-number price] :as item}]
   (list-item
    (entry-heading-sexp item)
-   (block (wrap genre-text "Genre: "))
+   (when *show-genre*
+     (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
@@ -467,6 +476,20 @@
   [tree]
   (apply hash-map (tree-walk tree [] [])))
 
+(defn- realize-lazy-seqs
+  "Realize all lazy sequences within `tree` to make sure the
+  evaluation is done within a `binding` scope"
+  [tree]
+  ;; FIXME: there is a subtle bug to do with bindings and lazy
+  ;; sequences. When returning a lazy seq the actual realization
+  ;; might happen outside the `binding` scope and hence might get
+  ;; the wrong value. So as a workaround we make sure
+  ;; the sequence is fully realized.
+  ;; See also http://stackoverflow.com/a/32290387 and
+  ;; http://cemerick.com/2009/11/03/be-mindful-of-clojures-binding/
+  ;; Maybe the binding solution isn't the bees knees after all.
+  (walk/postwalk identity tree))
+
 (defmulti document-sexp (fn [items fmt editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
@@ -491,14 +514,7 @@
                                 :recommendation recommendations))]
         [:fo:flow {:flow-name "xsl-region-body"}
          (toc subitems [fmt] 2 nil :heading? true)
-         ;; FIXME: there is a subtle bug to do with bindings and lazy
-         ;; sequences. Since we return a lazy seq here the mapcat
-         ;; might be realized outside the binding scope and might get
-         ;; the wrong *stylesheet*. So as a workaround we make sure
-         ;; the sequence is fully realized with `doall` (see also
-         ;; http://cemerick.com/2009/11/03/be-mindful-of-clojures-binding/).
-         ;; Maybe the binding solution isn't the bees knees after all.
-         (doall
+         (realize-lazy-seqs
           (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
@@ -584,7 +600,9 @@
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 nil :heading? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
+       (binding [*show-genre* false]
+         (realize-lazy-seqs
+          (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))))])]])
 
 (defmethod document-sexp :ludo
   [items fmt _ _ {:keys [description date]
@@ -608,7 +626,9 @@
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 nil :heading? true)
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
+       (binding [*show-genre* false]
+         (realize-lazy-seqs
+          (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))))])]])
 
 (defmethod document-sexp :taktilesbuch
   [items fmt _ _ {:keys [description date]
