@@ -527,7 +527,7 @@
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
 (defn- logo []
-  [:fo:block {:space-before "110mm"}
+  [:fo:block {:space-before "100mm" :text-align "right" :end-indent "20mm"}
    [:fo:external-graphic
     {:src (io/resource "images/sbs_logo.jpg")
      :height "35mm"
@@ -535,7 +535,7 @@
      :content-width "scale-to-fit"
      :content-height "scale-to-fit"}]])
 
-(defn- impressum [date]
+(defn- impressum []
   (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
     [:fo:block-container {:space-before "10mm"}
      (block "Herausgeber:")
@@ -546,14 +546,15 @@
      (block "Fax +41 43 333 32 33")
      (block (external-link "http://www.sbs.ch" "www.sbs.ch"))
      (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"))
-     (block (format "© %s %s" (layout/year date) creator))]))
+     (block {:space-before "5mm"} (format "© %s" creator))]))
 
 (defn- cover-page [titles date]
   [:fo:block-container
-   (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %)
-        (concat titles [(format "Stand 1.1.%s" (layout/year date))]))
+   (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %) titles)
+   (block (style :h2 {:break-before "auto" :space-after "5pt"})
+          (format "Gesamtkatalog, Stand 1.1.%s" (layout/year date)))
    (logo)
-   (impressum date)])
+   (impressum)])
 
 (defmethod document-sexp :hörfilm
   [items fmt _ _ {:keys [description date]
@@ -573,8 +574,7 @@
     (let [subitems (get items fmt)]
       [:fo:flow {:flow-name "xsl-region-body"}
        (cover-page ["Hörfilme in der SBS"
-                    "Filme mit Audiodeskription"
-                    "Gesamtkatalog"]
+                    "Filme mit Audiodeskription"]
                    date)
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 nil :heading? true)
@@ -598,7 +598,13 @@
 
     (let [subitems (get items fmt)]
       [:fo:flow {:flow-name "xsl-region-body"}
-       (cover-page ["Spiele in der SBS" "Gesamtkatalog"]
+       (cover-page ["Spiele in der SBS"]
+                   date)
+       (block {:break-before "odd-page"}) ;; toc should start on recto
+       (toc subitems [fmt] 1 nil :heading? true)
+       (block {:break-before "odd-page"}) ;; the very first format should start on recto
+       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
+
                    date)
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 nil :heading? true)
