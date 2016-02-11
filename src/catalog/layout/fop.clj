@@ -345,9 +345,11 @@
    [(heading (level-to-h level) [fmt genre] path-to-numbers)
     (set-marker (layout/translations genre))
     (cond
-      ;; handle the special case where the editorial or the recommendations are passed in the tree
+      ;; special case where the editorial or the recommendations are passed in the tree
       (#{:editorial :recommendations :recommendation} genre) (md-to-fop items
                                                                         [fmt genre] path-to-numbers)
+      ;; special case when printing the whole catalog of tactile books
+      (#{:taktilesbuch} fmt) (entries-sexp items)
       (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
       (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
       :else (entries-sexp items))]))
