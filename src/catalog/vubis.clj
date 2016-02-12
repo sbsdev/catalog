@@ -150,7 +150,8 @@
 (def braille-grade-raw-to-braille-grade
   "Mapping between braille-grade-raw and braille-grade"
   {"kr" :kurzschrift
-   "vd" :vollschrift})
+   "vd" :vollschrift
+   "ka" :schachschrift})
 
 (def braille-music-grade-raw-to-braille-grade
   "Mapping between braille-music-grade-raw and braille-grade"

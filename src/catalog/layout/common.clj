@@ -85,8 +85,10 @@
                              :bücher-über-spiel "Bücher über Spiele"
                              [:kurzschrift false] "Kurzschrift"
                              [:vollschrift false] "Vollschrift"
+                             [:schachschrift false] "Schachschrift"
                              [:kurzschrift true] "Weitzeilige Kurzschrift"
                              [:vollschrift true] "Weitzeilige Vollschrift"
+                             [:schachschrift true] "Weitzeilige Schachschrift"
                              :editorial "Editorial"
                              :recommendation "Buchtipp"
                              :recommendations "Buchtipps"})
@@ -144,7 +146,7 @@
 (defn braille-signatures [items]
   (->>
    [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
-    [nil true] [nil false]]
+    [:schachschrift true] [:schachschrift false] [nil true] [nil false]]
    (keep (fn [k] (braille-signature (first (get items k)))))
    (string/join ". ")))
 
