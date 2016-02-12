@@ -334,7 +334,7 @@
 
 (defn entries-sexp [items]
   [:fo:list-block
-   (for [item items] (entry-sexp item))])
+   (map entry-sexp items)])
 
 (defn- level-to-h [level]
   (keyword (str "h" level)))
