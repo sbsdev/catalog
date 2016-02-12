@@ -149,8 +149,9 @@ Schriftart = ["Kurzschrift" "Vollschrift" "Weitzeilige Vollschrift"]
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
   Materialdetails.
   *Ausleihe:* XX 12345
-** Neue taktile Bücher
+** Neue Taktile Bücher
 *Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
+  Genre: Bilderbücher
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique.
   DZB, Leipzig.
   *Ausleihe:* Kurzschrift, 5 Bd., DS 12345. Vollschrift, 7 Bd., DS 12346, Weitzeilige Vollschrift, 10 Bd., DS 45678
