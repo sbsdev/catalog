@@ -33,6 +33,7 @@
    :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
+   :personel-text [:datafield (attr= :tag "245") :subfield (attr= :code "c")] ; Regie/Darsteller bei Hörfilm
    :braille-grade [:datafield (attr= :tag "392") :subfield (attr= :code "a")] ; Schriftart Braille
    :double-spaced? [:datafield (attr= :tag "392") :subfield (attr= :code "g")] ; Weitzeiliger Druck
    :braille-music-grade [:datafield (attr= :tag "393") :subfield (attr= :code "a")] ; Schriftart Braille
@@ -229,7 +230,7 @@
            volumes narrators producer-long
            game-description double-spaced?
            braille-grade
-           directed-by actors
+           directed-by actors personel-text
            accompanying-material braille-music-grade] :as item
     :or {genre "x01" ; an invalid genre
          genre-code "x0"}}] ; an invalid genre-code
@@ -301,7 +302,8 @@
                                         (second (re-find #"^Originalversion: (.*)$" general-note)))
                     :producer producer-long
                     :directed-by directed-by
-                    :actors actors))
+                    :actors actors
+                    :personel-text personel-text))
       :ludo (-> item
                 (assoc-some
                  :game-description game-description

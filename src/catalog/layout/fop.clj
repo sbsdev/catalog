@@ -288,11 +288,11 @@
    (ausleihe library-signature)))
 
 (defmethod entry-sexp :hörfilm
-  [{:keys [directed-by actors movie_country genre-text
+  [{:keys [personel-text movie_country genre-text
            description producer library-signature] :as item}]
   (list-item
    (entry-heading-sexp item)
-   (block (wrap directed-by "Regie: " "") (wrap actors " Schauspieler: " ""))
+   (block (wrap personel-text))
    (block (wrap movie_country))
    (when *show-genre*
      (block (wrap genre-text)))
