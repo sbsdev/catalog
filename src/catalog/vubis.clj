@@ -138,8 +138,16 @@
    40 "BIT, München"
    50 "BSVÖ, Wien"
    103 "Paderborn"
+   104 "VzFB, Hannover"
+   106 "BBI, Wien"
+   108 "Stiftung für blinde und sehbehinderte Kinder und Jugendliche"
+   110 "SZB, St. Gallen"
    111 "RNIB, London"
-   120 "Braillists, Princeton"})
+   112 "Velen Integrationsspiel"
+   114 "IKS, Kassel"
+   120 "Braillists, Princeton"
+   121 "Bartkowski, München"
+   122 "Freunde blinder und sehbehinderter Kinder, Hamburg"})
 
 (def genre-code-to-genre
   "Mapping between genre-code and genre. Used for movies"
