@@ -138,7 +138,7 @@
    25 "CAB, Landschlacht"
    40 "BIT, München"
    50 "BSVÖ, Wien"
-   103 "Paderborn"
+   103 "Blindenschrift-Verlag, Paderborn"
    104 "VzFB, Hannover"
    106 "BBI, Wien"
    108 "Stiftung für blinde und sehbehinderte Kinder und Jugendliche"
