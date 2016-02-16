@@ -548,7 +548,7 @@
        (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
 
 (defn- logo []
-  [:fo:block {:space-before "100mm" :text-align "right" :end-indent "20mm"}
+  [:fo:block {:space-before "100mm" :text-align "right"}
    [:fo:external-graphic
     {:src (io/resource "images/sbs_logo.jpg")
      :height "35mm"
@@ -558,7 +558,8 @@
 
 (defn- impressum []
   (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
-    [:fo:block-container {:space-before "10mm"}
+    [:fo:block-container {:break-before "page"}
+     (block {:space-after "175mm"} )
      (block "Herausgeber:")
      (block creator)
      (block "Grubenstrasse 12")
@@ -571,6 +572,7 @@
 
 (defn- cover-page [titles date]
   [:fo:block-container
+   (block {:space-after "50mm"} )
    (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %) titles)
    (block (style :h2 {:break-before "auto" :space-after "5pt"})
           (format "Gesamtkatalog, Stand 1.1.%s" (layout/year date)))
