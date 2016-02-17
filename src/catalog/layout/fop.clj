@@ -513,7 +513,8 @@
           (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
-  [items fmt editorial recommendations {:keys [description date]}]
+  [items fmt editorial recommendations {:keys [description date]
+                                        :or {date (time.core/today)}}]
   [:fo:root (style :font
                    {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
                     :line-height "130%"
@@ -536,7 +537,8 @@
           path-to-numbers (path-to-number subitems)]
       [:fo:flow {:flow-name "xsl-region-body"}
        ;; Cover page
-       [:fo:block (style :h1) (format "Neu als Hörbuch Nr. %s" date)]
+       [:fo:block (style :h1)
+        (format "Neu als Hörbuch Nr. %s/%s" (layout/volume-number date) (layout/year date))]
        (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
