@@ -16,8 +16,6 @@
 
 (def ^:private region-body-margin-top 15)
 
-(def ^:dynamic *show-genre* true)
-
 (defn- to-mm [n]
   (format "%smm" n))
 
@@ -52,15 +50,12 @@
     (str (string/join "." numbers) ". ")))
 
 (defn heading
-  ([level path]
-   (heading level path []))
-  ([level path path-to-numbers]
-   [:fo:block (style level
-                     {:id (hash path)})
-    (when-let [numbers (get path-to-numbers path)]
-      (section-numbers numbers))
-    (let [title (last path)]
-      (if (keyword? title) (layout/translations title) title))]))
+  [level path {:keys [path-to-numbers]}]
+  [:fo:block (style level {:id (hash path)})
+   (when-let [numbers (get path-to-numbers path)]
+     (section-numbers numbers))
+   (let [title (last path)]
+     (if (keyword? title) (layout/translations title) title))])
 
 (def ^:private running-header-class-name "running-header")
 
@@ -125,12 +120,12 @@
   (if (not-empty content)
     (apply #(external-link href %) content)
     (external-link href href)))
-(defmethod to-fop :h1 [{content :content} path path-to-numbers]
-  (heading :h1 (conj path (string/join content)) path-to-numbers))
-(defmethod to-fop :h2 [{content :content} path path-to-numbers]
-  (heading :h2 (conj path (string/join content)) path-to-numbers))
-(defmethod to-fop :h3 [{content :content} path path-to-numbers]
-  (heading :h3 (conj path (string/join content)) path-to-numbers))
+(defmethod to-fop :h1 [{content :content} path opts]
+  (heading :h1 (conj path (string/join content)) opts))
+(defmethod to-fop :h2 [{content :content} path opts]
+  (heading :h2 (conj path (string/join content)) opts))
+(defmethod to-fop :h3 [{content :content} path opts]
+  (heading :h3 (conj path (string/join content)) opts))
 (defmethod to-fop :ul [{content :content} _ _] [:fo:list-block content])
 (defmethod to-fop :li [{content :content} _ _] (bullet-list content))
 (defmethod to-fop :em [{content :content} _ _] (inline {:font-style "italic"} content))
@@ -141,17 +136,17 @@
 (defn- node? [node]
   (and (map? node) (or (set/subset? #{:tag :content} (set (keys node))) (= (:tag node) :br))))
 
-(defn- visitor [node path path-to-numbers]
+(defn- visitor [node path opts]
   (if (node? node)
-    (to-fop node path path-to-numbers)
+    (to-fop node path opts)
     node))
 
-(defn md-to-fop [markdown path path-to-numbers]
+(defn md-to-fop [markdown path opts]
   (->>
    markdown
    endophile/mp
    endophile/to-clj
-   (walk/postwalk #(visitor % path path-to-numbers))))
+   (walk/postwalk #(visitor % path opts))))
 
 (defn- md-extract-headings [markdown]
   (->>
@@ -162,37 +157,35 @@
    (map (comp string/join :content))))
 
 (defn- toc-entry
-  ([items path path-to-numbers depth]
-   (toc-entry items path path-to-numbers depth 1))
-  ([items path path-to-numbers depth current-depth]
-   [:fo:block {:text-align-last "justify" :role "TOCI"
-               :start-indent (str (- current-depth 1) "em")}
-    [:fo:basic-link {:internal-destination (hash path)}
-     (inline {:role "Reference"}
-             (when-let [numbers (get path-to-numbers path)] (section-numbers numbers))
-             (let [title (last path)]
-               (if (keyword? title) (layout/translations title) title)))
-     " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
-     [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
-    (cond
-      (and (map? items) (< current-depth depth))
-      (map #(toc-entry (get items %) (conj path %) path-to-numbers depth (inc current-depth))
-           (keys items))
-      ;; check for headings in markdown
-      (and (string? items)
-           ;; only show in the toc if there are multiple headings (I
-           ;; guess this is a weird way of saying we don't want any
-           ;; subheadings in the toc for :grossdruck)
-           (< 1 (count (md-extract-headings items))))
-      (map #(toc-entry % (conj path %) path-to-numbers depth (inc current-depth))
-           (md-extract-headings items)))]))
+  [items path depth current-depth {:keys [path-to-numbers] :as opts}]
+  [:fo:block {:text-align-last "justify" :role "TOCI"
+              :start-indent (str (- current-depth 1) "em")}
+   [:fo:basic-link {:internal-destination (hash path)}
+    (inline {:role "Reference"}
+            (when-let [numbers (get path-to-numbers path)] (section-numbers numbers))
+            (let [title (last path)]
+              (if (keyword? title) (layout/translations title) title)))
+    " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
+    [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
+   (cond
+     (and (map? items) (< current-depth depth))
+     (map #(toc-entry (get items %) (conj path %) depth (inc current-depth) opts)
+          (keys items))
+     ;; check for headings in markdown
+     (and (string? items)
+          ;; only show in the toc if there are multiple headings (I
+          ;; guess this is a weird way of saying we don't want any
+          ;; subheadings in the toc for :grossdruck)
+          (< 1 (count (md-extract-headings items))))
+     (map #(toc-entry % (conj path %) depth (inc current-depth) opts)
+          (md-extract-headings items)))])
 
-(defn toc [items path depth path-to-numbers & {:keys [heading?]}]
+(defn toc [items path depth {:keys [heading?] :as opts}]
   (when (map? items)
     [:fo:block {:line-height "150%"
                 :role "TOC"}
-     (when heading? (heading :h1 [:inhalt]))
-     (map #(toc-entry (get items %) (conj path %) path-to-numbers depth) (keys items))]))
+     (when heading? (heading :h1 [:inhalt] opts))
+     (map #(toc-entry (get items %) (conj path %) depth 1 opts) (keys items))]))
 
 (defn- narrators-sexp [narrators]
   (let [narrator (first narrators)]
@@ -235,14 +228,15 @@
     (block {:keep-with-previous "always"}
            (bold "Verkauf:") " " price ". " (layout/braille-signatures product-number))))
 
-(defmulti entry-sexp (fn [{fmt :format}] fmt))
+(defmulti entry-sexp (fn [{fmt :format} opts] fmt))
 
 (defmethod entry-sexp :hörbuch
   [{:keys [genre-text description duration narrators producer-brief
-           produced-commercially? library-signature product-number price] :as item}]
+           produced-commercially? library-signature product-number price] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (block (wrap duration "" " Min., " false) (narrators-sexp narrators))
@@ -253,10 +247,11 @@
 
 (defmethod entry-sexp :braille
   [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
-           library-signature product-number price] :as item}]
+           library-signature product-number price] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (block (wrap producer-brief "" (if rucksackbuch?
@@ -266,10 +261,11 @@
    (verkauf product-number price)))
 
 (defmethod entry-sexp :grossdruck
-  [{:keys [genre-text description library-signature volumes product-number price] :as item}]
+  [{:keys [genre-text description library-signature volumes product-number price] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (when library-signature
@@ -279,22 +275,24 @@
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price))))
 
 (defmethod entry-sexp :e-book
-  [{:keys [genre-text description library-signature] :as item}]
+  [{:keys [genre-text description library-signature] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (ausleihe library-signature)))
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text
-           description producer library-signature] :as item}]
+           description producer library-signature] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
    (block (wrap personel-text))
    (block (wrap movie_country))
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text)))
    (block (wrap description))
    (block (wrap producer))
@@ -302,18 +300,19 @@
 
 (defmethod entry-sexp :ludo
   [{:keys [source-publisher genre-text description
-           game-description accompanying-material library-signature] :as item}]
+           game-description accompanying-material library-signature] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
    (block (wrap source-publisher))
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text)))
    (block (wrap description))
    (block (wrap game-description))
    (ausleihe library-signature)))
 
 (defmethod entry-sexp :musiknoten
-  [{:keys [description producer-brief library-signature product-number price] :as item}]
+  [{:keys [description producer-brief library-signature product-number price] :as item} opts]
   (list-item
    (entry-heading-sexp item)
    (block (wrap description))
@@ -322,61 +321,57 @@
    (verkauf product-number price)))
 
 (defmethod entry-sexp :taktilesbuch
-  [{:keys [genre-text description producer-brief library-signature product-number price] :as item}]
+  [{:keys [genre-text description producer-brief library-signature product-number price] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (when *show-genre*
+   (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
    (verkauf product-number price)))
 
-(defn entries-sexp [items]
+(defn entries-sexp [items opts]
   [:fo:list-block
-   (map entry-sexp items)])
+   (map #(entry-sexp % opts) items)])
 
 (defn- level-to-h [level]
   (keyword (str "h" level)))
 
-(defn subgenre-sexp [items fmt genre subgenre level path-to-numbers]
-  [(heading (level-to-h level) [fmt genre subgenre] path-to-numbers)
+(defn subgenre-sexp [items fmt genre subgenre level opts]
+  [(heading (level-to-h level) [fmt genre subgenre] opts)
    (when-not (#{:kinder-und-jugendbücher} genre)
      (set-marker (layout/translations subgenre)))
-   (entries-sexp items)])
+   (entries-sexp items opts)])
 
-(defn subgenres-sexp [items fmt genre level path-to-numbers]
-    (mapcat #(subgenre-sexp (get items %) fmt genre % level path-to-numbers) (keys items)))
+(defn subgenres-sexp [items fmt genre level opts]
+  (mapcat #(subgenre-sexp (get items %) fmt genre % level opts) (keys items)))
 
 (defn genre-sexp
-  ([items fmt genre level]
-   (genre-sexp items fmt genre level nil))
-  ([items fmt genre level path-to-numbers]
-   [(heading (level-to-h level) [fmt genre] path-to-numbers)
-    (set-marker (layout/translations genre))
-    (cond
-      ;; special case where the editorial or the recommendations are passed in the tree
-      (#{:editorial :recommendations :recommendation} genre) (md-to-fop items
-                                                                        [fmt genre] path-to-numbers)
-      ;; special case when printing the whole catalog of tactile books
-      (#{:taktilesbuch} fmt) (entries-sexp items)
-      (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
-      (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) path-to-numbers)
-      :else (entries-sexp items))]))
+  [items fmt genre level opts]
+  [(heading (level-to-h level) [fmt genre] opts)
+   (set-marker (layout/translations genre))
+   (cond
+     ;; special case where the editorial or the recommendations are passed in the tree
+     (#{:editorial :recommendations :recommendation} genre) (md-to-fop items [fmt genre] opts)
+     ;; special case when printing the whole catalog of tactile books
+     (#{:taktilesbuch} fmt) (entries-sexp items opts)
+     (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) opts)
+     (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) opts)
+     :else (entries-sexp items opts))])
 
 (defn format-sexp
-  ([items fmt level]
-   (format-sexp items fmt level nil true))
-  ([items fmt level path-to-numbers with-toc?]
-   [(heading (level-to-h level) [fmt] path-to-numbers)
-    (when with-toc?
-      (toc items [fmt] 2 nil))
-    (set-marker (layout/translations fmt))
-    (case fmt
-      ;; handle the special case where the editorial or the recommendations are passed in the tree
-      (:editorial :recommendations :recommendation) (md-to-fop items [fmt] path-to-numbers)
-      (:hörfilm :ludo) (entries-sexp items)
-      (mapcat #(genre-sexp (get items %) fmt % (inc level) path-to-numbers) (keys items)))]))
+  [items fmt level {:keys [with-toc?] :or {with-toc? true} :as opts}]
+  [(heading (level-to-h level) [fmt] opts)
+   (when with-toc?
+     (toc items [fmt] 2 {}))
+   (set-marker (layout/translations fmt))
+   (case fmt
+     ;; handle the special case where the editorial or the recommendations are passed in the tree
+     (:editorial :recommendations :recommendation) (md-to-fop items [fmt] opts)
+     (:hörfilm :ludo) (entries-sexp items opts)
+     (mapcat #(genre-sexp (get items %) fmt % (inc level) opts) (keys items)))])
 
 (defn- page-number []
   [:fo:inline
@@ -513,9 +508,9 @@
                          (assoc :editorial editorial
                                 :recommendation recommendations))]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (toc subitems [fmt] 2 nil :heading? true)
+         (toc subitems [fmt] 2 {:heading? true})
          (realize-lazy-seqs
-          (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems)))])]]))
+          (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]]))
 
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]}]
@@ -543,9 +538,9 @@
        ;; Cover page
        [:fo:block (style :h1) (format "Neu als Hörbuch Nr. %s" date)]
        (block {:break-before "odd-page"}) ;; toc should start on recto
-       (toc subitems [] 3 path-to-numbers :heading? true)
+       (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(format-sexp (get subitems %) % 1 path-to-numbers false) (keys subitems))])]])
+       (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]])
 
 (defn- logo []
   [:fo:block {:space-before "100mm" :text-align "right"}
@@ -600,11 +595,9 @@
                     "Filme mit Audiodeskription"]
                    date)
        (block {:break-before "odd-page"}) ;; toc should start on recto
-       (toc subitems [fmt] 1 nil :heading? true)
+       (toc subitems [fmt] 1 {:heading? true})
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (binding [*show-genre* false]
-         (realize-lazy-seqs
-          (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))))])]])
+       (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]])
 
 (defmethod document-sexp :ludo
   [items fmt _ _ {:keys [description date]
@@ -626,11 +619,9 @@
        (cover-page ["Spiele in der SBS"]
                    date)
        (block {:break-before "odd-page"}) ;; toc should start on recto
-       (toc subitems [fmt] 1 nil :heading? true)
+       (toc subitems [fmt] 1 {:heading? true})
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (binding [*show-genre* false]
-         (realize-lazy-seqs
-          (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))))])]])
+       (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]])
 
 (defmethod document-sexp :taktilesbuch
   [items fmt _ _ {:keys [description date]
@@ -652,9 +643,9 @@
        (cover-page ["Taktile Kinderbücher in der SBS"]
                    date)
        (block {:break-before "odd-page"}) ;; toc should start on recto
-       (toc subitems [fmt] 1 nil :heading? true)
+       (toc subitems [fmt] 1 {:heading? true})
        (block {:break-before "odd-page"}) ;; the very first format should start on recto
-       (mapcat #(genre-sexp (get subitems %) fmt % 1) (keys subitems))])]])
+       (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]])
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
@@ -671,9 +662,9 @@
     (header :verso)
 
     [:fo:flow {:flow-name "xsl-region-body"}
-     (toc items [] 1 nil :heading? true)
+     (toc items [] 1 {:heading? true})
      (block {:break-before "odd-page"}) ;; the very first format should start on recto
-     (mapcat #(format-sexp (get items %) % 1) (keys items))]]])
+     (mapcat #(format-sexp (get items %) % 1 {}) (keys items))]]])
 
 (defn document [items fmt editorial recommendations & args]
   (-> items
