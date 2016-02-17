@@ -1,13 +1,9 @@
 (ns catalog.layout.common
-  (:require [clj-time
-             [coerce :as time.coerce]
+  (:require [catalog.layout.common :as layout :refer [wrap]]
+            [clj-time
+             [core :as time.core]
              [format :as time.format]]
-            [clojure.string :as string]
-            [clojure
-             [string :as string]]
-            [clojure
-             [string :as string]]
-            [clj-time.core :as time.core])
+            [clojure.string :as string])
   (:import java.util.Locale))
 
 ;; editorial and recommendations/recommendation are just added so that
@@ -132,6 +128,16 @@
      (let [s (if (seq? s) (string/join ", " s) s)]
        (str prefix (if period? (periodify s) s) postfix))
      "")))
+
+(defn empty-or-blank? [s]
+  ;; FIXME: might not be needed with clojure 1.8
+  (let [safe-blank? (fn [s] (and (string? s)
+                                 (string/blank? s)))]
+    (or (nil? s)
+        (and (coll? s)
+             (or (empty? s) (every? safe-blank? s)))
+        (safe-blank? s)
+        false)))
 
 (defn- braille-signature [[signature grade volumes double-spaced? accompanying-material :as item]]
   (when item

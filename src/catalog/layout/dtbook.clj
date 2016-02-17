@@ -2,9 +2,10 @@
   "Render catalog items as [DTBook
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html) to be
   converted to Braille later in the tool chain"
-  (:require [catalog.layout.common :as layout :refer [wrap]]
-            [clj-time.coerce :as time.coerce]
-            [clj-time.core :as time.core]
+  (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
+            [clj-time
+             [coerce :as time.coerce]
+             [core :as time.core]]
             [clojure.data.xml :as xml]
             [clojure.string :as string]))
 
@@ -13,12 +14,6 @@
                           [:vollschrift false] "V"
                           [:kurzschrift true] "wtz."
                           [:vollschrift true] "wtz."}))
-
-(defn empty-or-blank? [s]
-  (or (nil? s)
-      (and (coll? s) (empty? s))
-      (and (string? s) (string/blank? s))
-      false))
 
 (defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
                              source-date genre genre-text description producer-brief

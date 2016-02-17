@@ -86,9 +86,10 @@
   (external-link (to-url record-id) title))
 
 (defn- block [& args]
-  (if (map? (first args))
-    [:fo:block (style :block (first args)) (rest args)]
-    [:fo:block (style :block) args]))
+  (cond
+    (layout/empty-or-blank? args) nil
+    (map? (first args)) [:fo:block (style :block (first args)) (rest args)]
+    :else [:fo:block (style :block) args]))
 
 (defn- inline [& args]
   (let [default {}]
