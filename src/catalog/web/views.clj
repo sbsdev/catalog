@@ -17,7 +17,8 @@
             [ring.util
              [anti-forgery :refer [anti-forgery-field]]
              [response :as response]]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [clojure.string :as string]))
 
 (defn icon-button [href icon label]
   [:a.btn.btn-default {:href href :role "button" :aria-label label}
@@ -179,11 +180,11 @@
         ;; and redirect to the index
         (response/redirect-after-post "/")))))
 
-(defn editorial-form [request]
+(defn editorial-form [request fmt]
   (let [identity (friend/identity request)]
     (layout/common
      identity
-     [:h1 "Editorial"]
+     [:h1 (format "Editorial und Buchtipps für %s" (string/capitalize fmt))]
      (form/form-to
       [:post "/editorial"]
       (anti-forgery-field)
