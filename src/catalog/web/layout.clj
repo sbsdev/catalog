@@ -60,7 +60,6 @@
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
      [:ul.nav.navbar-nav
-     [:ul.nav.navbar-nav.navbar-right (loginbar identity)]]]])
       (menu-item "/upload" "Upload")
       (dropdown-menu [["/editorial/grossdruck" "Grossdruck"]
                       ["/editorial/braille" "Braille"]
