@@ -91,18 +91,62 @@
 
 (defn upload-form [request & [errors]]
   (let [identity (friend/identity request)]
-    (layout/common identity
-     [:h1 "Upload"]
-     (when (seq errors)
-       [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
-     (form/form-to
-      {:enctype "multipart/form-data"
-       :class "form-inline"}
-      [:post "/upload-confirm"]
-      (anti-forgery-field)
-      (form/file-upload "file")
-      " "
-      (form/submit-button {:class "btn btn-default"} "Upload")))))
+    (layout/common
+     identity
+     [:div.row
+      [:div.col-md-6
+       [:div.well
+        [:h2 "Upload Neu im Sortiment"]
+        (when (seq errors)
+          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+        (form/form-to
+         {:enctype "multipart/form-data"
+          :class "form-inline"}
+         [:post "/upload-confirm"]
+         (anti-forgery-field)
+         (form/file-upload "file")
+         " "
+         (form/submit-button {:class "btn btn-default"} "Upload"))]]
+      [:div.col-md-6
+       [:div.well
+        [:h2 "Upload Gesamtkatalog Hörfilm"]
+        (when (seq errors)
+          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+        (form/form-to
+         {:enctype "multipart/form-data"
+          :class "form-inline"}
+         [:post "/upload-confirm"]
+         (anti-forgery-field)
+         (form/file-upload "file")
+         " "
+         (form/submit-button {:class "btn btn-default"} "Upload"))]]]
+     [:div.row
+      [:div.col-md-6
+       [:div.well
+        [:h2 "Upload Gesamtkatalog Spiele"]
+        (when (seq errors)
+          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+        (form/form-to
+         {:enctype "multipart/form-data"
+          :class "form-inline"}
+         [:post "/upload-confirm"]
+         (anti-forgery-field)
+         (form/file-upload "file")
+         " "
+         (form/submit-button {:class "btn btn-default"} "Upload"))]]
+      [:div.col-md-6
+       [:div.well
+        [:h2 "Upload Gesamtkatalog Taktile Bücher"]
+        (when (seq errors)
+          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+        (form/form-to
+         {:enctype "multipart/form-data"
+          :class "form-inline"}
+         [:post "/upload-confirm"]
+         (anti-forgery-field)
+         (form/file-upload "file")
+         " "
+         (form/submit-button {:class "btn btn-default"} "Upload"))]]])))
 
 (defn upload-confirm [request file]
   (let [{tempfile :tempfile} file
