@@ -20,14 +20,6 @@
 (defn menu-item [href & body]
   [:li [:a {:href href} body]])
 
-(defn dropdown [items & body]
-  [:div.btn-group
-   [:button.btn.btn-default.dropdown-toggle {:type "button" :data-toggle "dropdown"}
-    body
-    [:span.caret]]
-   [:ul.dropdown-menu {:role "menu"}
-    (for [item items] item)]])
-
 (defn button-group [buttons]
   [:div.btn-group
    (for [button buttons] button)])
@@ -40,26 +32,16 @@
      (if user
        (list
         [:li [:a [:b (format "%s %s" (:first_name user) (:last_name user))]]]
-        [:li [:a {:href "/logout"} (glyphicon "log-out")]])
-       [:li [:a {:href "/login"} (glyphicon "log-in")]])]))
+        (menu-item "/logout" (glyphicon "log-out")))
+       (menu-item "/login" (glyphicon "log-in")))]))
 
-(defn dropdown-menu
-  "Display a dropdown menu"
-  [identity]
-  (let [menu [{:href "/archive" :label "Previous catalogs" :roles nil}
-              {:href "/upload" :label "Import from Vubis" :roles #{:catalog :it}}]
-        filtered (filter #(or
-                           ;; if no role is defined we allow access
-                           (nil? (:roles %))
-                           ;; otherwise we check if the role is authorized
-                           (friend/authorized? (:roles %) identity)) menu)]
-    (when (seq filtered)
-      [:li.dropdown
-       [:a.dropdown-toggle
-        {:href "#" :role "button" :data-toggle "dropdown" :aria-expanded false} "Actions" [:span.caret]]
-       [:ul.dropdown-menu {:role "menu"}
-        (for [{:keys [href label roles]} filtered]
-          [:li [:a {:href href} label]])]])))
+(defn- dropdown-menu [items]
+  [:li.dropdown
+   [:a.dropdown-toggle
+    {:href "#" :role "button" :data-toggle "dropdown" :aria-expanded false} "Editorials" [:span.caret]]
+   [:ul.dropdown-menu {:role "menu"}
+    (for [[link label] items]
+      (menu-item link label))]])
 
 (defn navbar
   "Display the navbar"
@@ -78,10 +60,11 @@
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
      [:ul.nav.navbar-nav
-      [:li.active [:a {:href "/"} "Download"]]
-      [:li [:a {:href "/editorial"} "Editorials"]]
-      [:li [:a {:href "/upload"} "Upload"]]]
      [:ul.nav.navbar-nav.navbar-right (loginbar identity)]]]])
+      (menu-item "/upload" "Upload")
+      (dropdown-menu [["/editorial/grossdruck" "Grossdruck"]
+                      ["/editorial/braille" "Braille"]
+                      ["/editorial/hörbuch" "Hörbuch"]])]]]])
 
 (defn common
   "Display a page using the bootstrap css"
