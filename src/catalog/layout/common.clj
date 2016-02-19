@@ -1,6 +1,5 @@
 (ns catalog.layout.common
-  (:require [catalog.layout.common :as layout :refer [wrap]]
-            [clj-time
+  (:require [clj-time
              [core :as time.core]
              [format :as time.format]]
             [clojure.string :as string])
