@@ -28,19 +28,25 @@
     (layout/common
      identity
      [:div.row
-      [:div.col-md-3
-       [:h2 (translations :all-formats)]
-       (icon-button "/neu-im-sortiment.pdf" "download" "Download")]
-      [:div.col-md-3
-       [:h2 (translations :grossdruck)]
-       (icon-button "/neue-grossdruckbücher.pdf" "download" "Download")]
-      [:div.col-md-3
-       [:h2 (translations :braille)]
-       (icon-button "/neue-braillebücher.xml" "download" "Download")]
-      [:div.col-md-3
-       [:h2 (translations :hörbuch)]
-       (icon-button "/neue-hörbücher.pdf" "download" "Download")]]
-     )))
+      [:div.col-md-6
+       [:div.well
+        [:h2 (translations :all-formats)]
+        (icon-button "/neu-im-sortiment.pdf" "download" "Download")]]
+      [:div.col-md-6
+       [:div.well
+        [:h2 (translations :grossdruck)]
+        (icon-button "/neue-grossdruckbücher.pdf" "download" "Download")]]]
+     [:div.row
+      [:div.col-md-6
+       [:div.well
+        [:h2 (translations :braille)]
+        (icon-button "/neue-braillebücher.xml" "download" "Download")]]
+      [:div.col-md-6
+       [:div.well
+        [:h2 (translations :hörbuch)]
+        (icon-button "/neue-hörbücher.pdf" "download" "Download")
+        (icon-button "/neue-hörbücher.ncc" "download" "NCC")
+        (icon-button "/neue-hörbücher-toc.pdf" "download" "TOC")]]])))
 
 (defn read-catalog [f]
   (-> f io/reader java.io.PushbackReader. edn/read))
