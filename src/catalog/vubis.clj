@@ -136,6 +136,7 @@
    24 "DZB, Leipzig"
    102 "DZB, Leipzig"
    25 "CAB, Landschlacht"
+   32 "Blindenschrift-Verlag, Paderborn"
    40 "BIT, München"
    50 "BSVÖ, Wien"
    103 "Blindenschrift-Verlag, Paderborn"
