@@ -18,9 +18,13 @@
                  [ring/ring-devel "1.4.0"]
                  [com.cemerick/friend "0.2.1"]
                  [compojure "1.4.0"]
-                 [endophile "0.1.2"]]
+                 [endophile "0.1.2"]
+                 [org.clojure/java.jdbc "0.4.2"]
+                 [mysql/mysql-connector-java "5.1.38"]
+                 [ragtime "0.5.2"]]
   :plugins [[cider/cider-nrepl "0.11.0-SNAPSHOT"]
             [refactor-nrepl "2.0.0-SNAPSHOT"]]
   :main ^:skip-aot catalog.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}
+             :dev {:source-paths ["dev"]}})
