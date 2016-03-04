@@ -23,7 +23,7 @@
                  [mysql/mysql-connector-java "5.1.38"]
                  [ragtime "0.5.2"]]
   :plugins [[cider/cider-nrepl "0.11.0-SNAPSHOT"]
-            [refactor-nrepl "2.0.0-SNAPSHOT"]]
+            [refactor-nrepl "2.2.0-SNAPSHOT"]]
   :main ^:skip-aot catalog.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
