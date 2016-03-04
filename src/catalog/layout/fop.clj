@@ -71,7 +71,7 @@
 
 (defn- external-link [url title]
   [:fo:basic-link
-   {:external-destination url :indicate-destination true}
+   {:external-destination url :indicate-destination true :fox:alt-text "Link zum Online-Katalog"}
    title])
 
 (defn- to-url
@@ -486,15 +486,18 @@
   ;; Maybe the binding solution isn't the bees knees after all.
   (walk/postwalk identity tree))
 
+(defn root-attrs []
+  {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
+   :xmlns:fox "http://xmlgraphics.apache.org/fop/extensions"
+   :line-height "1.3"
+   :xml:lang "de"})
+
 (defmulti document-sexp (fn [items fmt editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
   [items fmt editorial recommendations {:keys [description date]}]
   (binding [*stylesheet* large-print-stylesheet]
-    [:fo:root (style :font
-                     {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-                      :line-height "130%"
-                      :xml:lang "de"})
+    [:fo:root (style :font (root-attrs))
      (layout-master-set)
      (declarations (layout/translations :grossdruck) description)
      [:fo:page-sequence {:master-reference "main"
@@ -516,10 +519,7 @@
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]
                                         :or {date (time.core/today)}}]
-  [:fo:root (style :font
-                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-                    :line-height "130%"
-                    :xml:lang "de"})
+  [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations :hörbuch) description)
    [:fo:page-sequence {:master-reference "main"
@@ -580,10 +580,7 @@
 (defmethod document-sexp :hörfilm
   [items fmt _ _ {:keys [description date]
                   :or {date (time.core/today)}}]
-  [:fo:root (style :font
-                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-                    :line-height "130%"
-                    :xml:lang "de"})
+  [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations fmt) description)
    [:fo:page-sequence {:master-reference "main"
@@ -605,10 +602,7 @@
 (defmethod document-sexp :ludo
   [items fmt _ _ {:keys [description date]
                   :or {date (time.core/today)}}]
-  [:fo:root (style :font
-                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-                    :line-height "130%"
-                    :xml:lang "de"})
+  [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations fmt) description)
    [:fo:page-sequence {:master-reference "main"
@@ -629,10 +623,7 @@
 (defmethod document-sexp :taktilesbuch
   [items fmt _ _ {:keys [description date]
                   :or {date (time.core/today)}}]
-  [:fo:root (style :font
-                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-                    :line-height "130%"
-                    :xml:lang "de"})
+  [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations fmt) description)
    [:fo:page-sequence {:master-reference "main"
@@ -652,10 +643,7 @@
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
-  [:fo:root (style :font
-                   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
-                    :line-height "130%"
-                    :xml:lang "de"})
+  [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations :all-formats) description)
    [:fo:page-sequence {:master-reference "main"
