@@ -31,7 +31,7 @@
 
 ;; 3:4 perfect fourth scale (http://www.modularscale.com/?17&pt&1.333&web&table)
 (def ^:private large-print-stylesheet
-  {:font {:font-family "Tiresias" :font-size "17pt"}
+  {:font {:font-family "Tiresias,Verdana" :font-size "17pt"}
    :block {:text-align "start" :hyphenate "false"}
    :h1 {:font-size "40.3pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H1" :line-height "110%" :break-before "odd-page" }
    :h2 {:font-size "30.2pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H2" :line-height "110%"}
