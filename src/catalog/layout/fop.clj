@@ -24,9 +24,9 @@
 (def ^:private default-stylesheet
   {:font {:font-family "Verdana" :font-size "11pt"}
    :block {:text-align "start" :hyphenate "false"}
-   :h1 {:font-size "26.05pt" :font-weight "bold" :space-after "26pt" :keep-with-next "always" :break-before "page" :role "H1" :line-height "110%"}
-   :h2 {:font-size "19.55pt" :font-weight "bold" :space-after "11pt" :space-before "25pt" :keep-with-next "always" :role "H2" :line-height "110%"}
-   :h3 {:font-size "14.66pt" :font-weight "bold" :space-after "14pt" :space-before "14pt" :keep-with-next "always" :role "H3" :line-height "110%"}
+   :h1 {:font-size "26.05pt" :font-weight "bold" :space-after "26pt" :keep-with-next.within-column "always" :break-before "page" :role "H1" :line-height "110%"}
+   :h2 {:font-size "19.55pt" :font-weight "bold" :space-after "11pt" :space-before "25pt" :keep-with-next.within-column "always" :role "H2" :line-height "110%"}
+   :h3 {:font-size "14.66pt" :font-weight "bold" :space-after "14pt" :space-before "14pt" :keep-with-next.within-column "always" :role "H3" :line-height "110%"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
 ;; 3:4 perfect fourth scale (http://www.modularscale.com/?17&pt&1.333&web&table)
