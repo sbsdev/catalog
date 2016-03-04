@@ -189,7 +189,7 @@
                  ;; if the toc has a heading we assume that it is the
                  ;; first toc. The following content should start on
                  ;; an odd page
-                 {:role "NonStruct" :break-after "odd-page"}
+                 {:role "NonStruct" :break-after "odd-page" :break-before "odd-page"}
                  {:role "NonStruct"})
      (when heading? (heading :h1 [:inhalt] opts))
      [:fo:block {:line-height "1.5"
@@ -559,9 +559,7 @@
        ;; Cover page
        [:fo:block (style :h1)
         (format "Neu als Hörbuch Nr. %s/%s" (layout/volume-number date) (layout/year date))]
-       (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
-       (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]])
 
 (defn- logo []
@@ -613,9 +611,7 @@
        (cover-page ["Hörfilme in der SBS"
                     "Filme mit Audiodeskription"]
                    date)
-       (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 {:heading? true})
-       (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]])
 
 (defmethod document-sexp :ludo
@@ -634,9 +630,7 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        (cover-page ["Spiele in der SBS"]
                    date)
-       (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 {:heading? true})
-       (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]])
 
 (defmethod document-sexp :taktilesbuch
@@ -655,9 +649,7 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        (cover-page ["Taktile Kinderbücher in der SBS"]
                    date)
-       (block {:break-before "odd-page"}) ;; toc should start on recto
        (toc subitems [fmt] 1 {:heading? true})
-       (block {:break-before "odd-page"}) ;; the very first format should start on recto
        (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]])
 
 (defmethod document-sexp :all-formats
@@ -673,7 +665,6 @@
 
     [:fo:flow {:flow-name "xsl-region-body"}
      (toc items [] 1 {:heading? true})
-     (block {:break-before "odd-page"}) ;; the very first format should start on recto
      (mapcat #(format-sexp (get items %) % 1 {}) (keys items))]]])
 
 (defn document [items fmt editorial recommendations & args]
