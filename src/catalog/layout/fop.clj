@@ -110,7 +110,7 @@
   [:fo:list-item
    [:fo:list-item-label
     {:end-indent "label-end()"}
-    [:fo:block (inline {:font-family "Symbol"} "•")]]
+    [:fo:block (inline "•")]]
    [:fo:list-item-body
     {:start-indent "body-start()"}
     (block body)]])
