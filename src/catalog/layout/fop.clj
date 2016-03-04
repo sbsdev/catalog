@@ -159,10 +159,10 @@
 
 (defn- toc-entry
   [items path depth current-depth {:keys [path-to-numbers] :as opts}]
-  [:fo:block {:text-align-last "justify" :role "TOCI"
-              :start-indent (str (- current-depth 1) "em")}
-   [:fo:basic-link {:internal-destination (hash path)}
-    (inline {:role "Reference"}
+  [:fo:block {:text-align-last "justify" :role "TOCI"}
+   [:fo:basic-link {:internal-destination (hash path)
+                    :fox:alt-text (format "Link nach %s" (layout/translations (last path))) }
+    (inline {:role "Lbl"}
             (when-let [numbers (get path-to-numbers path)] (section-numbers numbers))
             (let [title (last path)]
               (if (keyword? title) (layout/translations title) title)))
@@ -170,23 +170,33 @@
     [:fo:page-number-citation {:ref-id (hash path) :role "Reference"}]]
    (cond
      (and (map? items) (< current-depth depth))
-     (map #(toc-entry (get items %) (conj path %) depth (inc current-depth) opts)
-          (keys items))
+     (block {:role "TOC"
+             :start-indent (str current-depth " * 1em")}
+      (map #(toc-entry (get items %) (conj path %) depth (inc current-depth) opts)
+           (keys items)))
      ;; check for headings in markdown
      (and (string? items)
           ;; only show in the toc if there are multiple headings (I
           ;; guess this is a weird way of saying we don't want any
           ;; subheadings in the toc for :grossdruck)
           (< 1 (count (md-extract-headings items))))
-     (map #(toc-entry % (conj path %) depth (inc current-depth) opts)
-          (md-extract-headings items)))])
+     (block {:role "TOC"
+             :start-indent (str current-depth " * 1em")}
+      (map #(toc-entry % (conj path %) depth (inc current-depth) opts)
+           (md-extract-headings items))))])
 
 (defn toc [items path depth {:keys [heading?] :as opts}]
   (when (map? items)
-    [:fo:block {:line-height "150%"
-                :role "TOC"}
+    [:fo:block (if heading?
+                 ;; if the toc has a heading we assume that it is the
+                 ;; first toc. The following content should start on
+                 ;; an odd page
+                 {:role "NonStruct" :break-after "odd-page"}
+                 {:role "NonStruct"})
      (when heading? (heading :h1 [:inhalt] opts))
-     (map #(toc-entry (get items %) (conj path %) depth 1 opts) (keys items))]))
+     [:fo:block {:line-height "1.5"
+                 :role "TOC"}
+      (map #(toc-entry (get items %) (conj path %) depth 1 opts) (keys items))]]))
 
 (defn- narrators-sexp [narrators]
   (let [narrator (first narrators)]
