@@ -1,13 +1,13 @@
 (ns catalog.layout.fop
   (:require [catalog.layout.common :as layout :refer [wrap]]
+            [clj-time.core :as time.core]
             [clojure
              [set :as set]
              [string :as string]
              [walk :as walk]]
             [clojure.data.xml :as xml]
             [clojure.java.io :as io]
-            [endophile.core :as endophile]
-            [clj-time.core :as time.core])
+            [endophile.core :as endophile])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
