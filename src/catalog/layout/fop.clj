@@ -66,7 +66,7 @@
                          :retrieve-boundary "page-sequence"}]])
 
 (defn- set-marker [title]
-  [:fo:block {:keep-with-next "always"}
+  [:fo:block {:keep-with-next.within-column "always" :role "NonStruct"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
 (defn- external-link [url title]
@@ -227,16 +227,16 @@
 
 (defn- ausleihe [signature]
   (when signature
-    (block {:keep-with-previous "always"} (bold "Ausleihe:") " " signature)))
+    (block {:keep-with-previous.within-column "always"} (bold "Ausleihe:") " " signature)))
 
 (defn- ausleihe-multi [signatures]
   (when signatures
-    (block {:keep-with-previous "always"}
+    (block {:keep-with-previous.within-column "always"}
            (bold "Ausleihe:") " " (layout/braille-signatures signatures))))
 
 (defn- verkauf [product-number price]
   (when product-number
-    (block {:keep-with-previous "always"}
+    (block {:keep-with-previous.within-column "always"}
            (bold "Verkauf:") " " price ". " (layout/braille-signatures product-number))))
 
 (defmulti entry-sexp (fn [{fmt :format} opts] fmt))
