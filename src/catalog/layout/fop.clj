@@ -33,9 +33,9 @@
 (def ^:private large-print-stylesheet
   {:font {:font-family "Tiresias,Verdana" :font-size "17pt"}
    :block {:text-align "start" :hyphenate "false"}
-   :h1 {:font-size "40.3pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H1" :line-height "110%" :break-before "odd-page" }
-   :h2 {:font-size "30.2pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H2" :line-height "110%"}
-   :h3 {:font-size "22.6pt" :font-weight "bold" :keep-with-next "always" :space-after "30pt" :role "H3" :line-height "110%"}
+   :h1 {:font-size "40.3pt" :font-weight "bold" :keep-with-next.within-column "always" :space-after "0.75em" :role "H1" :break-before "odd-page" :line-height "1.2"}
+   :h2 {:font-size "30.2pt" :font-weight "bold" :keep-with-next.within-column "always" :space-after "0.75em" :role "H2" :line-height "1.2"}
+   :h3 {:font-size "22.6pt" :font-weight "bold" :keep-with-next.within-column "always" :space-after "0.75em" :role "H3" :line-height "1.2"}
    :header {:text-align-last "justify" :font-weight "bold" :border-bottom "thin solid"}})
 
 (def ^:private ^:dynamic *stylesheet* default-stylesheet)
