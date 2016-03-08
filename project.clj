@@ -23,8 +23,9 @@
                  [mysql/mysql-connector-java "5.1.38"]
                  [ragtime "0.5.2"]]
   :plugins [[cider/cider-nrepl "0.11.0-SNAPSHOT"]
-            [refactor-nrepl "2.2.0-SNAPSHOT"]]
+            [refactor-nrepl "2.2.0-SNAPSHOT"]
+            [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
   :main ^:skip-aot catalog.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
-             :dev {:source-paths ["dev"]}})
+             :dev {:source-paths ["src" "dev"]}})
