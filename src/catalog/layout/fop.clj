@@ -269,9 +269,10 @@
     (when show-genre?
       (block (wrap genre-text "Genre: ")))
     (block (wrap description))
-    (block (wrap producer-brief "" (if rucksackbuch?
-                                     (str ", Rucksackbuch Nr. " rucksackbuch-number)
-                                     "")))
+    (block
+     (if rucksackbuch?
+       (wrap producer-brief "" (str ", Rucksackbuch Nr. " rucksackbuch-number) false)
+       (wrap producer-brief)))
     (ausleihe-multi library-signature)
     (verkauf product-number price))))
 
