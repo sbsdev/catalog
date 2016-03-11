@@ -98,10 +98,6 @@
       [:fo:inline (merge default (first args)) (rest args)]
       [:fo:inline default args])))
 
-(defn- list-item [& args]
-  [:fo:block {:space-after "1em" :role "LI"}
-   args])
-
 (defn- bold [& args]
   (inline {:font-weight "bold"} args))
 
@@ -241,6 +237,11 @@
 (defn- list-body [& args]
   (block {:role "LBody"} args))
 
+(defn- list-item [heading & args]
+  (block {:space-after "1em" :role "LI"}
+   heading
+   (list-body args)))
+
 (defmulti entry-sexp (fn [{fmt :format} opts] fmt))
 
 (defmethod entry-sexp :hörbuch
@@ -249,15 +250,14 @@
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (when show-genre?
-      (block (wrap genre-text "Genre: ")))
-    (block (wrap description))
-    (block (wrap duration "" " Min., " false) (narrators-sexp narrators))
-    (block producer-brief (if produced-commercially? ", Hörbuch aus dem Handel" "") ".")
-    (ausleihe library-signature)
-    (when product-number
-      (block {:keep-with-previous "always"} (bold "Verkauf:") " " product-number ", " price)))))
+   (when show-genre?
+     (block (wrap genre-text "Genre: ")))
+   (block (wrap description))
+   (block (wrap duration "" " Min., " false) (narrators-sexp narrators))
+   (block producer-brief (if produced-commercially? ", Hörbuch aus dem Handel" "") ".")
+   (ausleihe library-signature)
+   (when product-number
+     (block {:keep-with-previous "always"} (bold "Verkauf:") " " product-number ", " price))))
 
 (defmethod entry-sexp :braille
   [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
@@ -265,42 +265,39 @@
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (when show-genre?
-      (block (wrap genre-text "Genre: ")))
-    (block (wrap description))
-    (block
-     (if rucksackbuch?
-       (wrap producer-brief "" (str ", Rucksackbuch Nr. " rucksackbuch-number) false)
-       (wrap producer-brief)))
-    (ausleihe-multi library-signature)
-    (verkauf product-number price))))
+   (when show-genre?
+     (block (wrap genre-text "Genre: ")))
+   (block (wrap description))
+   (block
+    (if rucksackbuch?
+      (wrap producer-brief "" (str ", Rucksackbuch Nr. " rucksackbuch-number) false)
+      (wrap producer-brief)))
+   (ausleihe-multi library-signature)
+   (verkauf product-number price)))
 
 (defmethod entry-sexp :grossdruck
   [{:keys [genre-text description library-signature volumes product-number price] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (when show-genre?
-      (block (wrap genre-text "Genre: ")))
-    (block (wrap description))
-    (when library-signature
-      (block {:keep-with-previous "always"}
-             (bold "Ausleihe:") " " library-signature (wrap volumes ", " " Bd. " false)))
-    (when product-number
-      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price)))))
+   (when show-genre?
+     (block (wrap genre-text "Genre: ")))
+   (block (wrap description))
+   (when library-signature
+     (block {:keep-with-previous "always"}
+            (bold "Ausleihe:") " " library-signature (wrap volumes ", " " Bd. " false)))
+   (when product-number
+     (block {:keep-with-previous "always"} (bold "Verkauf:") " " price))))
 
 (defmethod entry-sexp :e-book
   [{:keys [genre-text description library-signature] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (when show-genre?
-      (block (wrap genre-text "Genre: ")))
-    (block (wrap description))
-    (ausleihe library-signature))))
+   (when show-genre?
+     (block (wrap genre-text "Genre: ")))
+   (block (wrap description))
+   (ausleihe library-signature)))
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text
@@ -308,14 +305,13 @@
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (block (wrap personel-text))
-    (block (wrap movie_country))
-    (when show-genre?
-      (block (wrap genre-text)))
-    (block (wrap description))
-    (block (wrap producer))
-    (ausleihe library-signature))))
+   (block (wrap personel-text))
+   (block (wrap movie_country))
+   (when show-genre?
+     (block (wrap genre-text)))
+   (block (wrap description))
+   (block (wrap producer))
+   (ausleihe library-signature)))
 
 (defmethod entry-sexp :ludo
   [{:keys [source-publisher genre-text description
@@ -323,36 +319,33 @@
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (block (wrap source-publisher))
-    (when show-genre?
-      (block (wrap genre-text)))
-    (block (wrap description))
-    (block (wrap game-description))
-    (ausleihe library-signature))))
+   (block (wrap source-publisher))
+   (when show-genre?
+     (block (wrap genre-text)))
+   (block (wrap description))
+   (block (wrap game-description))
+   (ausleihe library-signature)))
 
 (defmethod entry-sexp :musiknoten
   [{:keys [description producer-brief library-signature product-number price] :as item} opts]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (block (wrap description))
-    (block (wrap producer-brief))
-    (ausleihe-multi library-signature)
-    (verkauf product-number price))))
+   (block (wrap description))
+   (block (wrap producer-brief))
+   (ausleihe-multi library-signature)
+   (verkauf product-number price)))
 
 (defmethod entry-sexp :taktilesbuch
   [{:keys [genre-text description producer-brief library-signature product-number price] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
-   (list-body
-    (when show-genre?
-      (block (wrap genre-text "Genre: ")))
-    (block (wrap description))
-    (block (wrap producer-brief))
-    (ausleihe-multi library-signature)
-    (verkauf product-number price))))
+   (when show-genre?
+     (block (wrap genre-text "Genre: ")))
+   (block (wrap description))
+   (block (wrap producer-brief))
+   (ausleihe-multi library-signature)
+   (verkauf product-number price)))
 
 (defn entries-sexp [items opts]
   [:fo:block {:role "L"}
