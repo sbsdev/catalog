@@ -112,6 +112,12 @@
     (string/blank? s) s
     :else (str s ".")))
 
+(defn- insert-zero-width-space
+  "Add a zero with space after each sequence of white space in `s`.
+  This seems to improve the FOP output for screen readers"
+  [s]
+  (string/replace s #"(\S)\s+(\S)" "$1 ​$2"))
+
 (defn wrap
   "Adds a period to `s` and wrap it in `prefix` and `postfix`. If `s`
   is a sequence the contained strings are joined with \", \" as a
@@ -124,8 +130,11 @@
    (wrap s prefix postfix true))
   ([s prefix postfix period?]
    (if s
-     (let [s (if (seq? s) (string/join ", " s) s)]
-       (str prefix (if period? (periodify s) s) postfix))
+     (let [s (cond->> s
+               (seq? s) (string/join ", ")
+               true insert-zero-width-space
+               period? periodify)]
+       (str prefix s postfix))
      "")))
 
 (defn empty-or-blank? [s]
