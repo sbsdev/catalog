@@ -4,9 +4,7 @@
   used to narrate the book in Obi later in the tool chain"
   (:require [catalog.layout.common :as layout]
             [clj-time.core :as time.core]
-            [clojure.data.xml :as xml]
-            [clojure.walk :as walk]
-            [endophile.core :as endophile]))
+            [clojure.data.xml :as xml]))
 
 (defn- heading-keyword [level]
   (keyword (str "h" level)))
@@ -20,20 +18,20 @@
     (if creator (format "%s: %s" creator title) title)]
    [:p]])
 
-(defn- visitor [node path path-to-numbers])
-
 (defn- md-to-obi [markdown path path-to-numbers]
-  (->>
-   markdown
-   endophile/mp
-   endophile/to-clj
-   (walk/postwalk #(visitor % path path-to-numbers))))
+  (let [level (inc (count path))
+        headers (layout/md-extract-headings markdown)]
+    (for [h headers]
+      [(level-keyword level)
+       [(heading-keyword level)
+        (format "%s%s" (layout/section-numbers (get path-to-numbers (conj path h))) h)]
+       [:p]])))
 
 (defn- level-sexp [items path path-to-numbers]
   (let [level (count path)]
     [(level-keyword level)
      [(heading-keyword level)
-      (format "%s %s"
+      (format "%s%s"
               (layout/section-numbers (get path-to-numbers path))
               (layout/translations (last path)))]
      (cond
