@@ -2,7 +2,8 @@
   (:require [clj-time
              [core :as time.core]
              [format :as time.format]]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [endophile.core :as endophile])
   (:import java.util.Locale))
 
 ;; editorial and recommendations/recommendation are just added so that
@@ -166,3 +167,48 @@
 
 (defn render-subtitles [subtitles]
   (string/join " " (map periodify subtitles)))
+
+(defn- branch? [node]
+  (map? node))
+
+(defn- mapcat-indexed [f coll]
+  (apply concat (map-indexed f coll)))
+
+(defn md-extract-headings [markdown]
+  (->>
+   markdown
+   endophile/mp
+   endophile/to-clj
+   (filter #(#{:h1 :h2 :h3 :h4} (:tag %)))
+   (map (comp string/join :content))))
+
+(defn- tree-walk
+  "Walk a tree and build a list of path and corresponding numbering
+  pairs."
+  [node path numbers]
+  (cond
+    (branch? node)
+    (concat
+     [path numbers]
+     ;; walk the tree of catalog items
+     (mapcat-indexed
+      (fn [n k] (tree-walk (get node k) (conj path k) (conj numbers (inc n))))
+      (keys node)))
+    (and (string? node) (not-empty (md-extract-headings node)))
+    ;; walk the tree with markdown
+    (concat
+     [path numbers]
+     (mapcat-indexed
+      (fn [n heading] (tree-walk heading (conj path heading) (conj numbers (inc n))))
+      (md-extract-headings node)))
+    :else [path numbers]))
+
+(defn path-to-number
+  "Return a map of path to number vector mapping. This can be used to
+  look up a section number for a given path."
+  [tree]
+  (apply hash-map (tree-walk tree [] [])))
+
+(defn section-numbers [numbers]
+  (when (not-empty numbers)
+    (str (string/join "." numbers) ". ")))

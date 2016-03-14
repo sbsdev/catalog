@@ -13,7 +13,7 @@
            javax.xml.transform.stream.StreamSource
            javax.xml.transform.TransformerFactory
            [org.apache.fop.apps FopFactory MimeConstants]
-           [org.apache.fop.events EventListener EventFormatter]))
+           [org.apache.fop.events EventFormatter EventListener]))
 
 (def ^:private region-body-margin-top 15)
 
@@ -46,15 +46,11 @@
   ([class attrs]
    (merge (*stylesheet* class {}) attrs)))
 
-(defn- section-numbers [numbers]
-  (when (not-empty numbers)
-    (str (string/join "." numbers) ". ")))
-
 (defn heading
   [level path {:keys [path-to-numbers]}]
   [:fo:block (style level {:id (hash path)})
    (when-let [numbers (get path-to-numbers path)]
-     (section-numbers numbers))
+     (layout/section-numbers numbers))
    (let [title (last path)]
      (if (keyword? title) (layout/translations title) title))])
 
@@ -144,21 +140,13 @@
    endophile/to-clj
    (walk/postwalk #(visitor % path opts))))
 
-(defn- md-extract-headings [markdown]
-  (->>
-   markdown
-   endophile/mp
-   endophile/to-clj
-   (filter #(#{:h1 :h2 :h3 :h4} (:tag %)))
-   (map (comp string/join :content))))
-
 (defn- toc-entry
   [items path depth current-depth {:keys [path-to-numbers] :as opts}]
   [:fo:block {:text-align-last "justify" :role "TOCI"}
    [:fo:basic-link {:internal-destination (hash path)
                     :fox:alt-text (format "Link nach %s" (layout/translations (last path))) }
     (inline {:role "Lbl"}
-            (when-let [numbers (get path-to-numbers path)] (section-numbers numbers))
+            (when-let [numbers (get path-to-numbers path)] (layout/section-numbers numbers))
             (let [title (last path)]
               (if (keyword? title) (layout/translations title) title)))
     " " [:fo:leader {:leader-pattern "dots" :role "NonStruct"}] " "
@@ -174,11 +162,11 @@
           ;; only show in the toc if there are multiple headings (I
           ;; guess this is a weird way of saying we don't want any
           ;; subheadings in the toc for :grossdruck)
-          (< 1 (count (md-extract-headings items))))
+          (< 1 (count (layout/md-extract-headings items))))
      (block {:role "TOC"
              :start-indent (str current-depth " * 1em")}
       (map #(toc-entry % (conj path %) depth (inc current-depth) opts)
-           (md-extract-headings items))))])
+           (layout/md-extract-headings items))))])
 
 (defn toc [items path depth {:keys [heading?] :as opts}]
   (when (map? items)
@@ -453,39 +441,6 @@
        ;; XMP properties
        [:xmp:CreatorTool "Apache FOP"]]]]])
 
-(defn- branch? [node]
-  (map? node))
-
-(defn- mapcat-indexed [f coll]
-  (apply concat (map-indexed f coll)))
-
-(defn- tree-walk
-  "Walk a tree and build a list of path and corresponding numbering
-  pairs."
-  [node path numbers]
-  (cond
-    (branch? node)
-    (concat
-     [path numbers]
-     ;; walk the tree of catalog items
-     (mapcat-indexed
-      (fn [n k] (tree-walk (get node k) (conj path k) (conj numbers (inc n))))
-      (keys node)))
-    (and (string? node) (not-empty (md-extract-headings node)))
-    ;; walk the tree with markdown
-    (concat
-     [path numbers]
-     (mapcat-indexed
-      (fn [n heading] (tree-walk heading (conj path heading) (conj numbers (inc n))))
-      (md-extract-headings node)))
-    :else [path numbers]))
-
-(defn- path-to-number
-  "Return a map of path to number vector mapping. This can be used to
-  look up a section number for a given path."
-  [tree]
-  (apply hash-map (tree-walk tree [] [])))
-
 (defn- realize-lazy-seqs
   "Realize all lazy sequences within `tree` to make sure the
   evaluation is done within a `binding` scope"
@@ -549,7 +504,7 @@
                        (#(apply dissoc % (remove #{fmt} (keys %))))
                        (assoc :editorial editorial
                               :recommendations recommendations))
-          path-to-numbers (path-to-number subitems)]
+          path-to-numbers (layout/path-to-number subitems)]
       [:fo:flow {:flow-name "xsl-region-body"}
        ;; Cover page
        [:fo:block (style :h1)
