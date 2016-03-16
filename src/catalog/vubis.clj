@@ -182,6 +182,9 @@
   (when-let [year (and s (re-find #"\d{4}" s))]
     (time.format/parse (time.format/formatters :year) year)))
 
+(defn- replace-less-than-sign [s]
+  (some-> s (string/replace #"<|>" {"<" "(" ">" ")"})))
+
 (defn remove-nonprintable-chars [s]
   (and s (string/replace s #"[¶¬]" "")))
 
@@ -247,7 +250,7 @@
                   :title (remove-nonprintable-chars title)
                   :subtitles (seq (map remove-nonprintable-chars subtitles))
                   :name-of-part (remove-nonprintable-chars name-of-part)
-                  :creator creator
+                  :creator (replace-less-than-sign creator)
                   :description description
                   :source-publisher source-publisher
                   :source source
