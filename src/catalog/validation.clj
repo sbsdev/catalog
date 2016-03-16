@@ -18,7 +18,7 @@
 (def BrailleGrade
   (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade)))
 
-(def SignatureRE #"(DS |GDB |BG |ED |PS|DY|GD)\d{4,6}")
+(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}")
 
 (def SignatureTuple
   [(s/one SignatureRE "signature")
@@ -87,7 +87,8 @@
  {:source-publisher s/Str
   :source-date s/Inst
   :producer-brief ProducerBrief
-  :genre-text s/Str})
+  :genre-text s/Str
+  (s/optional-key :volumes) s/Int})
 
 (abstract-map/extend-schema
  Grossdruck CatalogItem [:grossdruck]
