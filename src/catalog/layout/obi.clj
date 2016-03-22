@@ -33,7 +33,6 @@
 
 (defn- level-sexp [items path path-to-numbers]
   (let [level (count path)]
-    (println level (last path))
     [(level-keyword level)
      [(heading-keyword level)
       (format "%s%s"
