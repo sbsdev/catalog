@@ -21,14 +21,19 @@
 (defn- md-to-obi [markdown path path-to-numbers]
   (let [level (inc (count path))
         headers (layout/md-extract-headings markdown)]
-    (for [h headers]
-      [(level-keyword level)
-       [(heading-keyword level)
-        (format "%s%s" (layout/section-numbers (get path-to-numbers (conj path h))) h)]
-       [:p]])))
+    (if (seq headers)
+      (for [h headers]
+        [(level-keyword level)
+         [(heading-keyword level)
+          (format "%s%s" (layout/section-numbers (get path-to-numbers (conj path h))) h)]
+         [:p]])
+      ;; if there are no headers then just emit an empty <p/> to make
+      ;; sure the generated dtbook is valid
+      [:p])))
 
 (defn- level-sexp [items path path-to-numbers]
   (let [level (count path)]
+    (println level (last path))
     [(level-keyword level)
      [(heading-keyword level)
       (format "%s%s"
