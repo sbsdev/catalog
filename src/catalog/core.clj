@@ -1,7 +1,8 @@
 (ns catalog.core
   (:require [catalog.layout
              [dtbook :as layout.dtbook]
-             [fop :as layout.fop]]
+             [fop :as layout.fop]
+             [obi :as layout.obi]]
             [catalog.vubis :as vubis]
             [clojure.java.io :as io]))
 
@@ -65,3 +66,11 @@
    (vubis/order-and-group vubis/get-update-keys-taktil)
    (layout.fop/document :taktilesbuch nil nil)
    (layout.fop/generate-pdf! out)))
+
+(defn ncc [in out editorial recommendations]
+  (->
+   in
+   vubis/read-file
+   (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
+   (layout.obi/dtbook (slurp editorial) (slurp recommendations))
+   (->> (spit (io/file out)))))
