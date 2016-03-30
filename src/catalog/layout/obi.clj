@@ -60,8 +60,7 @@
                             :recommendations recommendations))
         path-to-numbers (layout/path-to-number subitems)]
     [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
-              :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
-              :version "2005-3-sbs-minimal" :xml:lang language}
+              :version "2005-3" :xml:lang language}
      [:head
       (for [[k v]
             {:dc:Title title
