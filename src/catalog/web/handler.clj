@@ -1,18 +1,14 @@
 (ns catalog.web.handler
   "Main entry points to the application"
   (:require [catalog.web.views :as views]
-            [cemerick.friend :as friend]
-            [cemerick.friend
-             [credentials :as creds]
-             [workflows :as workflows]]
             [compojure
              [core :refer [defroutes GET POST]]
              [route :as route]]
             [hiccup.middleware :refer [wrap-base-url]]
             [ring.middleware
              [defaults :refer [site-defaults wrap-defaults]]
-             [stacktrace :as stacktrace]]
-            [ring.util.response :as response]))
+             [stacktrace :as stacktrace]]))
+
 
 (defroutes app-routes
   "Main routes for the application"
