@@ -97,10 +97,10 @@
        [:level1 [:h1 (translations :braille)]
         (map genre-entry items)])
      (when-let [items (not-empty (:musiknoten items))]
-       [:level1 [:h1 (format "Neue %" (translations :musiknoten))]
+       [:level1 [:h1 (format "Neue %s" (translations :musiknoten))]
         (catalog-entries items)])
      (when-let [items (not-empty (:taktilesbuch items))]
-       [:level1 [:h1 (format "Neue %" (translations :taktilesbuch))]
+       [:level1 [:h1 (format "Neue %s" (translations :taktilesbuch))]
         (catalog-entries items)])]]])
 
 (defn dtbook

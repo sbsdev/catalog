@@ -50,7 +50,7 @@
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       date (time.core/today)
                       language "de"}}]
-  (let [title (format "% Nr.%s/%s"
+  (let [title (format "%s Nr.%s/%s"
                       (layout/translations :catalog-hörbuch)
                       (layout/volume-number date) (layout/year date))
         subitems (-> items

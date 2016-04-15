@@ -508,7 +508,7 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        ;; Cover page
        [:fo:block (style :h1)
-        (format "% Nr. %s/%s"
+        (format "%s Nr. %s/%s"
                 (layout/translations :catalog-hörbuch)
                 (layout/volume-number date) (layout/year date))]
        (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})

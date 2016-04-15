@@ -97,7 +97,7 @@
      [:div.row
       [:div.col-md-6
        [:div.well
-        [:h2 (format "Upload %" (translations :catalog-all))]
+        [:h2 (format "Upload %s" (translations :catalog-all))]
         (when (seq errors)
           [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
         (form/form-to
