@@ -198,29 +198,3 @@
 
 (defn editorial [request editorial recommended]
   (response/redirect-after-post "/"))
-
-(defn login-form []
-  (layout/common nil
-   [:h3 "Login"]
-   (form/form-to
-    [:post "/login"]
-    (anti-forgery-field)
-    [:div.form-group
-     (form/label "username" "Username:")
-     (form/text-field {:class "form-control"} "username")]
-    [:div.form-group
-     (form/label "password" "Password:")
-     (form/password-field {:class "form-control"} "password")]
-    (form/submit-button {:class "btn btn-default"} "Login"))))
-
-(defn unauthorized [request]
-  (let [identity (friend/identity request)]
-    (->
-     (layout/common identity
-      [:h2
-       [:div.alert.alert-danger
-        "Sorry, you do not have sufficient privileges to access "
-        (:uri request)]]
-      [:p "Please ask an administrator for help"])
-     response/response
-     (response/status 401))))
