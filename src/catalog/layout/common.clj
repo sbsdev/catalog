@@ -6,8 +6,6 @@
             [endophile.core :as endophile])
   (:import java.util.Locale))
 
-;; editorial and recommendations/recommendation are just added so that
-;; toc generation can also order these nodes
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
 (def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
 (def movie-genres [:spielfilm :mundartfilm :dokumentarfilm])
