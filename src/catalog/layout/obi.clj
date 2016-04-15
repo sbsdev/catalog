@@ -3,7 +3,9 @@
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html). This will be
   used to narrate the book in Obi later in the tool chain"
   (:require [catalog.layout.common :as layout]
-            [clj-time.core :as time.core]
+            [clj-time
+             [core :as time.core]
+             [format :as time.format]]
             [clojure.data.xml :as xml]))
 
 (defn- heading-keyword [level]
@@ -70,7 +72,7 @@
              :dc:Subject ""
              :dc:Description ""
              :dc:Publisher creator
-             :dc:Date (format "%s-%s-%s" (time.core/year date) (time.core/month date) (time.core/day date))
+             :dc:Date (time.format/unparse (time.format/formatters :date) date)
              :dc:Format "ANSI/NISO Z39.86-2005"
              :dc:Language language}]
         [:meta {:name (name k) :content v}])]
