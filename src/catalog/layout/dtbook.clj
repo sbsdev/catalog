@@ -90,21 +90,21 @@
       [:p {:brl:class (format "nr_%s" volume)}]
       [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
     [:bodymatter
-     [:level1 [:h1 "Editorial"] [:p "..."]]
-     [:level1 [:h1 "Buchtipps"] [:p "..."]]
+     [:level1 [:h1 (translations :editorial)] [:p "..."]]
+     [:level1 [:h1 (translations :recommendations)] [:p "..."]]
      (when-let [items (not-empty
                        (dissoc items :musiknoten :taktilesbuch))]
-       [:level1 [:h1 "Neue Braillebücher"]
+       [:level1 [:h1 (translations :braille)]
         (map genre-entry items)])
      (when-let [items (not-empty (:musiknoten items))]
-       [:level1 [:h1 "Neue Braille-Musiknoten"]
+       [:level1 [:h1 (format "Neue %" (translations :musiknoten))]
         (catalog-entries items)])
      (when-let [items (not-empty (:taktilesbuch items))]
-       [:level1 [:h1 "Neue Taktile Bücher"]
+       [:level1 [:h1 (format "Neue %" (translations :taktilesbuch))]
         (catalog-entries items)])]]])
 
 (defn dtbook
   [items editorial recommendations]
-  (-> (document items "Neu in Braille" editorial recommendations)
+  (-> (document items (translations :catalog-braille) editorial recommendations)
       xml/sexp-as-element
       xml/indent-str))

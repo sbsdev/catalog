@@ -26,13 +26,19 @@
 
 (def ^:dynamic translations {:inhalt "Inhaltsverzeichnis"
                              :sbs "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                             :all-formats "Neu im Sortiment"
+                             ;; Names of catalogs
+                             :catalog-all "Neu im Sortiment"
+                             :catalog-hörbuch "Neu als Hörbuch"
+                             :catalog-braille "Neu in Braille"
+                             :catalog-grossdruck "Neu in Grossdruck"
+                             ;; Names of formats
                              :hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"
                              :grossdruck "Neue Grossdruckbücher"
                              :e-book "Neue E-Books"
                              :hörfilm "Neue Hörfilme"
                              :ludo "Neue Spiele"
+                             ;; Names for genres
                              :belletristik "Belletristik"
                              :sachbücher "Sachbücher"
                              :kinder-und-jugendbücher "Kinder- und Jugendbücher"
@@ -77,12 +83,14 @@
                              :würfelspiel "Würfelspiele"
                              :ratespiel "Ratespiele"
                              :bücher-über-spiel "Bücher über Spiele"
+                             ;; Names for braille grades
                              [:kurzschrift false] "Kurzschrift"
                              [:vollschrift false] "Vollschrift"
                              [:schachschrift false] "Schachschrift"
                              [:kurzschrift true] "Weitzeilige Kurzschrift"
                              [:vollschrift true] "Weitzeilige Vollschrift"
                              [:schachschrift true] "Weitzeilige Schachschrift"
+                             ;; other strings
                              :editorial "Editorial"
                              :recommendation "Buchtipp"
                              :recommendations "Buchtipps"})

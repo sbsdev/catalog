@@ -50,7 +50,9 @@
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       date (time.core/today)
                       language "de"}}]
-  (let [title (format "Neu als Hörbuch Nr.%s/%s" (layout/volume-number date) (layout/year date))
+  (let [title (format "% Nr.%s/%s"
+                      (layout/translations :catalog-hörbuch)
+                      (layout/volume-number date) (layout/year date))
         subitems (-> items
                      ;; remove all formats but fmt. Unfortunately we
                      ;; cannot use select-keys as we need to retain

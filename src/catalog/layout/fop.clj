@@ -468,7 +468,7 @@
   (binding [*stylesheet* large-print-stylesheet]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
-     (declarations (layout/translations :grossdruck) description)
+     (declarations (layout/translations :catalog-grossdruck) description)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :force-page-count "end-on-even"
@@ -490,7 +490,7 @@
                                         :or {date (time.core/today)}}]
   [:fo:root (style :font (root-attrs))
    (layout-master-set)
-   (declarations (layout/translations :hörbuch) description)
+   (declarations (layout/translations :catalog-hörbuch) description)
    [:fo:page-sequence {:master-reference "main"
                        :initial-page-number "1"
                        :language "de"}
@@ -508,7 +508,9 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        ;; Cover page
        [:fo:block (style :h1)
-        (format "Neu als Hörbuch Nr. %s/%s" (layout/volume-number date) (layout/year date))]
+        (format "% Nr. %s/%s"
+                (layout/translations :catalog-hörbuch)
+                (layout/volume-number date) (layout/year date))]
        (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
        (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]])
 
@@ -522,7 +524,7 @@
      :content-height "scale-to-fit"}]])
 
 (defn- impressum []
-  (let [creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
+  (let [creator (layout/translations :sbs)]
     [:fo:block-container {:break-before "page"}
      (block {:space-after "175mm"} )
      (block "Herausgeber:")
@@ -606,7 +608,7 @@
   [items _ _ _ {:keys [description date]}]
   [:fo:root (style :font (root-attrs))
    (layout-master-set)
-   (declarations (layout/translations :all-formats) description)
+   (declarations (layout/translations :catalog-all) description)
    [:fo:page-sequence {:master-reference "main"
                        :initial-page-number "1"
                        :language "de"}

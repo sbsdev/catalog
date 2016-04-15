@@ -31,23 +31,23 @@
      [:div.row
       [:div.col-md-6
        [:div.well
-        [:h2 (translations :all-formats)]
+        [:h2 (translations :catalog-all)]
         (icon-button "/neu-im-sortiment.pdf" "download" "Download")]]
       [:div.col-md-6
        [:div.well
-        [:h2 (translations :grossdruck)]
-        (icon-button "/neue-grossdruckbücher.pdf" "download" "Download")]]]
+        [:h2 (translations :catalog-grossdruck)]
+        (icon-button "/neu-in-grossdruck.pdf" "download" "Download")]]]
      [:div.row
       [:div.col-md-6
        [:div.well
-        [:h2 (translations :braille)]
-        (icon-button "/neue-braillebücher.xml" "download" "Download")]]
+        [:h2 (translations :catalog-braille)]
+        (icon-button "/neu-in-braille.xml" "download" "Download")]]
       [:div.col-md-6
        [:div.well
-        [:h2 (translations :hörbuch)]
-        (icon-button "/neue-hörbücher.pdf" "download" "Download")
-        (icon-button "/neue-hörbücher.ncc" "download" "NCC")
-        (icon-button "/neue-hörbücher-toc.pdf" "download" "TOC")]]])))
+        [:h2 (translations :catalog-hörbuch)]
+        (icon-button "/neu-als-hörbuch.pdf" "download" "Download")
+        (icon-button "/neu-als-hörbuch.ncc" "download" "NCC")
+        (icon-button "/neu-als-hörbuch-toc.pdf" "download" "TOC")]]])))
 
 (defn read-catalog [f]
   (-> f io/reader java.io.PushbackReader. edn/read))
@@ -62,8 +62,8 @@
         response/response
         (response/content-type "application/pdf"))))
 
-(defn neue-grossdruckbücher []
-  (let [temp-file (java.io.File/createTempFile "neue-grossdruckbücher" ".pdf")]
+(defn neu-in-grossdruck []
+  (let [temp-file (java.io.File/createTempFile "neu-in-grossdruck" ".pdf")]
     (-> "catalog.edn"
         read-catalog
         (layout.fop/document :grossdruck)
@@ -72,7 +72,7 @@
         response/response
         (response/content-type "application/pdf"))))
 
-(defn neue-braillebücher []
+(defn neu-in-braille []
   (-> "catalog.edn"
       read-catalog
       :braille
@@ -80,8 +80,8 @@
       response/response
       (response/content-type "application/xml")))
 
-(defn neue-hörbücher []
-  (let [temp-file (java.io.File/createTempFile "neue-hörbücher" ".pdf")]
+(defn neu-als-hörbuch []
+  (let [temp-file (java.io.File/createTempFile "neu-als-hörbuch" ".pdf")]
     (-> "catalog.edn"
         read-catalog
         (layout.fop/document :hörbuch)
@@ -97,7 +97,7 @@
      [:div.row
       [:div.col-md-6
        [:div.well
-        [:h2 "Upload Neu im Sortiment"]
+        [:h2 (format "Upload %" (translations :catalog-all))]
         (when (seq errors)
           [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
         (form/form-to

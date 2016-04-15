@@ -19,9 +19,9 @@
   (GET "/" request (views/home request))
 
   (GET "/neu-im-sortiment.pdf" request (views/neu-im-sortiment))
-  (GET "/neue-grossdruckbücher.pdf" request (views/neue-grossdruckbücher))
-  (GET "/neue-braillebücher.xml" request (views/neue-braillebücher))
-  (GET "/neue-hörbücher.pdf" request (views/neue-hörbücher))
+  (GET "/neu-in-grossdruck.pdf" request (views/neu-in-grossdruck))
+  (GET "/neu-in-braille.xml" request (views/neu-in-braille))
+  (GET "/neu-als-hörbuch.pdf" request (views/neu-als-hörbuch))
 
   ;; editorials
   (GET "/editorial/:fmt{grossdruck|braille|hörbuch}"
