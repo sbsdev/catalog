@@ -4,12 +4,12 @@
             [clj-time
              [coerce :as time.coerce]
              [format :as time.format]]
-            [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
-            [clojure.java.io :as io]
             [clojure
              [string :as string]
              [xml :as xml]
              [zip :as zip]]
+            [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
+            [clojure.java.io :as io]
             [medley.core :refer [assoc-some]])
   (:import java.text.Collator
            java.util.Locale))
@@ -180,7 +180,7 @@
   parsed."
   [s]
   (when-let [year (and s (re-find #"\d{4}" s))]
-    (time.format/parse (time.format/formatters :year) year)))
+    (time.coerce/to-date (time.format/parse (time.format/formatters :year) year))))
 
 (defn- replace-less-than-sign [s]
   (some-> s (string/replace #"<|>" {"<" "(" ">" ")"})))

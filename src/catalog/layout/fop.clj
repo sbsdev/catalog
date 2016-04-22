@@ -1,6 +1,8 @@
 (ns catalog.layout.fop
   (:require [catalog.layout.common :as layout :refer [wrap]]
-            [clj-time.core :as time.core]
+            [clj-time
+             [coerce :as time.coerce]
+             [core :as time.core]]
             [clojure
              [set :as set]
              [string :as string]
@@ -487,7 +489,7 @@
 
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]
-                                        :or {date (time.core/today)}}]
+                                        :or {date (time.coerce/to-date (time.core/today))}}]
   [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations :catalog-hörbuch) description)
@@ -548,7 +550,7 @@
 
 (defmethod document-sexp :hörfilm
   [items fmt _ _ {:keys [description date]
-                  :or {date (time.core/today)}}]
+                  :or {date (time.coerce/to-date (time.core/today))}}]
   [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations fmt) description)
@@ -568,7 +570,7 @@
 
 (defmethod document-sexp :ludo
   [items fmt _ _ {:keys [description date]
-                  :or {date (time.core/today)}}]
+                  :or {date (time.coerce/to-date (time.core/today))}}]
   [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations fmt) description)
@@ -587,7 +589,7 @@
 
 (defmethod document-sexp :taktilesbuch
   [items fmt _ _ {:keys [description date]
-                  :or {date (time.core/today)}}]
+                  :or {date (time.coerce/to-date (time.core/today))}}]
   [:fo:root (style :font (root-attrs))
    (layout-master-set)
    (declarations (layout/translations fmt) description)

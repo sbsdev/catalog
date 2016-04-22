@@ -1,5 +1,6 @@
 (ns catalog.layout.common
   (:require [clj-time
+             [coerce :as time.coerce]
              [core :as time.core]
              [format :as time.format]]
             [clojure.string :as string]
@@ -96,17 +97,17 @@
                              :recommendations "Buchtipps"})
 
 (defn volume-number [date]
-  (let [month (time.core/month date)]
+  (let [month (time.core/month (time.coerce/from-date date))]
     (quot (inc month) 2)))
 
 (defn format-date [date]
   (time.format/unparse
    (time.format/with-locale (time.format/formatter "MMMM yyyy") Locale/GERMAN)
-   date))
+   (time.coerce/from-date date)))
 
 (defn year [date]
   (when date
-    (time.core/year date)))
+    (time.core/year (time.coerce/from-date date))))
 
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in

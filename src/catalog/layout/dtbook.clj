@@ -5,6 +5,7 @@
   (:require [catalog.layout.common :as layout
              :refer [empty-or-blank? wrap]]
             [clj-time
+             [coerce :as time.coerce]
              [core :as time.core]
              [format :as time.format]]
             [clojure.data.xml :as xml]
@@ -64,8 +65,8 @@
 (defn document [items title editorial recommendations &
                 {:keys [creator volume date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      volume (layout/volume-number (time.core/today))
-                      date (time.core/now)
+                      volume (layout/volume-number (time.coerce/to-date (time.core/today)))
+                      date (time.coerce/to-date (time.core/now))
                       language "de"}}]
   [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
             :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"

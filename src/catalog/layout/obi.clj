@@ -4,6 +4,7 @@
   used to narrate the book in Obi later in the tool chain"
   (:require [catalog.layout.common :as layout]
             [clj-time
+             [coerce :as time.coerce]
              [core :as time.core]
              [format :as time.format]]
             [clojure.data.xml :as xml]))
@@ -50,7 +51,7 @@
 (defn document [items editorial recommendations &
                 {:keys [creator date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      date (time.core/today)
+                      date (time.coerce/to-date (time.core/today))
                       language "de"}}]
   (let [title (format "%s Nr.%s/%s"
                       (layout/translations :catalog-hörbuch)
