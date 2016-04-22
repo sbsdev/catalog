@@ -21,6 +21,7 @@
                  [endophile "0.1.2"]
                  [org.clojure/java.jdbc "0.5.8"]
                  [mysql/mysql-connector-java "6.0.2"]
+                 [yesql "0.5.2"]
                  [ragtime "0.5.3"]]
   :plugins [[cider/cider-nrepl "0.12.0-SNAPSHOT"]
             [refactor-nrepl "2.3.0-SNAPSHOT"]
