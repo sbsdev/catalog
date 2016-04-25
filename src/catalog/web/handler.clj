@@ -39,6 +39,9 @@
   (POST "/upload-confirm/:year/:issue"
         [year :<< as-int issue :<< as-int file :as r]
         (views/upload-confirm r year issue file))
+  (POST "/upload/:year/:issue"
+        [year :<< as-int issue :<< as-int items :as r]
+        (views/upload r year issue items))
 
   ;; resources and 404
   (route/resources "/")

@@ -11,6 +11,7 @@
             [catalog.web.layout :as layout]
             [cemerick.friend :as friend]
             [clojure
+             [edn :as edn]
              [string :as string]]
             [hiccup
              [core :refer [h]]
@@ -156,9 +157,10 @@
 (defn upload-confirm [request year issue file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)
-        items (vubis/collate-all-duplicate-items (vubis/read-file path))
+        items (vubis/read-file path)
+        items-collated (vubis/collate-all-duplicate-items items)
         checker (s/checker validation/CatalogItem)
-        problems (keep #(when-let [error (checker %)] [error %]) items)]
+        problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
     (if (seq problems)
       (let [identity (friend/identity request)]
         (layout/common identity
@@ -176,13 +178,18 @@
                               [:td (str v)]]))]]
                        (form/form-to
                         {:enctype "multipart/form-data"}
-                        [:post "/upload"]
+                        [:post (format "/upload/%s/%s" year issue)]
                         (anti-forgery-field)
+                        (form/hidden-field "items" (prn-str items))
                         (form/submit-button "Upload Anyway"))))
       (do
         ;; add the file
         ;; and redirect to the index
         (response/redirect-after-post "/")))))
+
+(defn upload [request year issue items]
+  (db/save-catalog! year issue (edn/read-string items))
+  (response/redirect-after-post "/"))
 
 (defn editorial-form [request fmt]
   (let [identity (friend/identity request)]
