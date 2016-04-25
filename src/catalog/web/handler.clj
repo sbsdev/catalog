@@ -2,6 +2,7 @@
   "Main entry points to the application"
   (:require [catalog.web.views :as views]
             [compojure
+             [coercions :refer [as-int]]
              [core :refer [defroutes GET POST]]
              [route :as route]]
             [hiccup.middleware :refer [wrap-base-url]]
@@ -14,10 +15,18 @@
   "Main routes for the application"
   (GET "/" request (views/home request))
 
-  (GET "/neu-im-sortiment.pdf" request (views/neu-im-sortiment))
-  (GET "/neu-in-grossdruck.pdf" request (views/neu-in-grossdruck))
-  (GET "/neu-in-braille.xml" request (views/neu-in-braille))
-  (GET "/neu-als-hörbuch.pdf" request (views/neu-als-hörbuch))
+  (GET "/:year/:issue/neu-im-sortiment.pdf"
+       [year :<< as-int issue :<< as-int]
+       (views/neu-im-sortiment year issue))
+  (GET "/:year/:issue/neu-in-grossdruck.pdf"
+       [year :<< as-int issue :<< as-int]
+       (views/neu-in-grossdruck year issue))
+  (GET "/:year/:issue/neu-in-braille.xml"
+       [year :<< as-int issue :<< as-int]
+       (views/neu-in-braille year issue))
+  (GET "/:year/:issue/neu-als-hörbuch.pdf"
+       [year :<< as-int issue :<< as-int]
+       (views/neu-als-hörbuch year issue))
 
   ;; editorials
   (GET "/editorial/:fmt{grossdruck|braille|hörbuch}"
@@ -27,7 +36,9 @@
 
   ;; upload catalog data
   (GET "/upload" request (views/upload-form request))
-  (POST "/upload-confirm" [file :as r] (views/upload-confirm r file))
+  (POST "/upload-confirm/:year/:issue"
+        [year :<< as-int issue :<< as-int file :as r]
+        (views/upload-confirm r year issue file))
 
   ;; resources and 404
   (route/resources "/")

@@ -1,6 +1,7 @@
 (ns catalog.web.views
   "Views for web application"
   (:require [catalog
+             [db :as db]
              [validation :as validation]
              [vubis :as vubis]]
             [catalog.layout
@@ -9,16 +10,15 @@
              [fop :as layout.fop]]
             [catalog.web.layout :as layout]
             [cemerick.friend :as friend]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
+            [clojure
+             [string :as string]]
             [hiccup
              [core :refer [h]]
              [form :as form]]
             [ring.util
              [anti-forgery :refer [anti-forgery-field]]
              [response :as response]]
-            [schema.core :as s]
-            [clojure.string :as string]))
+            [schema.core :as s]))
 
 (defn icon-button [href icon label]
   [:a.btn.btn-default {:href href :role "button" :aria-label label}
@@ -49,42 +49,45 @@
         (icon-button "/neu-als-hörbuch.ncc" "download" "NCC")
         (icon-button "/neu-als-hörbuch-toc.pdf" "download" "TOC")]]])))
 
-(defn read-catalog [f]
-  (-> f io/reader java.io.PushbackReader. edn/read))
+(defn- file-name [k year issue]
+  (let [name (-> (k translations)
+                 string/lower-case
+                 (string/replace #"\s" "-"))]
+    (format "%s-%s-%s" name year issue)))
 
-(defn neu-im-sortiment []
-  (let [temp-file (java.io.File/createTempFile "neu-im-sortiment" ".pdf")]
-    (-> "catalog.edn"
-        read-catalog
-        (layout.fop/document :all-formats)
+(defn neu-im-sortiment [year issue]
+  (let [temp-file (java.io.File/createTempFile (file-name :catalog-all year issue) ".pdf")]
+    (-> (db/read-catalog year issue)
+        (layout.fop/document :all-formats nil nil)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
         (response/content-type "application/pdf"))))
 
-(defn neu-in-grossdruck []
-  (let [temp-file (java.io.File/createTempFile "neu-in-grossdruck" ".pdf")]
-    (-> "catalog.edn"
-        read-catalog
-        (layout.fop/document :grossdruck)
+(defn neu-in-grossdruck [year issue]
+  (let [temp-file (java.io.File/createTempFile (file-name :catalog-grossdruck year issue) ".pdf")
+        editorial (db/read-editorial year issue "grossdruck")
+        recommendation (db/read-recommendation year issue "grossdruck")]
+    (-> (db/read-catalog year issue)
+        (layout.fop/document :grossdruck editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
         (response/content-type "application/pdf"))))
 
-(defn neu-in-braille []
-  (-> "catalog.edn"
-      read-catalog
+(defn neu-in-braille [year issue]
+  (-> (db/read-catalog year issue)
       :braille
       layout.dtbook/dtbook
       response/response
       (response/content-type "application/xml")))
 
-(defn neu-als-hörbuch []
-  (let [temp-file (java.io.File/createTempFile "neu-als-hörbuch" ".pdf")]
-    (-> "catalog.edn"
-        read-catalog
-        (layout.fop/document :hörbuch)
+(defn neu-als-hörbuch [year issue]
+  (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörbuch year issue) ".pdf")
+        editorial (db/read-editorial year issue "hörbuch")
+        recommendation (db/read-recommendation issue "hörbuch")]
+    (-> (db/read-catalog year issue)
+        (layout.fop/document :hörbuch editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
@@ -103,7 +106,7 @@
         (form/form-to
          {:enctype "multipart/form-data"
           :class "form-inline"}
-         [:post "/upload-confirm"]
+         [:post (format "/upload-confirm/%s/%s" 2016 03)] ;; FIXME: hardcoded for now
          (anti-forgery-field)
          (form/file-upload "file")
          " "
@@ -149,7 +152,7 @@
          " "
          (form/submit-button {:class "btn btn-default"} "Upload"))]]])))
 
-(defn upload-confirm [request file]
+(defn upload-confirm [request year issue file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)
         items (vubis/collate-all-duplicate-items (vubis/read-file path))
