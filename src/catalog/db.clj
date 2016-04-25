@@ -1,6 +1,8 @@
 (ns catalog.db
   (:require [clojure.java.jdbc :as jdbc]
-            [yesql.core :refer [defqueries]]))
+            [yesql.core :refer [defqueries]]
+            [clojure.edn :as edn]
+            [catalog.vubis :as vubis]))
 
 #_(def ^:private db {:factory factory :name "java:jboss/datasources/catalog"})
 
@@ -8,3 +10,34 @@
 
 (defqueries "catalog/queries.sql" {:connection db})
 
+(defn read-catalog [year issue]
+  (-> {:year year :issue issue}
+      catalog
+      first
+      :items
+      edn/read-string
+      vubis/order-and-group))
+
+(defn read-editorial [year issue type]
+  (-> {:year year :issue issue :catalog_type type}
+      editorial
+      first
+      :content))
+
+(defn read-recommendation [year issue type]
+  (-> {:year year :issue issue :catalog_type type}
+      recommendation
+      first
+      :content))
+
+(defn save-catalog! [year issue items]
+  (-> {:year year :issue issue :items (prn-str items)}
+      save-catalog-internal!))
+
+(defn save-editorial! [year issue catalog_type content]
+  (-> {:year year :issue issue :catalog_type catalog_type :content content}
+      save-editorial-internal!))
+
+(defn save-recommendation! [year issue catalog_type content]
+  (-> {:year year :issue issue :catalog_type catalog_type :content content}
+      save-recommendation-internal!))

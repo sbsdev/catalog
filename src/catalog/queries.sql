@@ -19,7 +19,7 @@ FROM recommendations, catalogs
 WHERE recommendations.year = :year AND recommendations.issue = :issue 
 AND recommendations.catalog_type = :catalog_type
 
--- name: save-catalog!
+-- name: save-catalog-internal!
 -- Insert or update the given `items` to the catalog for given `year`
 -- and `issue`.
 INSERT INTO catalogs (year, issue, items)
@@ -27,7 +27,7 @@ VALUES (:year, :issue, :items)
 ON DUPLICATE KEY UPDATE
 items = values(items);
 
--- name: save-editorial!
+-- name: save-editorial-internal!
 -- Insert or update the given `content` to editorials for given
 -- `year`, `issue` and `catalog_type`.
 INSERT INTO editorials (year, issue, catalog_type, content)
@@ -35,7 +35,7 @@ VALUES (:year, :issue, :catalog_type, :content)
 ON DUPLICATE KEY UPDATE
 content = values(content);
 
--- name: save-recommendation!
+-- name: save-recommendation-internal!
 -- Insert or update the given `content` to recommendations for given `year`,
 -- `issue` and `catalog_type`.
 INSERT INTO recommendations (year, issue, catalog_type, content)
