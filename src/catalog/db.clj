@@ -1,8 +1,6 @@
 (ns catalog.db
-  (:require [clojure.java.jdbc :as jdbc]
-            [yesql.core :refer [defqueries]]
-            [clojure.edn :as edn]
-            [catalog.vubis :as vubis]))
+  (:require [clojure.edn :as edn]
+            [yesql.core :refer [defqueries]]))
 
 #_(def ^:private db {:factory factory :name "java:jboss/datasources/catalog"})
 
@@ -15,8 +13,7 @@
       catalog
       first
       :items
-      edn/read-string
-      vubis/order-and-group))
+      edn/read-string))
 
 (defn read-editorial [year issue type]
   (-> {:year year :issue issue :catalog_type type}

@@ -58,6 +58,7 @@
 (defn neu-im-sortiment [year issue]
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-all year issue) ".pdf")]
     (-> (db/read-catalog year issue)
+        vubis/order-and-group
         (layout.fop/document :all-formats nil nil)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
