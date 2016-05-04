@@ -9,6 +9,9 @@
 (def Genre
   (apply s/enum (vals vubis/genre-raw-to-genre)))
 
+(def LudoGenre
+  (apply s/enum (vals vubis/genre-raw-to-ludo-genre)))
+
 (def SubGenre
   (apply s/enum (vals vubis/genre-raw-to-subgenre)))
 
@@ -122,7 +125,7 @@
  Spiel CatalogItem [:ludo]
  {:source-publisher s/Str
   :source-date s/Inst
-  :genre (s/eq :spiel)
+  :genre LudoGenre
   :genre-text s/Str
   (s/optional-key :accompanying-material) s/Str
   :game-description s/Str})
