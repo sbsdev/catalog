@@ -242,8 +242,8 @@
            braille-grade
            directed-by actors personel-text
            accompanying-material braille-music-grade] :as item
-    :or {genre "x01" ; an invalid genre
-         genre-code "x0"}}] ; an invalid genre-code
+    :or {genre "" ; an invalid genre
+         genre-code ""}}] ; an invalid genre-code
   (let [fmt (get-format format)
         ;; tactile books aren't properly tagged in the format field.
         ;; They are tagged as :ludo and their library signature starts
