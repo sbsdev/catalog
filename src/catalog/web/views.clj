@@ -169,13 +169,20 @@
                         [:thead [:tr (map #(vec [:th %]) ["Record-id" "Title" "Field" "Value" "Error"])]]
                         [:tbody
                          (for [[errors {:keys [record-id title] :as item}] problems]
-                           (for [[k v] errors]
+                           (if (map? errors)
+                             (for [[k v] errors]
+                               [:tr
+                                [:td record-id]
+                                [:td (h title)]
+                                [:td k]
+                                [:td (h (item k))]
+                                [:td (str v)]])
                              [:tr
                               [:td record-id]
                               [:td (h title)]
-                              [:td k]
-                              [:td (h (item k))]
-                              [:td (str v)]]))]]
+                              [:td ]
+                              [:td ]
+                              [:td (pr-str errors)]]))]]
                        (form/form-to
                         {:enctype "multipart/form-data"}
                         [:post (format "/upload/%s/%s" year issue)]
