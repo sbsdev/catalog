@@ -248,7 +248,7 @@
         ;; tactile books aren't properly tagged in the format field.
         ;; They are tagged as :ludo and their library signature starts
         ;; with "TB"
-        fmt (if (and (= fmt :ludo) (re-find #"^TB " library-signature))
+        fmt (if (and (= fmt :ludo) library-signature (re-find #"^TB " library-signature))
               :taktilesbuch fmt)
         item (-> {}
                  (assoc-some
