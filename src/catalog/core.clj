@@ -1,10 +1,13 @@
 (ns catalog.core
-  (:require [catalog.layout
+  (:require [catalog
+             [validation :as validation]
+             [vubis :as vubis]]
+            [catalog.layout
              [dtbook :as layout.dtbook]
              [fop :as layout.fop]
              [obi :as layout.obi]]
-            [catalog.vubis :as vubis]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [schema.core :as s]))
 
 (defn neu-im-sortiment [in out]
   (-> in
@@ -74,3 +77,11 @@
    (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
    (layout.obi/dtbook (slurp editorial) (slurp recommendations))
    (->> (spit (io/file out)))))
+
+(defn validate [in]
+  (let [checker (s/checker validation/CatalogItem)]
+    (->>
+     in
+     vubis/read-file
+     vubis/collate-all-duplicate-items
+     (keep #(when-let [error (checker %)] [error %])))))
