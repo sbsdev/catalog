@@ -291,9 +291,7 @@
                      ;; preconditions
                      accompanying-material (when (and
                                                   rucksackbuch-number
-                                                  (= (:sub-genre item) :kinderbücher-ab-6)
-                                                  (= braille-grade :vollschrift)
-                                                  (not double-spaced?))
+                                                  (= (:sub-genre item) :kinderbücher-ab-6))
                                              "inkl. Schwarzschriftbeilage")]
                  (-> item
                      (assoc-some
