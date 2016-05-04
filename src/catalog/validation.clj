@@ -125,6 +125,7 @@
  Spiel CatalogItem [:ludo]
  {:source-publisher s/Str
   :source-date s/Inst
+  :producer-brief ProducerBrief
   :genre LudoGenre
   :genre-text s/Str
   (s/optional-key :accompanying-material) s/Str
