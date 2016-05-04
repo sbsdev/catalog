@@ -8,22 +8,27 @@
   (:import java.util.Locale))
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
-(def genres [:belletristik :sachbücher :kinder-und-jugendbücher])
+(def genres [:belletristik :sachbücher :kinder-und-jugendbücher :bücher-in-fremdsprachen])
 (def movie-genres [:spielfilm :mundartfilm :dokumentarfilm])
 (def game-genres [:lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
                   :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
                   :bücher-über-spiel])
 (def braille-genres (conj genres :musiknoten :taktilesbuch))
-(def subgenres [:action-und-thriller :beziehungsromane :fantasy-science-fiction
-                :gesellschaftsromane :glaube-und-philosophie
-                :historische-romane :hörspiele :krimis
+(def subgenres [;; Belletristik
+                :action-und-thriller :beziehungsromane :fantasy-science-fiction
+                :gesellschaftsromane :historische-romane :hörspiele :krimis
                 :lebensgeschichten-und-schicksale :literarische-gattungen
-                :literatur-in-fremdsprachen :mundart-heimat-natur
-                :biografien :freizeit-haus-garten :geschichte-und-gegenwart
-                :kunst-kultur-medien :lebensgestaltung-gesundheit-erziehung
-                :philosophie-religion-esoterik :reisen-natur-tiere :sprache
-                :wissenschaft-technik
-                :kinderbücher-ab-6 :kinderbücher-ab-10 :jugendbücher :kinder-und-jugendsachbücher])
+                :mundart-heimat-natur :glaube-und-philosophie
+                ;; Sachbücher
+                :biografien :freizeit-haus-garten
+                :geschichte-und-gegenwart :kunst-kultur-medien
+                :lebensgestaltung-gesundheit-erziehung :philosophie-religion-esoterik
+                :reisen-natur-tiere :sprache :wissenschaft-technik
+                ;; Kinder und Jugendbücher
+                :kinderbücher-ab-6 :kinderbücher-ab-10 :jugendbücher
+                :kinder-und-jugendsachbücher
+                ;; Bücher in Fremdsprachen
+                :englisch :weitere-fremdsprachen])
 
 (def ^:dynamic translations {:inhalt "Inhaltsverzeichnis"
                              :sbs "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
@@ -43,6 +48,7 @@
                              :belletristik "Belletristik"
                              :sachbücher "Sachbücher"
                              :kinder-und-jugendbücher "Kinder- und Jugendbücher"
+                             :bücher-in-fremdsprachen "Bücher in Fremdsprachen"
                              :action-und-thriller "Action und Thriller"
                              :beziehungsromane "Beziehungsromane"
                              :fantasy-science-fiction "Fantasy, Science Fiction"
@@ -52,7 +58,6 @@
                              :krimis "Krimis"
                              :lebensgeschichten-und-schicksale "Lebensgeschichten und Schicksale"
                              :literarische-gattungen "Literarische Gattungen"
-                             :literatur-in-fremdsprachen "Literatur in Fremdsprachen"
                              :mundart-heimat-natur "Mundart, Heimat, Natur"
                              :glaube-und-philosophie "Glaube und Philosophie"
                              :biografien "Biografien"
@@ -67,6 +72,8 @@
                              :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
                              :kinderbücher-ab-6 "Kinderbücher (ab 6)"
                              :kinderbücher-ab-10 "Kinderbücher (ab 10)"
+                             :englisch "Englisch"
+                             :weitere-fremdsprachen "Weitere Fremdsprachen"
                              :spielfilm "Spielfilme"
                              :mundartfilm "Mundartfilme"
                              :dokumentarfilm "Dokumentarfilme"

@@ -67,7 +67,8 @@
   "Mapping between genre-raw and genre"
   {"b" :belletristik
    "s" :sachbücher
-   "k" :kinder-und-jugendbücher})
+   "k" :kinder-und-jugendbücher
+   "x" :bücher-in-fremdsprachen})
 
 (def genre-raw-to-ludo-genre
   "Mapping between genre-raw and ludo genre"
@@ -93,7 +94,6 @@
    "b07" :krimis
    "b08" :lebensgeschichten-und-schicksale
    "b09" :literarische-gattungen
-   "b10" :literatur-in-fremdsprachen
    "b11" :mundart-heimat-natur
    "b12" :glaube-und-philosophie
    "s01" :biografien
@@ -108,7 +108,13 @@
    "k01" :jugendbücher
    "k02" :kinder-und-jugendsachbücher
    "k03" :kinderbücher-ab-10
-   "k04" :kinderbücher-ab-6})
+   "k04" :kinderbücher-ab-6
+   "x01" :englisch
+   "x02" :weitere-fremdsprachen
+   "x03" :weitere-fremdsprachen
+   "x04" :weitere-fremdsprachen
+   "x05" :weitere-fremdsprachen
+   "x09" :weitere-fremdsprachen})
 
 (def format-raw-to-format
   "Mapping between format-raw and format"
@@ -419,13 +425,13 @@
 (defn get-update-keys-neu-als-hörbuch
   "Return the update keys for a given item (see `get-update-keys`).
   For the neu-als-hörbuch all foreign language books need to ge
-  grouped under `:literatur-in-fremdsprachen`, even kids books, so we
+  grouped under `:bücher-in-fremdsprachen`, even kids books, so we
   need to group not only by `format`, `genre` and `sub-genre` but also
   by `language`."
   [{fmt :format language :language :as item}]
   (cond
     (and (= fmt :hörbuch)
-         (not (#{"de" "de-CH"} language))) [fmt :belletristik :literatur-in-fremdsprachen]
+         (not (#{"de" "de-CH"} language))) [fmt :bücher-in-fremdsprachen]
     :else (get-update-keys item)))
 
 (defn get-update-keys-hörfilm
