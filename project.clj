@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/data.zip "0.1.1"]
                  [medley "0.7.4"]
-                 [prismatic/schema "1.1.0"]
+                 [prismatic/schema "1.1.1"]
                  [clj-time "0.11.0"]
                  [comb "0.1.0" :exclusions [org.clojure/clojure]]
                  [org.clojure/data.xml "0.0.8"]
