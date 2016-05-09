@@ -1,7 +1,7 @@
 (ns catalog.web.main
   "Main entry point.
 
-  Set up web server and queues."
+  Set up web server."
   (:gen-class)
   (:require [catalog.web.handler :as handler]
             [immutant.web :as web]))
