@@ -78,11 +78,15 @@
         (response/content-type "application/pdf"))))
 
 (defn neu-in-braille [year issue]
-  (-> (db/read-catalog year issue)
-      :braille
-      layout.dtbook/dtbook
-      response/response
-      (response/content-type "application/xml")))
+  (println year issue)
+  (let [editorial (db/read-editorial year issue :braille)
+        recommendation (db/read-recommendation year issue :braille)]
+    (-> (db/read-catalog year issue)
+        vubis/order-and-group
+        :braille
+        (layout.dtbook/dtbook editorial recommendation)
+        response/response
+        (response/content-type "application/xml"))))
 
 (defn neu-als-hörbuch [year issue]
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörbuch year issue) ".pdf")
