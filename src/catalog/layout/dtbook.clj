@@ -9,7 +9,8 @@
              [core :as time.core]
              [format :as time.format]]
             [clojure.data.xml :as xml]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [catalog.layout.dtbook.common :as dtbook]))
 
 (def translations (merge layout/translations
                          {[:kurzschrift false] "K"
@@ -91,8 +92,12 @@
       [:p {:brl:class (format "nr_%s" volume)}]
       [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
     [:bodymatter
-     [:level1 [:h1 (translations :editorial)] [:p "..."]]
-     [:level1 [:h1 (translations :recommendations)] [:p "..."]]
+     [:level1
+      [:h1 (translations :editorial)]
+      (dtbook/md-to-dtbook editorial 2)]
+     [:level1
+      [:h1 (translations :recommendations)]
+      (dtbook/md-to-dtbook editorial 2)]
      (when-let [items (not-empty
                        (dissoc items :musiknoten :taktilesbuch))]
        [:level1 [:h1 (translations :braille)]
