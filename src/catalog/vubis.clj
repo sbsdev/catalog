@@ -173,9 +173,14 @@
   "Mapping between braille-music-grade-raw and braille-grade"
   {"vd" :vollschrift ; Vollschrift Deutsch
    "vs" :vollschrift ; Vollschrift other language
-   "ms" :vollschrift}) ; Musikschrift, not valid really, but the
-                       ; MARC21 data isn't super clean for music, so
-                       ; swallow this as well
+   ;; Musikschrift, not valid really, but the MARC21 data isn't super
+   ;; clean for music, so swallow this as well
+   "ms" :vollschrift
+   ;; now we're getting into the really weird cases: In very rare
+   ;; occasions we file some stuff under braille-music that isn't
+   ;; really music, e.g. books about braille music notation, so we
+   ;; need to handle other contraction grades as well
+   "kr" :kurzschrift})
 
 (defn parse-int [s]
    (when-let [number (and s (re-find #"\d+" s))]
@@ -320,7 +325,8 @@
       :e-book item
       :musiknoten (-> item
                       (assoc-some
-                       :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade)
+                        ;; if we cannot find a matching braille grade assume the item is in schwarzschrift
+                       :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade :schwarzschrift)
                        :volumes (parse-int volumes)
                        :accompanying-material accompanying-material))
       :taktilesbuch (-> item

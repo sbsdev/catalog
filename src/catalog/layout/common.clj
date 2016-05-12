@@ -95,9 +95,11 @@
                              [:kurzschrift false] "Kurzschrift"
                              [:vollschrift false] "Vollschrift"
                              [:schachschrift false] "Schachschrift"
+                             [:schwarzschrift false] "Schwarzschrift"
                              [:kurzschrift true] "Weitzeilige Kurzschrift"
                              [:vollschrift true] "Weitzeilige Vollschrift"
                              [:schachschrift true] "Weitzeilige Schachschrift"
+                             [:schwarzschrift true] "Schwarzschrift"
                              ;; other strings
                              :editorial "Editorial"
                              :recommendation "Buchtipp"
@@ -175,6 +177,7 @@
 (defn braille-signatures [items]
   (->>
    [[:kurzschrift false] [:vollschrift false] [:kurzschrift true] [:vollschrift true]
+    [:schwarzschrift true] [:schwarzschrift false]
     [:schachschrift true] [:schachschrift false] [nil true] [nil false]]
    (keep (fn [k] (braille-signature (first (get items k)))))
    (string/join ". ")))
