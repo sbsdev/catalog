@@ -3,36 +3,18 @@
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html). This will be
   used to narrate the book in Obi later in the tool chain"
   (:require [catalog.layout.common :as layout]
+            [catalog.layout.dtbook.common :as dtbook]
             [clj-time
              [coerce :as time.coerce]
              [core :as time.core]
              [format :as time.format]]
             [clojure.data.xml :as xml]))
 
-(defn- heading-keyword [level]
-  (keyword (str "h" level)))
-
-(defn- level-keyword [level]
-  (keyword (str "level" level)))
-
 (defn- entry-sexp [level {:keys [creator title]}]
   [(level-keyword level)
    [(heading-keyword level)
     (if creator (format "%s: %s" creator title) title)]
    [:p]])
-
-(defn- md-to-obi [markdown path path-to-numbers]
-  (let [level (inc (count path))
-        headers (layout/md-extract-headings markdown)]
-    (if (seq headers)
-      (for [h headers]
-        [(level-keyword level)
-         [(heading-keyword level)
-          (format "%s%s" (layout/section-numbers (get path-to-numbers (conj path h))) h)]
-         [:p]])
-      ;; if there are no headers then just emit an empty <p/> to make
-      ;; sure the generated dtbook is valid
-      [:p])))
 
 (defn- level-sexp [items path path-to-numbers]
   (let [level (count path)]
@@ -43,7 +25,7 @@
               (layout/translations (last path)))]
      (cond
        ;; handle the special case where the editorial or the recommendations are passed in the tree
-       (#{:editorial :recommendations} (last path)) (md-to-obi items path path-to-numbers)
+       (#{:editorial :recommendations} (last path)) (dtbook/md-to-dtbook items path path-to-numbers)
        ;; handle a list of entries
        (vector? items) (map #(entry-sexp (inc level) %) items)
        :else (map #(level-sexp (get items %) (conj path %) path-to-numbers) (keys items)))]))
