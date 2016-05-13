@@ -2,21 +2,52 @@
   "Render catalog items as [DTBook
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html) to be
   converted to Braille later in the tool chain"
-  (:require [catalog.layout.common :as layout
-             :refer [empty-or-blank? wrap]]
+  (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
             [clj-time
              [coerce :as time.coerce]
              [core :as time.core]
              [format :as time.format]]
+            [clojure
+             [set :as set]
+             [string :as string]
+             [walk :as walk]]
             [clojure.data.xml :as xml]
-            [clojure.string :as string]
-            [catalog.layout.dtbook.common :as dtbook]))
+            [endophile.core :as endophile]))
 
 (def translations (merge layout/translations
                          {[:kurzschrift false] "K"
                           [:vollschrift false] "V"
                           [:kurzschrift true] "wtz."
                           [:vollschrift true] "wtz."}))
+
+(defmulti to-dtbook (fn [{:keys [tag attrs content]}] tag))
+(defmethod to-dtbook :p [{content :content}] [:p content])
+(defmethod to-dtbook :a [{content :content {href :href} :attrs}]
+  [:a {:href href} (if (not-empty content) content href)])
+(defmethod to-dtbook :h1 [{content :content}] [:h1 content])
+(defmethod to-dtbook :h2 [{content :content}] [:h2 content])
+(defmethod to-dtbook :h3 [{content :content}] [:h3 content])
+(defmethod to-dtbook :ul [{content :content}] [:list {:type "ul"} content])
+(defmethod to-dtbook :li [{content :content}] [:li content])
+(defmethod to-dtbook :em [{content :content}] [:em content])
+(defmethod to-dtbook :strong [{content :content}] [:strong content])
+(defmethod to-dtbook :br [_] [:br])
+(defmethod to-dtbook :default [{content :content}] [:p content]) ; just assume :p
+
+(defn- node? [node]
+  (and (map? node) (or (set/subset? #{:tag :content} (set (keys node))) (= (:tag node) :br))))
+
+(defn- visitor [node]
+  (if (node? node)
+    (to-dtbook node)
+    node))
+
+(defn md-to-dtbook [markdown]
+  (->>
+   markdown
+   endophile/mp
+   endophile/to-clj
+   (walk/postwalk #(visitor %))))
 
 (defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
                              source-date genre genre-text description producer-brief
@@ -94,10 +125,10 @@
     [:bodymatter
      [:level1
       [:h1 (translations :editorial)]
-      (dtbook/md-to-dtbook editorial 2)]
+      (md-to-dtbook editorial)]
      [:level1
       [:h1 (translations :recommendations)]
-      (dtbook/md-to-dtbook editorial 2)]
+      (md-to-dtbook recommendations)]
      (when-let [items (not-empty
                        (dissoc items :musiknoten :taktilesbuch))]
        [:level1 [:h1 (translations :braille)]
