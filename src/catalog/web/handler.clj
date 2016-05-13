@@ -14,6 +14,7 @@
 (defroutes app-routes
   "Main routes for the application"
   (GET "/" request (views/home request))
+  (GET "/:year/:issue" [year :<< as-int issue :<< as-int :as r] (views/home r year issue))
 
   (GET "/:year/:issue/neu-im-sortiment.pdf"
        [year :<< as-int issue :<< as-int]
@@ -37,11 +38,13 @@
         (views/editorial r fmt year issue editorial recommended))
 
   ;; upload catalog data
-  (GET "/upload" request (views/upload-form request))
-  (POST "/upload-confirm/:year/:issue"
+  (GET "/:year/:issue/upload"
+       [year :<< as-int issue :<< as-int file :as r]
+       (views/upload-form r year issue))
+  (POST "/:year/:issue/upload-confirm"
         [year :<< as-int issue :<< as-int file :as r]
         (views/upload-confirm r year issue file))
-  (POST "/upload/:year/:issue"
+  (POST "/:year/:issue/upload"
         [year :<< as-int issue :<< as-int items :as r]
         (views/upload r year issue items))
 

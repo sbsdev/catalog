@@ -25,30 +25,34 @@
   [:a.btn.btn-default {:href href :role "button" :aria-label label}
    [:span.glyphicon {:class (str "glyphicon-" icon) :aria-hidden "true"}] (str " " label)])
 
-(defn home [request]
-  (let [identity (friend/identity request)]
-    (layout/common
-     identity
-     [:div.row
-      [:div.col-md-6
-       [:div.well
-        [:h2 (translations :catalog-all)]
-        (icon-button "/neu-im-sortiment.pdf" "download" "Download")]]
-      [:div.col-md-6
-       [:div.well
-        [:h2 (translations :catalog-grossdruck)]
-        (icon-button "/neu-in-grossdruck.pdf" "download" "Download")]]]
-     [:div.row
-      [:div.col-md-6
-       [:div.well
-        [:h2 (translations :catalog-braille)]
-        (icon-button "/neu-in-braille.xml" "download" "Download")]]
-      [:div.col-md-6
-       [:div.well
-        [:h2 (translations :catalog-hörbuch)]
-        (icon-button "/neu-als-hörbuch.pdf" "download" "Download")
-        (icon-button "/neu-als-hörbuch.ncc" "download" "NCC")
-        (icon-button "/neu-als-hörbuch-toc.pdf" "download" "TOC")]]])))
+(defn home
+  ([request]
+   (home request 2016 3)) ;; FIXME: hard coded for now
+  ([request year issue]
+   (let [identity (friend/identity request)]
+     (layout/common
+      identity
+      year issue
+      [:div.row
+       [:div.col-md-6
+        [:div.well
+         [:h2 (translations :catalog-all)]
+         (icon-button (format "/%s/%s/neu-im-sortiment.pdf" year issue) "download" "Download")]]
+       [:div.col-md-6
+        [:div.well
+         [:h2 (translations :catalog-grossdruck)]
+         (icon-button (format "/%s/%s/neu-in-grossdruck.pdf" year issue) "download" "Download")]]]
+      [:div.row
+       [:div.col-md-6
+        [:div.well
+         [:h2 (translations :catalog-braille)]
+         (icon-button (format "/%s/%s/neu-in-braille.xml" year issue) "download" "Download")]]
+       [:div.col-md-6
+        [:div.well
+         [:h2 (translations :catalog-hörbuch)]
+         (icon-button (format "/%s/%s/neu-als-hörbuch.pdf" year issue) "download" "Download")
+         (icon-button (format "/%s/%s/neu-als-hörbuch.ncc" year issue) "download" "NCC")
+         (icon-button (format "/%s/%s/neu-als-hörbuch-toc.pdf" year issue) "download" "TOC")]]]))))
 
 (defn- file-name [k year issue]
   (let [name (-> (k translations)
@@ -98,10 +102,11 @@
         response/response
         (response/content-type "application/pdf"))))
 
-(defn upload-form [request & [errors]]
+(defn upload-form [request year issue & [errors]]
   (let [identity (friend/identity request)]
     (layout/common
      identity
+     year issue
      [:div.row
       [:div.col-md-6
        [:div.well
@@ -111,7 +116,7 @@
         (form/form-to
          {:enctype "multipart/form-data"
           :class "form-inline"}
-         [:post (format "/upload-confirm/%s/%s" 2016 03)] ;; FIXME: hardcoded for now
+         [:post (format "/%s/%s/upload-confirm" year issue)]
          (anti-forgery-field)
          (form/file-upload "file")
          " "
@@ -166,40 +171,42 @@
         problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
     (if (seq problems)
       (let [identity (friend/identity request)]
-        (layout/common identity
-                       [:h1 "Confirm Upload"]
-                       [:table#productions.table.table-striped
-                        [:thead [:tr (map #(vec [:th %]) ["Record-id" "Title" "Field" "Value" "Error"])]]
-                        [:tbody
-                         (for [[errors {:keys [record-id title] :as item}] problems]
-                           (if (map? errors)
-                             (for [[k v] errors]
-                               [:tr
-                                [:td record-id]
-                                [:td (h title)]
-                                [:td k]
-                                [:td (h (item k))]
-                                [:td (str v)]])
-                             [:tr
-                              [:td record-id]
-                              [:td (h title)]
-                              [:td ]
-                              [:td ]
-                              [:td (pr-str errors)]]))]]
-                       (form/form-to
-                        {:enctype "multipart/form-data"}
-                        [:post (format "/upload/%s/%s" year issue)]
-                        (anti-forgery-field)
-                        (form/hidden-field "items" (prn-str items))
-                        (form/submit-button "Upload Anyway"))))
+        (layout/common
+         identity
+         year issue
+         [:h1 "Confirm Upload"]
+         [:table#productions.table.table-striped
+          [:thead [:tr (map #(vec [:th %]) ["Record-id" "Title" "Field" "Value" "Error"])]]
+          [:tbody
+           (for [[errors {:keys [record-id title] :as item}] problems]
+             (if (map? errors)
+               (for [[k v] errors]
+                 [:tr
+                  [:td record-id]
+                  [:td (h title)]
+                  [:td k]
+                  [:td (h (item k))]
+                  [:td (str v)]])
+               [:tr
+                [:td record-id]
+                [:td (h title)]
+                [:td ]
+                [:td ]
+                [:td (pr-str errors)]]))]]
+         (form/form-to
+          {:enctype "multipart/form-data"}
+          [:post (format "/%s/%s/upload" year issue)]
+          (anti-forgery-field)
+          (form/hidden-field "items" (prn-str items))
+          (form/submit-button "Upload Anyway"))))
       (do
         ;; add the file
         ;; and redirect to the index
-        (response/redirect-after-post "/")))))
+        (response/redirect-after-post (format "/%s/%s" year issue))))))
 
 (defn upload [request year issue items]
   (db/save-catalog! year issue (edn/read-string items))
-  (response/redirect-after-post "/"))
+  (response/redirect-after-post (format "/%s/%s" year issue)))
 
 (defn editorial-form [request fmt year issue]
   (let [identity (friend/identity request)
@@ -208,6 +215,7 @@
     (println editorial recommendation)
     (layout/common
      identity
+     year issue
      [:h1 (format "Editorial und Buchtipps für %s" (string/capitalize fmt))]
      (form/form-to
       [:post (format "/%s/%s/editorial/%s" year issue fmt)]
@@ -224,4 +232,4 @@
   ;; FIXME: add a transaction around the two following saves
   (db/save-editorial! year issue fmt editorial)
   (db/save-recommendation! year issue fmt recommended)
-  (response/redirect-after-post "/"))
+  (response/redirect-after-post (format "/%s/%s" year issue)))

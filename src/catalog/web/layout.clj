@@ -45,7 +45,7 @@
 
 (defn navbar
   "Display the navbar"
-  [identity]
+  [identity year issue]
   [:div.navbar.navbar-default {:role "navigation"}
    [:div.container-fluid
     [:div.navbar-header
@@ -56,18 +56,18 @@
       [:span.icon-bar]
       [:span.icon-bar]
       [:span.icon-bar]]
-     [:a.navbar-brand {:href "/"} "Catalog"]]
+     [:a.navbar-brand {:href (format "/%s/%s" year issue)} "Catalog"]]
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
      [:ul.nav.navbar-nav
-      (menu-item "/upload" "Upload")
-      (dropdown-menu [["/editorial/grossdruck" "Grossdruck"]
-                      ["/editorial/braille" "Braille"]
-                      ["/editorial/hörbuch" "Hörbuch"]])]]]])
+      (menu-item (format "/%s/%s/upload" year issue) "Upload")
+      (dropdown-menu [[(format "/%s/%s/editorial/grossdruck" year issue) "Grossdruck"]
+                      [(format "/%s/%s/editorial/braille" year issue) "Braille"]
+                      [(format "/%s/%s/editorial/hörbuch" year issue) "Hörbuch"]])]]]])
 
 (defn common
   "Display a page using the bootstrap css"
-  [identity & body]
+  [identity year issue & body]
   (html5
     [:head
      [:title "Catalog"]
@@ -75,7 +75,7 @@
      (include-css "/css/bootstrap-markdown.min.css")]
     [:body
      [:div.container
-      (navbar identity)
+      (navbar identity year issue)
       body]
      (include-js "/js/jquery-1.12.0.min.js")
      (include-js "/js/bootstrap.min.js")
