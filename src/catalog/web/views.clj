@@ -78,7 +78,6 @@
         (response/content-type "application/pdf"))))
 
 (defn neu-in-braille [year issue]
-  (println year issue)
   (let [editorial (db/read-editorial year issue :braille)
         recommendation (db/read-recommendation year issue :braille)]
     (-> (db/read-catalog year issue)
