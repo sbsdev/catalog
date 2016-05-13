@@ -95,8 +95,9 @@
 (defn neu-als-hörbuch [year issue]
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörbuch year issue) ".pdf")
         editorial (db/read-editorial year issue :hörbuch)
-        recommendation (db/read-recommendation issue :hörbuch)]
+        recommendation (db/read-recommendation year issue :hörbuch)]
     (-> (db/read-catalog year issue)
+        (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
         (layout.fop/document :hörbuch editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
