@@ -435,7 +435,10 @@
   [{fmt :format language :language :as item}]
   (cond
     (and (= fmt :hörbuch)
-         (not (#{"de" "de-CH"} language))) [fmt :bücher-in-fremdsprachen]
+         (not (#{"de" "de-CH"} language))) [fmt :bücher-in-fremdsprachen
+                                            (if (= language "en")
+                                              :englisch
+                                              :weitere-fremdsprachen)]
     :else (get-update-keys item)))
 
 (defn get-update-keys-hörfilm
