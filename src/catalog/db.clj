@@ -16,13 +16,13 @@
       edn/read-string))
 
 (defn read-editorial [year issue type]
-  (-> {:year year :issue issue :catalog_type type}
+  (-> {:year year :issue issue :catalog_type (name type)}
       editorial
       first
       :content))
 
 (defn read-recommendation [year issue type]
-  (-> {:year year :issue issue :catalog_type type}
+  (-> {:year year :issue issue :catalog_type (name type)}
       recommendation
       first
       :content))

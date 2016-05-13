@@ -68,8 +68,8 @@
 
 (defn neu-in-grossdruck [year issue]
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-grossdruck year issue) ".pdf")
-        editorial (db/read-editorial year issue "grossdruck")
-        recommendation (db/read-recommendation year issue "grossdruck")]
+        editorial (db/read-editorial year issue :grossdruck)
+        recommendation (db/read-recommendation year issue :grossdruck)]
     (-> (db/read-catalog year issue)
         (layout.fop/document :grossdruck editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
@@ -90,8 +90,8 @@
 
 (defn neu-als-hörbuch [year issue]
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörbuch year issue) ".pdf")
-        editorial (db/read-editorial year issue "hörbuch")
-        recommendation (db/read-recommendation issue "hörbuch")]
+        editorial (db/read-editorial year issue :hörbuch)
+        recommendation (db/read-recommendation issue :hörbuch)]
     (-> (db/read-catalog year issue)
         (layout.fop/document :hörbuch editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
