@@ -115,11 +115,11 @@
     (apply #(external-link href %) content)
     (external-link href href)))
 (defmethod to-fop :h1 [{content :content} path opts]
-  (heading :h1 (conj path (string/join content)) opts))
-(defmethod to-fop :h2 [{content :content} path opts]
   (heading :h2 (conj path (string/join content)) opts))
-(defmethod to-fop :h3 [{content :content} path opts]
+(defmethod to-fop :h2 [{content :content} path opts]
   (heading :h3 (conj path (string/join content)) opts))
+(defmethod to-fop :h3 [{content :content} path opts]
+  (heading :h4 (conj path (string/join content)) opts))
 (defmethod to-fop :ul [{content :content} _ _] [:fo:list-block content])
 (defmethod to-fop :li [{content :content} _ _] (bullet-list content))
 (defmethod to-fop :em [{content :content} _ _] (inline {:font-style "italic"} content))
