@@ -213,7 +213,6 @@
   (let [identity (friend/identity request)
         editorial (db/read-editorial year issue fmt)
         recommendation (db/read-recommendation year issue fmt)]
-    (println editorial recommendation)
     (layout/common
      identity
      year issue
