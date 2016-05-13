@@ -73,7 +73,7 @@
              :dc:Subject ""
              :dc:Description ""
              :dc:Publisher creator
-             :dc:Date (time.format/unparse (time.format/formatters :date) date)
+             :dc:Date (time.format/unparse (time.format/formatters :date) (time.coerce/from-date date))
              :dc:Format "ANSI/NISO Z39.86-2005"
              :dc:Language language}]
         [:meta {:name (name k) :content v}])]
