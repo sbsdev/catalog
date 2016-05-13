@@ -8,8 +8,11 @@
             [hiccup.middleware :refer [wrap-base-url]]
             [ring.middleware
              [defaults :refer [site-defaults wrap-defaults]]
-             [stacktrace :as stacktrace]]))
+             [stacktrace :as stacktrace]]
+            [ring.util.codec :refer [url-encode]]))
 
+
+(def hörbuch-encoded (url-encode "hörbuch"))
 
 (defroutes app-routes
   "Main routes for the application"
@@ -25,15 +28,15 @@
   (GET "/:year/:issue/neu-in-braille.xml"
        [year :<< as-int issue :<< as-int]
        (views/neu-in-braille year issue))
-  (GET "/:year/:issue/neu-als-hörbuch.pdf"
+  (GET (format "/:year/:issue/neu-als-%s.pdf" hörbuch-encoded)
        [year :<< as-int issue :<< as-int]
        (views/neu-als-hörbuch year issue))
 
   ;; editorials
-  (GET "/:year/:issue/editorial/:fmt{grossdruck|braille|hörbuch}"
+  (GET (format "/:year/:issue/editorial/:fmt{grossdruck|braille|%s}" hörbuch-encoded)
        [year :<< as-int issue :<< as-int fmt :as r]
        (views/editorial-form r fmt year issue))
-  (POST "/:year/:issue/editorial/:fmt{grossdruck|braille|hörbuch}"
+  (POST (format "/:year/:issue/editorial/:fmt{grossdruck|braille|%s}" hörbuch-encoded)
         [year :<< as-int issue :<< as-int fmt editorial recommended :as r]
         (views/editorial r fmt year issue editorial recommended))
 
