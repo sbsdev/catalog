@@ -75,6 +75,7 @@
         editorial (db/read-editorial year issue :grossdruck)
         recommendation (db/read-recommendation year issue :grossdruck)]
     (-> (db/read-catalog year issue)
+        vubis/order-and-group
         (layout.fop/document :grossdruck editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
