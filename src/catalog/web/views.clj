@@ -201,21 +201,27 @@
   (db/save-catalog! year issue (edn/read-string items))
   (response/redirect-after-post "/"))
 
-(defn editorial-form [request fmt]
-  (let [identity (friend/identity request)]
+(defn editorial-form [request fmt year issue]
+  (let [identity (friend/identity request)
+        editorial (db/read-editorial year issue fmt)
+        recommendation (db/read-recommendation year issue fmt)]
+    (println editorial recommendation)
     (layout/common
      identity
      [:h1 (format "Editorial und Buchtipps für %s" (string/capitalize fmt))]
      (form/form-to
-      [:post "/editorial"]
+      [:post (format "/%s/%s/editorial/%s" year issue fmt)]
       (anti-forgery-field)
       [:div.form-group
        (form/label "editorial" "Editorial:")
-       (form/text-area {:class "form-control" :data-provide "markdown" :data-hidden-buttons "cmdImage cmdCode" :data-resize "vertical" :rows 30} "editorial")]
+       (form/text-area {:class "form-control" :data-provide "markdown" :data-hidden-buttons "cmdImage cmdCode" :data-resize "vertical" :rows 30} "editorial" editorial)]
       [:div.form-group
        (form/label "recommended" "Buchtipps:")
-       (form/text-area {:class "form-control" :data-provide "markdown" :data-hidden-buttons "cmdImage cmdCode" :data-resize "vertical" :rows 30} "recommended")]
+       (form/text-area {:class "form-control" :data-provide "markdown" :data-hidden-buttons "cmdImage cmdCode" :data-resize "vertical" :rows 30} "recommended" recommendation)]
       (form/submit-button {:class "btn btn-default"} "Submit")))))
 
-(defn editorial [request editorial recommended]
+(defn editorial [request fmt year issue editorial recommended]
+  ;; FIXME: add a transaction around the two following saves
+  (db/save-editorial! year issue fmt editorial)
+  (db/save-recommendation! year issue fmt recommended)
   (response/redirect-after-post "/"))

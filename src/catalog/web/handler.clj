@@ -29,10 +29,12 @@
        (views/neu-als-hörbuch year issue))
 
   ;; editorials
-  (GET "/editorial/:fmt{grossdruck|braille|hörbuch}"
-       [request fmt] (views/editorial-form request fmt))
-  (POST "/editorial/:fmt{grossdruck|braille|hörbuch}"
-        [fmt editorial recommended :as r] (views/editorial r))
+  (GET "/:year/:issue/editorial/:fmt{grossdruck|braille|hörbuch}"
+       [year :<< as-int issue :<< as-int fmt :as r]
+       (views/editorial-form r fmt year issue))
+  (POST "/:year/:issue/editorial/:fmt{grossdruck|braille|hörbuch}"
+        [year :<< as-int issue :<< as-int fmt editorial recommended :as r]
+        (views/editorial r fmt year issue editorial recommended))
 
   ;; upload catalog data
   (GET "/upload" request (views/upload-form request))
