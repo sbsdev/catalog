@@ -51,8 +51,7 @@
         [:div.well
          [:h2 (translations :catalog-hörbuch)]
          (icon-button (format "/%s/%s/neu-als-hörbuch.pdf" year issue) "download" "Download")
-         (icon-button (format "/%s/%s/neu-als-hörbuch.ncc" year issue) "download" "NCC")
-         (icon-button (format "/%s/%s/neu-als-hörbuch-toc.pdf" year issue) "download" "TOC")]]]))))
+         (icon-button (format "/%s/%s/neu-als-hörbuch.ncc" year issue) "download" "NCC")]]]))))
 
 (defn- file-name [k year issue]
   (let [name (-> (k translations)
