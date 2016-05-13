@@ -24,9 +24,12 @@
 (defmethod to-dtbook :p [{content :content}] [:p content])
 (defmethod to-dtbook :a [{content :content {href :href} :attrs}]
   [:a {:href href} (if (not-empty content) content href)])
-(defmethod to-dtbook :h1 [{content :content}] [:h1 content])
-(defmethod to-dtbook :h2 [{content :content}] [:h2 content])
-(defmethod to-dtbook :h3 [{content :content}] [:h3 content])
+;; make sure the md headings are lower than h1. That way they will
+;; fit properly into the hierarchy, where :editorial is h1 and the
+;; actual md content is below
+(defmethod to-dtbook :h1 [{content :content}] [:h2 content])
+(defmethod to-dtbook :h2 [{content :content}] [:h3 content])
+(defmethod to-dtbook :h3 [{content :content}] [:h4 content])
 (defmethod to-dtbook :ul [{content :content}] [:list {:type "ul"} content])
 (defmethod to-dtbook :li [{content :content}] [:li content])
 (defmethod to-dtbook :em [{content :content}] [:em content])
