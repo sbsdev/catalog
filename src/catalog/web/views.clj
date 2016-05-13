@@ -7,7 +7,8 @@
             [catalog.layout
              [common :refer [translations]]
              [dtbook :as layout.dtbook]
-             [fop :as layout.fop]]
+             [fop :as layout.fop]
+             [obi :as layout.obi]]
             [catalog.web.layout :as layout]
             [cemerick.friend :as friend]
             [clojure
@@ -102,6 +103,15 @@
     (-> temp-file
         response/response
         (response/content-type "application/pdf"))))
+
+(defn neu-als-hörbuch-ncc [year issue]
+  (let [editorial (db/read-editorial year issue :hörbuch)
+        recommendation (db/read-recommendation year issue :hörbuch)]
+    (-> (db/read-catalog year issue)
+        (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
+        (layout.obi/dtbook editorial recommendation)
+        response/response
+        (response/content-type "application/xml"))))
 
 (defn upload-form [request year issue & [errors]]
   (let [identity (friend/identity request)]
