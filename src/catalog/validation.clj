@@ -31,7 +31,7 @@
    (s/one (s/maybe s/Str) "accompanying-material")])
 
 (def SignatureKey
-  [(s/one (s/maybe (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade))) "grade")
+  [(s/one (s/maybe BrailleGrade) "grade")
    (s/one s/Bool "double-spaced?")])
 
 (def LibrarySignature
