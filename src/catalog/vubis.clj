@@ -397,12 +397,27 @@
      (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items])
      others)))
 
-(defn locale-compare [x y]
+(defn locale-compare
+  "Comparator similar to `clojure.core/compare`. Uses a locale aware
+  collator for string comparison. Unlike `clojure.core/compare` treats
+  `nil` as 'greater than', so that it comes last in the sort order."
+  [x y]
   (cond
+    (every? string? [x y]) (. collator compare x y)
     (and (nil? x) (nil? y)) 0
     (nil? x) -1
     (nil? y) 1
-    :else (. collator compare x y)))
+    :else (compare x y)))
+
+(defn- chunkify
+  "Split a string `s` into a sequence of strings and numbers. This is
+  needed for [natural sort
+  order](http://www.davekoelle.com/alphanum.html)"
+  [s]
+  (some->>
+   s
+   (re-seq #"\d+|\D+")
+   (map #(or (parse-int %) %))))
 
 (defn- by-vector [v1 v2]
   (let [c1 (count v1)
@@ -412,7 +427,11 @@
       (> c1 c2) 1
       :else (reduce
              (fn [_ [s1 s2]]
-               (let [comparison (locale-compare s1 s2)]
+               (let [comparison (if (every? seq? [s1 s2])
+                                  ;; a chunked string
+                                  (by-vector s1 s2)
+                                  ;; locale aware comparison
+                                  (locale-compare s1 s2))]
                  (if (not= 0 comparison)
                    (reduced comparison)
                    comparison)))
@@ -510,10 +529,15 @@
     ;; sort by creator, title, subtitles and name-of-part. If there is
     ;; no creator then sort just by title. Likewise if there are no
     ;; subtitles then sort by name-of-part.
-    (sort-by (juxt #(or (:creator %) (:title %))
-                   :title
-                   #(or (and (:subtitles %) (string/join (:subtitles %))) (:name-of-part %))
-                   :name-of-part) by-vector)
+    ;; Chunkify all strings, i.e. split them into strings and numbers
+    ;; to enable natural
+    ;; sort (http://www.davekoelle.com/alphanum.html)
+    (sort-by (comp
+              #(map chunkify %)
+              (juxt #(or (:creator %) (:title %))
+                    :title
+                    #(or (and (:subtitles %) (string/join (:subtitles %))) (:name-of-part %))
+                    :name-of-part)) by-vector)
     (reduce
      (fn [m item]
        (let [update-keys (get-update-keys-fn item)]
