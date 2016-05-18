@@ -28,6 +28,7 @@
    :volumes [:datafield (attr= :tag "300") :subfield (attr= :code "9")] ; Anzahl Medien
    :source-publisher [:datafield (attr= :tag "534") :subfield (attr= :code "c")] ; Verlag
    :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
+   :ismn  [:datafield (attr= :tag "534") :subfield (attr= :code "z")] ; International Standard Music Number
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
    :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
@@ -246,7 +247,8 @@
            game-description double-spaced?
            braille-grade
            directed-by actors personel-text
-           accompanying-material braille-music-grade] :as item
+           accompanying-material
+           braille-music-grade ismn] :as item
     :or {genre "" ; an invalid genre
          genre-code ""}}] ; an invalid genre-code
   (let [fmt (get-format format)
@@ -325,6 +327,9 @@
       :e-book item
       :musiknoten (-> item
                       (assoc-some
+                       ;; for musiknoten we want the source to correspond to the International Standard
+                       ;; Music Number, so that collation works as intended
+                       :source ismn
                         ;; first try to decode the braille-music-grade. Next check if the product-number
                         ;; starts with "SS". Otherwise set the braille-grade to nil.
                        :braille-grade (or (braille-music-grade-raw-to-braille-grade braille-music-grade)
