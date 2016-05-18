@@ -325,8 +325,10 @@
       :e-book item
       :musiknoten (-> item
                       (assoc-some
-                        ;; if we cannot find a matching braille grade assume the item is in schwarzschrift
-                       :braille-grade (braille-music-grade-raw-to-braille-grade braille-music-grade :schwarzschrift)
+                        ;; first try to decode the braille-music-grade. Next check if the product-number
+                        ;; starts with "SS". Otherwise set the braille-grade to nil.
+                       :braille-grade (or (braille-music-grade-raw-to-braille-grade braille-music-grade)
+                                          (when (re-find #"^SS\d{5,}" product-number) :schwarzschrift))
                        :volumes (parse-int volumes)
                        :accompanying-material accompanying-material))
       :taktilesbuch (-> item
