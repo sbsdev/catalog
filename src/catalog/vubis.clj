@@ -419,7 +419,7 @@
    (re-seq #"\d+|\D+")
    (map #(or (parse-int %) %))))
 
-(defn- by-vector [v1 v2]
+(defn- locale-comparator [v1 v2]
   (let [c1 (count v1)
         c2 (count v2)]
     (cond
@@ -429,7 +429,7 @@
              (fn [_ [s1 s2]]
                (let [comparison (if (every? seq? [s1 s2])
                                   ;; a chunked string
-                                  (by-vector s1 s2)
+                                  (locale-comparator s1 s2)
                                   ;; locale aware comparison
                                   (locale-compare s1 s2))]
                  (if (not= 0 comparison)
@@ -540,7 +540,7 @@
    (->>
     items
     collate-all-duplicate-items
-    (sort-by sort-key by-vector)
+    (sort-by sort-key locale-comparator)
     (reduce
      (fn [m item]
        (let [update-keys (get-update-keys-fn item)]
