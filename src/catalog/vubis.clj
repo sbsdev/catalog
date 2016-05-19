@@ -515,6 +515,20 @@
        (assoc m k (apply update-in-sorted (get m k empty-map) ks f args))
        (assoc m k (apply f (get m k) args))))))
 
+(defn- sort-key
+  "Return a sort key that will sort an item by `creator`, `title`,
+  `subtitles` and `name-of-part`. If there is no `creator` then sort
+  just by `title`. Likewise if there are no `subtitles` then sort by
+  `name-of-part`. All strings are chunkified, i.e. split into strings
+  and numbers to enable [natural
+  sort](http://www.davekoelle.com/alphanum.html)"
+  [{:keys [creator title subtitles name-of-part]}]
+  (->> [(or creator title)
+        title
+        (or (and subtitles (string/join subtitles)) name-of-part)
+        name-of-part]
+       (map chunkify)))
+
 (defn order-and-group
   "Order and group the catalog `items`. Given a sequence of `items`
   returns a tree where all items are grouped by format, genre and
@@ -526,18 +540,7 @@
    (->>
     items
     collate-all-duplicate-items
-    ;; sort by creator, title, subtitles and name-of-part. If there is
-    ;; no creator then sort just by title. Likewise if there are no
-    ;; subtitles then sort by name-of-part.
-    ;; Chunkify all strings, i.e. split them into strings and numbers
-    ;; to enable natural
-    ;; sort (http://www.davekoelle.com/alphanum.html)
-    (sort-by (comp
-              #(map chunkify %)
-              (juxt #(or (:creator %) (:title %))
-                    :title
-                    #(or (and (:subtitles %) (string/join (:subtitles %))) (:name-of-part %))
-                    :name-of-part)) by-vector)
+    (sort-by sort-key by-vector)
     (reduce
      (fn [m item]
        (let [update-keys (get-update-keys-fn item)]
