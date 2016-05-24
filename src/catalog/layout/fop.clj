@@ -305,7 +305,8 @@
 
 (defmethod entry-sexp :ludo
   [{:keys [source-publisher genre-text description
-           game-description accompanying-material library-signature] :as item}
+           game-description accompanying-material library-signature
+           product-number price] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
@@ -314,7 +315,8 @@
      (block (wrap genre-text)))
    (block (wrap description))
    (block (wrap game-description))
-   (ausleihe library-signature)))
+   (ausleihe-multi library-signature)
+   (verkauf product-number price)))
 
 (defmethod entry-sexp :musiknoten
   [{:keys [description producer-brief library-signature product-number price] :as item} opts]
