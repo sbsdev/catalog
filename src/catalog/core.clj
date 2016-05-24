@@ -16,6 +16,12 @@
    (layout.fop/document :all-formats nil nil)
    (layout.fop/generate-pdf! out)))
 
+(defn neu-im-sortiment-fop [in out]
+  (-> in
+   vubis/read-file
+   vubis/order-and-group
+   (layout.fop/generate-document :all-formats nil nil out)))
+
 (defn neu-in-grossdruck [in out editorial recommendations]
   (-> in
    vubis/read-file
