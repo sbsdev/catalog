@@ -322,7 +322,9 @@
       :ludo (-> item
                 (assoc-some
                  :game-description game-description
-                 :accompanying-material accompanying-material))
+                 :accompanying-material accompanying-material
+                 ;; some games are braillified
+                 :braille-grade (braille-grade-raw-to-braille-grade braille-grade)))
 
       :e-book item
       :musiknoten (-> item
@@ -392,9 +394,10 @@
   (let [braille-items (filter #(= (:format %) :braille) items)
         musiknoten-items (filter #(= (:format %) :musiknoten) items)
         taktile-items (filter #(= (:format %) :taktilesbuch) items)
-        others (remove #(#{:braille :musiknoten :taktilesbuch} (:format %)) items)]
+        spiele-items (filter #(= (:format %) :ludo) items)
+        others (remove #(#{:braille :musiknoten :taktilesbuch :ludo} (:format %)) items)]
     (concat
-     (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items])
+     (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items spiele-items])
      others)))
 
 (defn locale-compare
