@@ -37,6 +37,9 @@
                              :catalog-hörbuch "Neu als Hörbuch"
                              :catalog-braille "Neu in Braille"
                              :catalog-grossdruck "Neu in Grossdruck"
+                             :catalog-hörfilm "Hörfilme in der SBS"
+                             :catalog-ludo "Spiele in der SBS"
+                             :catalog-taktilesbuch "Taktile Kinderbücher der SBS"
                              ;; Names of formats
                              :hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"
@@ -104,6 +107,14 @@
                              :editorial "Editorial"
                              :recommendation "Buchtipp"
                              :recommendations "Buchtipps"})
+
+(def ordinal
+  {1 "Erste"
+   2 "Zweite"
+   3 "Dritte"
+   4 "Vierte"
+   5 "Fünfte"
+   6 "Sechste"})
 
 (defn volume-number [date]
   (let [month (time.core/month (time.coerce/from-date date))]
