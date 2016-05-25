@@ -68,10 +68,9 @@
   [:fo:block {:keep-with-next.within-column "always" :role "NonStruct"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
-(defn- external-link [url title]
+(defn- external-link [url title alt-text]
   [:fo:basic-link
-   {:external-destination url :indicate-destination true :fox:alt-text "Link zum Online-Katalog"}
-   title])
+   {:external-destination url :indicate-destination true :fox:alt-text alt-text} title])
 
 (defn- to-url
   "Return an url given a `record-id`"
@@ -82,7 +81,7 @@
             (string/replace record-id "/" "."))))
 
 (defn- link-to-online-catalog [record-id title]
-  (external-link (to-url record-id) title))
+  (external-link (to-url record-id) title "Link zum Online-Katalog"))
 
 (defn- block [& args]
   (cond
@@ -112,8 +111,8 @@
 (defmethod to-fop :p [{content :content} _ _] (block {:space-before "17pt"} content))
 (defmethod to-fop :a [{content :content {href :href} :attrs} _ _]
   (if (not-empty content)
-    (apply #(external-link href %) content)
-    (external-link href href)))
+    (apply #(external-link href % (format "Link zu %s" content)) content)
+    (external-link href href (format "Link zu %s" href))))
 (defmethod to-fop :h1 [{content :content} path opts]
   (heading :h2 (conj path (string/join content)) opts))
 (defmethod to-fop :h2 [{content :content} path opts]
@@ -481,12 +480,11 @@
            [:fo:block "Fon +41 43 333 32 32"]
            [:fo:block "Fax +41 43 333 32 33"]
            [:fo:block
-            [:fo:basic-link {:external-destination "http://www.sbs.ch"} "www.sbs.ch"]]
+            (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website")]
            (block {:space-before "1em"}
                   "Abonnement, Ausleihe und Verkauf: "
-                  [:fo:basic-link
-                   {:external-destination "mailto:nutzerservice@sbs.ch"}
-                   "nutzerservice@sbs.ch"])
+                  (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"
+                                 "Email des SBS Nutzerservice"))
            (block {:space-before "1em" :font-size "12pt"}
                   "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                   " | "
@@ -632,8 +630,8 @@
      (block "CH-8045 Zürich")
      (block "Fon +41 43 333 32 32")
      (block "Fax +41 43 333 32 33")
-     (block (external-link "http://www.sbs.ch" "www.sbs.ch"))
-     (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"))
+     (block (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website"))
+     (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch" "Email des SBS Nutzerservice"))
      (block {:space-before "5mm"} (format "© %s" creator))]))
 
 (defn- cover-page [titles date]
