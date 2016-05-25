@@ -520,9 +520,7 @@
                   (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"
                                  "Email des SBS Nutzerservice"))
            (block {:space-before "1em" :font-size "12pt"}
-                  "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                  " | "
-                  [:fo:basic-link {:external-destination "http://www.sbs.ch"} "www.sbs.ch"]))]])
+                  "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"))]])
 
 (defn- layout-master-set [date]
   [:fo:layout-master-set
