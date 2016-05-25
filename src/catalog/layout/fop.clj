@@ -412,66 +412,100 @@
                            ;; extent should be smaller than margin-top of region-body
                            :extent (to-mm (dec region-body-margin-top))}]])))
 
+(def font-colors
+  {:white [0 0 0 0]
+   :warmgrey [0 12 10 62]
+   :blue [85 65 0 0]
+   :lightgrey [0 12 20 70]})
+
+(def issue-colors
+  {1 [100 90 10 0]
+   2 [69 0 31 7]
+   3 [0 25 100 5]
+   4 [33 71 0 0]
+   5 [0 95 100 0]
+   6 [50 0 100 15]})
+
+(defn- cmyk [[cyan magenta yellow key]]
+  (format "cmyk(%s,%s,%s,%s)" cyan magenta yellow key))
+
+(defn- color [col]
+  (->>
+   (or (font-colors col) (issue-colors col))
+   (map #(/ % 100.0))
+   cmyk))
+
 (defn- coverpage-recto
   [title date]
   (let [volume-number (layout/volume-number date)]
-    [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"}
-     [:fo:static-content {:flow-name "xsl-region-start"}
+    [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
+                        :force-page-count "no-force"}
+     [:fo:static-content {:flow-name "xsl-region-start" :role "artifact"}
       [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
        (block {:font-size "0"}
               [:fo:external-graphic
                {:src (io/resource "covers/cover-recto.svg")
                 :width "100%" :content-width "scale-to-fit"
-                :fox:alt-text "Seiten-Hintergrund mit SBS Logo"}])]
-      (block {:text-align "end" :font-size "46pt"
-              :color "cmyk(0,0,0,0)"
-              :start-indent "10mm" :end-indent "10mm"
-              :space-before "8mm" :space-before.conditionality "retain"
-              :role "H2"}
-             (layout/format-date date))]
+                :fox:alt-text "Seiten-Hintergrund mit SBS Logo"}])]]
      [:fo:flow {:flow-name"xsl-region-body"}
-      [:fo:block-container {:absolute-position "fixed" :width "32mm" :height "15mm"
-                            :left "57mm" :top "135mm" :text-align "center"
-                            :display-align "center"}
-       (block {:font-size "42pt" :line-height "1" :color "cmyk(0,0,0,0)"
+      [:fo:wrapper {:role "artifact"}
+       [:fo:block-container {:absolute-position "fixed" :width "32mm" :height "15mm"
+                             :left "57mm" :top "135mm" :text-align "center"
+                             :display-align "center"}
+        (block {:font-size "42pt" :line-height "1" :color (color :white)
+                :role "H2"}
+               "neu")]]
+      (block {:start-indent "3mm" :end-indent "3mm"
+              :font-family  "StoneSansSemibold" :font-size "90pt"
+              :color (color :warmgrey) :line-height "0.9"
+              :text-align "start" :hyphenate "false"
+              :role "H1"}
+             title)
+      [:fo:block-container {:absolute-position "fixed"
+                            :width "297mm" :height "25mm"
+                            :left "0mm" :top "0mm" :reference-orientation "90"}
+       (block {:text-align "end"
+               :font-family  "StoneSansSemibold" :font-size "46pt"
+               :color (color :white) :hyphenate "false"
+               :start-indent "10mm" :end-indent "10mm"
+               :space-before "8mm" :space-before.conditionality "retain"
                :role "H2"}
-              "neu")]
+              (layout/format-date date))]
       [:fo:block-container {:absolute-position "fixed" :width "53mm" :height "53mm"
                             :left "141mm" :top "119mm" :text-align "center"
                             :display-align "center"}
-       (block {:font-size "120pt" :color "cmyk(0,0,0,0)"
-               :fox:alt-text (format "%s Ausgabe" (layout/ordinal volume-number))
-               :role "H2"}
-              (str volume-number))]
-      (block {:start-indent "3mm" :end-indent "3mm" :font-size "90pt"
-              :color "cmyk(0,0.12,0.2,0.7)" :line-height "0.9"
-              :role "H1"}
-             title)]]))
+       (block {:font-size "120pt" :font-family  "StoneSansSemibold"
+               :color (color :white)
+               :fox:alt-text (format "%s Ausgabe" (layout/ordinal volume-number))}
+              (str volume-number))]]]))
 
 (defn- coverpage-verso
   []
-  [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"}
-   [:fo:static-content {:flow-name "xsl-region-end"}
-    [:fo:block]]
+  [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"
+                      :force-page-count "no-force"}
    [:fo:flow {:flow-name "xsl-region-body"}
-    [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
-     (block {:font-size "0"}
-            [:fo:external-graphic {:src (io/resource "covers/cover-verso.svg")
-                                   :width "100%" :content-width "scale-to-fit"
-                                   :fox:alt-text "Seiten-Hintergrund"}])]
+    [:fo:wrapper {:role "artifact"}
+     [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
+      (block {:font-size "0"}
+             [:fo:external-graphic {:src (io/resource "covers/cover-verso.svg")
+                                    :width "100%" :content-width "scale-to-fit"
+                                    :fox:alt-text "Seiten-Hintergrund"}])]]
     (block {:start-indent "5mm" :end-indent "5mm"
-            :color "cmyk(0,0.12,0.2,0.7)" :font-size "16pt" :line-height "1.4"}
+            :color (color :lightgrey) :line-height "1.4"
+            :font-family  "StoneSans" :font-size "16pt" }
            (block {:font-size "20pt" :space-after "1em" :role "H2"}
                   "Impressum")
-           (block {:color "cmyk(0.85,0.65,0,0)" :space-after"1em"}
+           (block {:color (color :blue) :space-after"1em"}
                   (layout/translations :catalog-all))
            (block {:space-after "1em"}
                   "Für Kundinnen und Kunden der SBS sowie für Interessenten")
            (block {:space-after "1em"}
                   "Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach")
            (block {:space-after "1em"}
-                  "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / € 78.– oder per E-Mail gratis bezogen werden")
-           (block {:font-size "20pt" :color "cmyk(0.85,0.65,0,0)"
+                  "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / "
+                  (inline {:font-family  "Arial"} "€")
+                  " 78.– oder per E-Mail gratis bezogen werden")
+           (block {:font-size "20pt" :color (color :blue)
                    :space-before "3em" :space-after "1em" :role "H2"}
                   "Herausgeber")
            [:fo:block "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]

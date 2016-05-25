@@ -18,6 +18,9 @@
       </filterList>
 
       <fonts>
+	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/arial.ttf" embedding-mode="subset">
+	  <font-triplet name="Arial" style="normal" weight="normal"/>
+	</font>
 	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/verdana.ttf" embedding-mode="subset">
 	  <font-triplet name="Verdana" style="normal" weight="normal"/>
 	</font>
@@ -38,6 +41,27 @@
 	</font>
 	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf" embedding-mode="subset">
 	  <font-triplet name="Tiresias" style="italic" weight="normal"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf" embedding-mode="subset">
+	  <font-triplet name="Tiresias" style="italic" weight="normal"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/stone/StoneSans.ttf" embedding-mode="subset">
+	  <font-triplet name="StoneSans" style="normal" weight="normal"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansBold.ttf" embedding-mode="subset">
+	  <font-triplet name="StoneSans" style="normal" weight="bold"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansItalic.ttf" embedding-mode="subset">
+	  <font-triplet name="StoneSans" style="italic" weight="normal"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansBoldItalic.ttf" embedding-mode="subset">
+	  <font-triplet name="StoneSans" style="italic" weight="bold"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansSemibold.ttf" embedding-mode="subset">
+	  <font-triplet name="StoneSansSemibold" style="normal" weight="normal"/>
+	</font>
+	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansSemiboldItalic.ttf" embedding-mode="subset">
+	  <font-triplet name="StoneSansSemibold" style="italic" weight="normal"/>
 	</font>
       </fonts>
     </renderer>
