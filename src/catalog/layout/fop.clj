@@ -640,7 +640,6 @@
       [:fo:root (style :font (root-attrs))
        (layout-master-set date)
        (declarations title (or description title))
-       (coverpage-recto title date)
        [:fo:page-sequence {:master-reference "main"
                            :initial-page-number "1"
                            :force-page-count "end-on-even"
@@ -655,8 +654,7 @@
           [:fo:flow {:flow-name "xsl-region-body"}
            (toc subitems [fmt] 2 {:heading? true})
            (realize-lazy-seqs
-            (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]
-       (coverpage-verso date)])))
+            (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]])))
 
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]}]
@@ -664,7 +662,6 @@
     [:fo:root (style :font (root-attrs))
      (layout-master-set date)
      (declarations title (or description title))
-     (coverpage-recto title date)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :language "de"}
@@ -685,8 +682,7 @@
           (format "%s Nr. %s/%s" title
                   (layout/volume-number date) (layout/year date))]
          (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
-         (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]
-     (coverpage-verso date)]))
+         (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]]))
 
 (defn- logo []
   [:fo:block {:space-before "100mm" :text-align "right"}
@@ -726,7 +722,6 @@
     [:fo:root (style :font (root-attrs))
      (layout-master-set date)
      (declarations title (or description title))
-     (coverpage-recto title date)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :language "de"}
@@ -739,8 +734,7 @@
                       "Filme mit Audiodeskription"]
                      date)
          (toc subitems [fmt] 1 {:heading? true})
-         (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]
-     (coverpage-verso date)]))
+         (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
 (defmethod document-sexp :ludo
   [items fmt _ _ {:keys [description date]}]
@@ -748,7 +742,6 @@
     [:fo:root (style :font (root-attrs))
      (layout-master-set date)
      (declarations title (or description title))
-     (coverpage-recto title date)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :language "de"}
@@ -760,8 +753,7 @@
          (cover-page ["Spiele in der SBS"]
                      date)
          (toc subitems [fmt] 1 {:heading? true})
-         (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]
-     (coverpage-verso date)]))
+         (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
 (defmethod document-sexp :taktilesbuch
   [items fmt _ _ {:keys [description date]}]
@@ -769,7 +761,6 @@
     [:fo:root (style :font (root-attrs))
      (layout-master-set date)
      (declarations title (or description title))
-     (coverpage-recto title date)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :language "de"}
@@ -780,8 +771,7 @@
         [:fo:flow {:flow-name "xsl-region-body"}
          (cover-page [title] date)
          (toc subitems [fmt] 1 {:heading? true})
-         (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]
-     (coverpage-verso date)]))
+         (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]]))
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
