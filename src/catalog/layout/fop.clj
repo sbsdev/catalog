@@ -383,8 +383,7 @@
 
 (defn- header [side]
   (let [recto? (= side :recto)]
-    [:fo:static-content {:flow-name (if recto? "xsl-region-before-recto" "xsl-region-before-verso")
-                         :role "artifact"}
+    [:fo:static-content {:flow-name (if recto? "xsl-region-before-recto" "xsl-region-before-verso")}
      [:fo:block (style :header)
       (if recto? (retrieve-marker) (page-number))
       [:fo:leader]
