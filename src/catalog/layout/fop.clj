@@ -452,8 +452,10 @@
   (let [volume-number (layout/volume-number date)
         fill-color (format "fill:%s device-%s" (color-rgb volume-number) (color volume-number))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
-                        :force-page-count "no-force"}
+                        :force-page-count "no-force"
+                        :font-family  "StoneSansSemibold"}
      [:fo:static-content {:flow-name "xsl-region-start" :role "artifact"}
+      [:fo:block]
       [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
        (block {:font-size "0"}
               [:fo:external-graphic
@@ -484,33 +486,32 @@
               :style fill-color :id "kreis"}]]]]]]]]
      [:fo:flow {:flow-name"xsl-region-body"}
       [:fo:wrapper {:role "artifact"}
-       [:fo:block-container {:absolute-position "fixed" :width "32mm" :height "15mm"
-                             :left "57mm" :top "135mm" :text-align "center"
-                             :display-align "center"}
-        (block {:font-size "42pt" :line-height "1" :color (color :white)
+       [:fo:block-container {:absolute-position "fixed" :width "33mm" :height "15mm"
+                             :left "56mm" :top "135mm" :display-align "center"
+                             :background-color "transparent"}
+        (block {:font-size "42pt" :line-height "1"
+                :text-align "center" :color (color :white)
                 :role "H2"}
                "neu")]]
       (block {:start-indent "3mm" :end-indent "3mm"
-              :font-family  "StoneSansSemibold" :font-size "90pt"
-              :color (color :warmgrey) :line-height "0.9"
+              :font-size "90pt" :color (color :warmgrey) :line-height "0.9"
               :text-align "start" :hyphenate "false"
               :role "H1"}
              title)
       [:fo:block-container {:absolute-position "fixed"
                             :width "297mm" :height "25mm"
                             :left "0mm" :top "0mm" :reference-orientation "90"}
-       (block {:text-align "end"
-               :font-family  "StoneSansSemibold" :font-size "46pt"
+       (block {:text-align "end" :font-size "46pt"
                :color (color :white) :hyphenate "false"
                :start-indent "10mm" :end-indent "10mm"
                :space-before "8mm" :space-before.conditionality "retain"
                :role "H2"}
               (layout/format-date date))]
       [:fo:block-container {:absolute-position "fixed" :width "53mm" :height "53mm"
-                            :left "141mm" :top "119mm" :text-align "center"
-                            :display-align "center"}
-       (block {:font-size "120pt" :font-family  "StoneSansSemibold"
-               :color (color :white)
+                            :left "142mm" :top "119mm" :display-align "center"
+                            :background-color "transparent"}
+       (block {:font-size "120pt" :color (color :white)
+               :text-align "center"
                :fox:alt-text (format "%s Ausgabe" (layout/ordinal volume-number))}
               (str volume-number))]]]))
 
