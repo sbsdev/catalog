@@ -429,15 +429,28 @@
 (defn- cmyk [[cyan magenta yellow key]]
   (format "cmyk(%s,%s,%s,%s)" cyan magenta yellow key))
 
+(defn- rgb [[cyan magenta yellow key]]
+  (let [r (int (* 255 (- 1 cyan) (- 1 key)))
+        g (int (* 255 (- 1 magenta) (- 1 key)))
+        b (int (* 255 (- 1 yellow) (- 1 key)))]
+    (format "#%02x%02x%02x" r g b)))
+
 (defn- color [col]
   (->>
    (or (font-colors col) (issue-colors col))
    (map #(/ % 100.0))
    cmyk))
 
+(defn- color-rgb [col]
+  (->>
+   (issue-colors col)
+   (map #(/ % 100.0))
+   rgb))
+
 (defn- coverpage-recto
   [title date]
-  (let [volume-number (layout/volume-number date)]
+  (let [volume-number (layout/volume-number date)
+        fill-color (format "fill:%s device-%s" (color-rgb volume-number) (color volume-number))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
                         :force-page-count "no-force"}
      [:fo:static-content {:flow-name "xsl-region-start" :role "artifact"}
@@ -446,7 +459,29 @@
               [:fo:external-graphic
                {:src (io/resource "covers/cover-recto.svg")
                 :width "100%" :content-width "scale-to-fit"
-                :fox:alt-text "Seiten-Hintergrund mit SBS Logo"}])]]
+                :fox:alt-text "Seiten-Hintergrund mit SBS Logo"}])]
+
+      [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm" :left "0mm" :top "0mm" :background-color "transparent"}
+       [:fo:block {:font-size "0" :start-indent "0mm" :end-indent "0mm"}
+        [:fo:instream-foreign-object {:width "210mm" :height "297mm" :content-width "scale-to-fit"}
+         [:svg {:xmlns:svg "http://www.w3.org/2000/svg" :xmlns "http://www.w3.org/2000/svg"
+                :xmlns:xlink "http://www.w3.org/1999/xlink"
+                :id "cover-recto-dynamic" :version "1.1"
+                :width "210mm" :height "297mm" :viewBox "0 0 744.09497 1052.3625"}
+          [:g {:transform "matrix(1.25,0,0,-1.25,0,1052.3625)" :style "fill-opacity:1;fill-rule:nonzero;stroke:none"}
+           [:g {:id "etikett"}
+            [:g {:transform "translate(166.8447,462.2588)" :visibility "visible"}
+             [:path
+              {:d "m 0,0 82.333,0 c 0,0 5,0.333 4.5,-5.333 -0.381,-4.32 -1.333,-22 -1.333,-22 -0.167,-3.5 0.167,-10.167 0.333,-12.167 0.167,-2 1.5,-4.333 0.334,-5 -1.167,-0.667 -86.834,0 -86.834,0 0,0 -5.214,-0.309 -5.75,3.333 -0.416,2.834 -0.25,12.667 -0.25,12.667 l 0,11.167 c 0,0 0.25,5.5 1.167,11.333 0.573,3.645 1.833,6 5.5,6"
+               :style fill-color}]
+             [:path
+              {:d "m 0,0 82.333,0 c 0,0 5,0.333 4.5,-5.333 -0.381,-4.32 -1.333,-22 -1.333,-22 -0.167,-3.5 0.167,-10.167 0.333,-12.167 0.167,-2 1.5,-4.333 0.334,-5 -1.167,-0.667 -86.834,0 -86.834,0 0,0 -5.214,-0.309 -5.75,3.333 -0.416,2.834 -0.25,12.667 -0.25,12.667 l 0,11.167 c 0,0 0.25,5.5 1.167,11.333 0.573,3.645 1.833,6 5.5,6 z"
+               :style "fill:none;stroke:#756662;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"}]]]
+           [:path {:d "m 0,0 70.866,0 0,841.89 L 0,841.89 0,0 Z" :style fill-color :id "balken"}]
+           [:g {:transform "translate(477.9451,365.0547)"}
+            [:path
+             {:d "m 0,0 c 40.874,0 74.008,33.135 74.008,74.008 0,40.874 -33.134,74.008 -74.008,74.008 -40.874,0 -74.008,-33.134 -74.008,-74.008 C -74.008,33.135 -40.874,0 0,0"
+              :style fill-color :id "kreis"}]]]]]]]]
      [:fo:flow {:flow-name"xsl-region-body"}
       [:fo:wrapper {:role "artifact"}
        [:fo:block-container {:absolute-position "fixed" :width "32mm" :height "15mm"
@@ -480,47 +515,57 @@
               (str volume-number))]]]))
 
 (defn- coverpage-verso
-  []
-  [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"
-                      :force-page-count "no-force"}
-   [:fo:flow {:flow-name "xsl-region-body"}
-    [:fo:wrapper {:role "artifact"}
-     [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
-      (block {:font-size "0"}
-             [:fo:external-graphic {:src (io/resource "covers/cover-verso.svg")
-                                    :width "100%" :content-width "scale-to-fit"
-                                    :fox:alt-text "Seiten-Hintergrund"}])]]
-    (block {:start-indent "5mm" :end-indent "5mm"
-            :color (color :lightgrey) :line-height "1.4"
-            :font-family  "StoneSans" :font-size "16pt" }
-           (block {:font-size "20pt" :space-after "1em" :role "H2"}
-                  "Impressum")
-           (block {:color (color :blue) :space-after"1em"}
-                  (layout/translations :catalog-all))
-           (block {:space-after "1em"}
-                  "Für Kundinnen und Kunden der SBS sowie für Interessenten")
-           (block {:space-after "1em"}
-                  "Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach")
-           (block {:space-after "1em"}
-                  "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / "
-                  (inline {:font-family  "Arial"} "€")
-                  " 78.– oder per E-Mail gratis bezogen werden")
-           (block {:font-size "20pt" :color (color :blue)
-                   :space-before "3em" :space-after "1em" :role "H2"}
-                  "Herausgeber")
-           [:fo:block "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
-           [:fo:block "Grubenstrasse 12"]
-           [:fo:block "CH-8045 Zürich"]
-           [:fo:block "Fon +41 43 333 32 32"]
-           [:fo:block "Fax +41 43 333 32 33"]
-           [:fo:block
-            (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website")]
-           (block {:space-before "1em"}
-                  "Abonnement, Ausleihe und Verkauf: "
-                  (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"
-                                 "Email des SBS Nutzerservice"))
-           (block {:space-before "1em" :font-size "12pt"}
-                  "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"))]])
+  [date]
+  (let [volume-number (layout/volume-number date)
+        fill-color (format "fill:%s device-%s" (color-rgb volume-number) (color volume-number))]
+    [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"
+                        :force-page-count "no-force"
+                        :font-family "StoneSans, Arial"}
+     [:fo:flow {:flow-name "xsl-region-body"}
+      [:fo:wrapper {:role "artifact"}
+       [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"
+                             :left "0mm" :top "0mm" :background-color "transparent"}
+        [:fo:block {:font-size "0" :start-indent "0mm" :end-indent "0mm"}
+         [:fo:instream-foreign-object {:width "210mm" :height "297mm" :content-width "scale-to-fit"}
+          ;; embed svg of the cover
+          [:svg {:xmlns:svg "http://www.w3.org/2000/svg" :xmlns "http://www.w3.org/2000/svg"
+                 :id "cover-verso-dynamic" :version "1.1"
+                 :width "210.00014mm" :height "297.00009mm" :viewBox "0 0 744.09497 1052.3625"}
+           [:g {:transform "matrix(1.25,0,0,-1.25,0,1052.3625)" :style "fill-opacity:1;fill-rule:nonzero;stroke:none"}
+            [:path {:d "m 14.173,14.173 496.063,0 0,813.543 -496.063,0 0,-813.543 z" :style "fill:#eeebea" :id "grau"}]
+            [:path {:d "m 524.409,0 70.866,0 0,841.89 -70.866,0 0,-841.89 z" :style fill-color :id "balken-rechts"}]]]]]]]
+      (block {:start-indent "5mm" :end-indent "5mm"
+              :color (color :lightgrey) :line-height "1.4"
+              :font-size "16pt" }
+             (block {:font-size "20pt" :space-after "1em" :role "H2" :letter-spacing "150%" :font-family "StoneSansSemibold"}
+                    "IMPRESSUM")
+             (block {:color (color :blue) :space-after"1em" :font-family "StoneSansSemibold"}
+                    (layout/translations :catalog-all))
+             (block {:space-after "1em"}
+                    "Für Kundinnen und Kunden der SBS sowie für Interessenten")
+             (block {:space-after "1em"}
+                    "Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach")
+             (block {:space-after "1em"}
+                    "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / "
+                    (inline {:font-family  "Arial"} "€")
+                    " 78.– oder per E-Mail gratis bezogen werden")
+             (block {:font-family "StoneSansSemibold"
+                     :color (color :blue)
+                     :space-before "3em" :space-after "1em" :role "H2"}
+                    "Herausgeber")
+             [:fo:block "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
+             [:fo:block "Grubenstrasse 12"]
+             [:fo:block "CH-8045 Zürich"]
+             [:fo:block "Fon +41 43 333 32 32"]
+             [:fo:block "Fax +41 43 333 32 33"]
+             [:fo:block
+              (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website")]
+             (block {:space-before "1em"}
+                    "Abonnement, Ausleihe und Verkauf: "
+                    (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"
+                                   "Email des SBS Nutzerservice"))
+             (block {:space-before "3em" :font-size "12pt"}
+                    "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"))]]))
 
 (defn- layout-master-set [date]
   [:fo:layout-master-set
@@ -611,7 +656,7 @@
            (toc subitems [fmt] 2 {:heading? true})
            (realize-lazy-seqs
             (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]
-       (coverpage-verso)])))
+       (coverpage-verso date)])))
 
 (defmethod document-sexp :hörbuch
   [items fmt editorial recommendations {:keys [description date]}]
@@ -641,8 +686,8 @@
                   (layout/volume-number date) (layout/year date))]
          (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
          (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]
-     (coverpage-verso)]))
-  
+     (coverpage-verso date)]))
+
 (defn- logo []
   [:fo:block {:space-before "100mm" :text-align "right"}
    [:fo:external-graphic
@@ -695,7 +740,7 @@
                      date)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]
-     (coverpage-verso)]))
+     (coverpage-verso date)]))
 
 (defmethod document-sexp :ludo
   [items fmt _ _ {:keys [description date]}]
@@ -716,7 +761,7 @@
                      date)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]
-     (coverpage-verso)]))
+     (coverpage-verso date)]))
 
 (defmethod document-sexp :taktilesbuch
   [items fmt _ _ {:keys [description date]}]
@@ -736,7 +781,7 @@
          (cover-page [title] date)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]
-     (coverpage-verso)]))
+     (coverpage-verso date)]))
 
 (defmethod document-sexp :all-formats
   [items _ _ _ {:keys [description date]}]
@@ -754,7 +799,7 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        (toc items [] 1 {:heading? true})
        (mapcat #(format-sexp (get items %) % 1 {}) (keys items))]]
-     (coverpage-verso)]))
+     (coverpage-verso date)]))
 
 (defn document
   [items fmt editorial recommendations &
