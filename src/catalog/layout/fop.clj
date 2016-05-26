@@ -538,7 +538,7 @@
    (simple-page-master {:master-name "verso"})
    (simple-page-master {:master-name "blank"})
    (simple-page-master {:master-name "first"})
-   
+
    [:fo:page-sequence-master {:master-name "main"}
     [:fo:repeatable-page-master-alternatives
      [:fo:conditional-page-master-reference
@@ -602,7 +602,7 @@
                            :language "de"}
         (header :recto)
         (header :verso)
-        
+
         (let [subitems (-> items
                            (get fmt)
                            (assoc :editorial editorial
@@ -625,7 +625,7 @@
                          :language "de"}
       (header :recto)
       (header :verso)
-      
+
       (let [subitems (-> items
                          ;; remove all formats but fmt. Unfortunately we
                          ;; cannot use select-keys as we need to retain
