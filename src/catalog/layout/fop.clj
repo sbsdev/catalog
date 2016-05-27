@@ -546,9 +546,7 @@
              (block {:space-after "1em"}
                     "Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach")
              (block {:space-after "1em"}
-                    "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / "
-                    (inline {:font-family  "Arial"} "€")
-                    " 78.– oder per E-Mail gratis bezogen werden")
+                    "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / € 78.– oder per E-Mail gratis bezogen werden")
              (block {:font-family "StoneSansSemibold"
                      :color (color :blue)
                      :space-before "3em" :space-after "1em" :role "H2"}
