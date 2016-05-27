@@ -60,7 +60,8 @@
 
 (defn- retrieve-marker []
   [:fo:inline
-   [:fo:retrieve-marker {:retrieve-class-name running-header-class-name
+   [:fo:retrieve-marker {:role "artifact"
+                         :retrieve-class-name running-header-class-name
                          :retrieve-position "last-ending-within-page"
                          :retrieve-boundary "page-sequence"}]])
 
@@ -378,7 +379,7 @@
      (mapcat #(genre-sexp (get items %) fmt % (inc level) opts) (keys items)))])
 
 (defn- page-number []
-  [:fo:inline
+  [:fo:wrapper {:role "artifact"}
    [:fo:page-number]])
 
 (defn- header [side]
