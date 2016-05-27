@@ -554,8 +554,16 @@
              [:fo:block "Blinde, Seh- und Lesebehinderte"]
              [:fo:block "Grubenstrasse 12"]
              [:fo:block "CH-8045 Zürich"]
-             [:fo:block "Fon +41 43 333 32 32"]
-             [:fo:block "Fax +41 43 333 32 33"]
+             [:fo:table {:table-layout "fixed" :width"100%"}
+              [:fo:table-column {:column-width "12mm"}]
+              [:fo:table-column {:column-width "proportional-column-width(1)"}]
+              [:fo:table-body {:start-indent "0mm" :end-indent "0mm"}
+               [:fo:table-row
+                [:fo:table-cell [:fo:block "Fon"]]
+                [:fo:table-cell [:fo:block "+41 43 333 32 32"]]]
+               [:fo:table-row
+                [:fo:table-cell [:fo:block "Fax"]]
+                [:fo:table-cell [:fo:block "+41 43 333 32 33"]]]]]
              [:fo:block
               (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website")]
              (block {:space-before "1em"} "Abonnement, Ausleihe und Verkauf: "
