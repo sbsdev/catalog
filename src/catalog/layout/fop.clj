@@ -736,9 +736,7 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (cover-page [title
-                      "Filme mit Audiodeskription"]
-                     date)
+         (cover-page [title "Filme mit Audiodeskription"] date)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
@@ -756,8 +754,7 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (cover-page ["Spiele in der SBS"]
-                     date)
+         (cover-page ["Spiele in der SBS"] date)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
