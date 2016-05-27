@@ -64,7 +64,7 @@
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-all year issue) ".pdf")]
     (-> (db/read-catalog year issue)
         vubis/order-and-group
-        (layout.fop/document :all-formats nil nil)
+        (layout.fop/document :all-formats year issue nil nil)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
@@ -76,7 +76,7 @@
         recommendation (db/read-recommendation year issue :grossdruck)]
     (-> (db/read-catalog year issue)
         vubis/order-and-group
-        (layout.fop/document :grossdruck editorial recommendation)
+        (layout.fop/document :grossdruck year issue editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
@@ -88,7 +88,7 @@
     (-> (db/read-catalog year issue)
         vubis/order-and-group
         :braille
-        (layout.dtbook/dtbook editorial recommendation)
+        (layout.dtbook/dtbook year issue editorial recommendation)
         response/response
         (response/content-type "application/xml"))))
 
@@ -98,7 +98,7 @@
         recommendation (db/read-recommendation year issue :hörbuch)]
     (-> (db/read-catalog year issue)
         (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
-        (layout.fop/document :hörbuch editorial recommendation)
+        (layout.fop/document :hörbuch year issue editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
     (-> temp-file
         response/response
@@ -109,7 +109,7 @@
         recommendation (db/read-recommendation year issue :hörbuch)]
     (-> (db/read-catalog year issue)
         (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
-        (layout.obi/dtbook editorial recommendation)
+        (layout.obi/dtbook year issue editorial recommendation)
         response/response
         (response/content-type "application/xml"))))
 

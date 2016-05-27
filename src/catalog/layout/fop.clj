@@ -447,10 +447,8 @@
    (map #(/ % 100.0))
    rgb))
 
-(defn- coverpage-recto
-  [title date]
-  (let [volume-number (layout/volume-number date)
-        fill-color (format "fill:%s device-%s" (color-rgb volume-number) (color volume-number))]
+(defn- coverpage-recto [title year issue]
+  (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
                         :force-page-count "no-force"
                         :font-family  "StoneSansSemibold"}
@@ -506,19 +504,17 @@
                :start-indent "10mm" :end-indent "10mm"
                :space-before "8mm" :space-before.conditionality "retain"
                :role "H2"}
-              (layout/format-date date))]
+              (layout/format-date year issue))]
       [:fo:block-container {:absolute-position "fixed" :width "53mm" :height "53mm"
                             :left "143mm" :top "119mm" :display-align "center"
                             :background-color "transparent"}
        (block {:font-size "120pt" :color (color :white)
                :text-align "center"
-               :fox:alt-text (format "%s Ausgabe" (layout/ordinal volume-number))}
-              (str volume-number))]]]))
+               :fox:alt-text (format "%s Ausgabe" (layout/ordinal issue))}
+              (str issue))]]]))
 
-(defn- coverpage-verso
-  [date]
-  (let [volume-number (layout/volume-number date)
-        fill-color (format "fill:%s device-%s" (color-rgb volume-number) (color volume-number))]
+(defn- coverpage-verso [issue]
+  (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"
                         :force-page-count "no-force"
                         :font-family "StoneSans, Arial"}
@@ -638,10 +634,10 @@
    :line-height "1.3"
    :xml:lang "de"})
 
-(defmulti document-sexp (fn [items fmt editorial recommendations options] fmt))
+(defmulti document-sexp (fn [items fmt year issue editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
-  [items fmt editorial recommendations {:keys [description date]}]
+  [items fmt _ _ editorial recommendations {:keys [description]}]
   (let [title (layout/translations :catalog-grossdruck)]
     (binding [*stylesheet* large-print-stylesheet]
       [:fo:root (style :font (root-attrs))
@@ -664,7 +660,7 @@
             (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]])))
 
 (defmethod document-sexp :hörbuch
-  [items fmt editorial recommendations {:keys [description date]}]
+  [items fmt year issue editorial recommendations {:keys [description]}]
   (let [title (layout/translations :catalog-hörbuch)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
@@ -686,8 +682,7 @@
         [:fo:flow {:flow-name "xsl-region-body"}
          ;; Cover page
          [:fo:block (style :h1)
-          (format "%s Nr. %s/%s" title
-                  (layout/volume-number date) (layout/year date))]
+          (format "%s Nr. %s/%s" title issue year)]
          (toc subitems [] 3 {:path-to-numbers path-to-numbers :heading? true})
          (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]]))
 
@@ -714,17 +709,17 @@
      (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch" "Email des SBS Nutzerservice"))
      (block {:space-before "5mm"} (format "© %s" creator))]))
 
-(defn- cover-page [titles date]
+(defn- cover-page [titles year]
   [:fo:block-container
    (block {:space-after "50mm"} )
    (map #(block (style :h1 {:break-before "auto" :space-after "5pt"}) %) titles)
    (block (style :h2 {:break-before "auto" :space-after "5pt"})
-          (format "Gesamtkatalog, Stand 1.1.%s" (layout/year date)))
+          (format "Gesamtkatalog, Stand 1.1.%s" year))
    (logo)
    (impressum)])
 
 (defmethod document-sexp :hörfilm
-  [items fmt _ _ {:keys [description date]}]
+  [items fmt year issue _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-hörfilm)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
@@ -737,12 +732,12 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (cover-page [title "Filme mit Audiodeskription"] date)
+         (cover-page [title "Filme mit Audiodeskription"] year)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
 (defmethod document-sexp :ludo
-  [items fmt _ _ {:keys [description date]}]
+  [items fmt year issue _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-ludo)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
@@ -755,12 +750,12 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (cover-page ["Spiele in der SBS"] date)
+         (cover-page ["Spiele in der SBS"] year)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
 (defmethod document-sexp :taktilesbuch
-  [items fmt _ _ {:keys [description date]}]
+  [items fmt year issue _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-taktilesbuch)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
@@ -773,19 +768,20 @@
 
       (let [subitems (get items fmt)]
         [:fo:flow {:flow-name "xsl-region-body"}
-         (cover-page [title] date)
+         (cover-page [title] year)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]]))
 
 (defmethod document-sexp :all-formats
-  [items _ _ _ {:keys [description date]}]
+  [items _ year issue _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-all)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
      (declarations title (or description title))
-     (coverpage-recto title date)
+     (coverpage-recto title year issue)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
+                         :force-page-count "end-on-even"
                          :language "de"}
       (header :recto)
       (header :verso)
@@ -793,21 +789,19 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        (toc items [] 1 {:heading? true})
        (mapcat #(format-sexp (get items %) % 1 {}) (keys items))]]
-     (coverpage-verso date)]))
+     (coverpage-verso issue)]))
 
 (defn document
-  [items fmt editorial recommendations &
-   {:keys [description date]
-    :or {date (time.coerce/to-date (time.core/today))}
-    :as args}]
+  [items fmt year issue editorial recommendations &
+   {:keys [description] :as args}]
   (-> items
-      (document-sexp fmt editorial recommendations (assoc args :date date))
+      (document-sexp fmt year issue editorial recommendations args)
       xml/sexp-as-element))
 
-(defn generate-document [items fmt editorial recommendations out]
+(defn generate-document [items fmt year issue editorial recommendations out]
   (with-open [out (io/writer out)]
     (-> items
-        (document fmt editorial recommendations)
+        (document fmt year issue editorial recommendations)
         (xml/indent out))))
 
 (defn generate-pdf! [document out]

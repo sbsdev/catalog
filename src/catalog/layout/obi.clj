@@ -48,14 +48,14 @@
        (vector? items) (map #(entry-sexp (inc level) %) items)
        :else (map #(level-sexp (get items %) (conj path %) path-to-numbers) (keys items)))]))
 
-(defn document [items editorial recommendations &
+(defn document [items year issue editorial recommendations &
                 {:keys [creator date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       date (time.coerce/to-date (time.core/today))
                       language "de"}}]
   (let [title (format "%s Nr.%s/%s"
                       (layout/translations :catalog-hörbuch)
-                      (layout/volume-number date) (layout/year date))
+                      issue year)
         subitems (-> items
                      ;; remove all formats but fmt. Unfortunately we
                      ;; cannot use select-keys as we need to retain
@@ -95,7 +95,7 @@
        [:level1 [:h1 "Impressum"] [:p]]
        [:level1 [:h1 (format "Ende von %s" title)] [:p]]]]]))
 
-(defn dtbook [items editorial recommendations]
-  (-> (document items editorial recommendations)
+(defn dtbook [items year issue editorial recommendations]
+  (-> (document items year issue editorial recommendations)
       xml/sexp-as-element
       xml/indent-str))

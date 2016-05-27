@@ -120,10 +120,10 @@
   (let [month (time.core/month (time.coerce/from-date date))]
     (quot (inc month) 2)))
 
-(defn format-date [date]
+(defn format-date [year issue]
   (time.format/unparse
    (time.format/with-locale (time.format/formatter "MMMM yyyy") Locale/GERMAN)
-   (time.coerce/from-date date)))
+   (time.core/date-midnight year (* issue 2))))
 
 (defn year [date]
   (when date

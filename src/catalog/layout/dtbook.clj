@@ -97,10 +97,9 @@
      (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
      :else (catalog-entries items))])
 
-(defn document [items title editorial recommendations &
-                {:keys [creator volume date language]
+(defn document [items year issue title editorial recommendations &
+                {:keys [creator date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      volume (layout/volume-number (time.coerce/to-date (time.core/today)))
                       date (time.coerce/to-date (time.core/now))
                       language "de"}}]
   [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
@@ -123,8 +122,8 @@
      ;; just use a fake value
      [:docauthor "SBS"]
      [:level1
-      [:p {:brl:class (format "nr_%s" volume)}]
-      [:p {:brl:class (format "jr_%s" (layout/year date))}]]]
+      [:p {:brl:class (format "nr_%s" issue)}]
+      [:p {:brl:class (format "jr_%s" year)}]]]
     [:bodymatter
      [:level1
       [:h1 (translations :editorial)]
@@ -144,7 +143,7 @@
         (catalog-entries items)])]]])
 
 (defn dtbook
-  [items editorial recommendations]
-  (-> (document items (translations :catalog-braille) editorial recommendations)
+  [items year issue editorial recommendations]
+  (-> (document items year issue (translations :catalog-braille) editorial recommendations)
       xml/sexp-as-element
       xml/indent-str))
