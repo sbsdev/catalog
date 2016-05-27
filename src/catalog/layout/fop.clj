@@ -541,28 +541,27 @@
                     "IMPRESSUM")
              (block {:color (color :blue) :space-after"1em" :font-family "StoneSansSemibold"}
                     (layout/translations :catalog-all))
-             (block {:space-after "1em"}
-                    "Für Kundinnen und Kunden der SBS sowie für Interessenten")
-             (block {:space-after "1em"}
-                    "Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu in die SBS aufgenommenen Bücher nach")
-             (block {:space-after "1em"}
-                    "«Neu im Sortiment» kann im Jahresabonnement per Post zu CHF / € 78.– oder per E-Mail gratis bezogen werden")
+             (block {:space-after "1em"} "Für Kundinnen und Kunden der SBS sowie für Interessenten")
+             (block                      "Erscheint sechsmal jährlich und listet alle seit der letzten")
+             (block {:space-after "1em"} "Ausgabe neu in die SBS aufgenommenen Bücher auf")
+             (block                      "«Neu im Sortiment» kann im Jahresabonnement per Post")
+             (block {:space-after "1em"} "zu CHF / € 78.– oder per E-Mail gratis bezogen werden")
              (block {:font-family "StoneSansSemibold"
                      :color (color :blue)
                      :space-before "3em" :space-after "1em" :role "H2"}
                     "Herausgeber")
-             [:fo:block "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"]
+             [:fo:block "SBS Schweizerische Bibliothek für"]
+             [:fo:block "Blinde, Seh- und Lesebehinderte"]
              [:fo:block "Grubenstrasse 12"]
              [:fo:block "CH-8045 Zürich"]
              [:fo:block "Fon +41 43 333 32 32"]
              [:fo:block "Fax +41 43 333 32 33"]
              [:fo:block
               (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website")]
-             (block {:space-before "1em"}
-                    "Abonnement, Ausleihe und Verkauf: "
-                    (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch"
-                                   "Email des SBS Nutzerservice"))
-             (block {:space-before "3em" :font-size "12pt"}
+             (block {:space-before "1em"} "Abonnement, Ausleihe und Verkauf: "
+                    (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch" "Email des SBS Nutzerservices"))
+             (block "Verkauf Institutionen: " (external-link "mailto:medienverlag@sbs.ch" "medienverlag@sbs.ch" "Email des SBS Medienverlages"))
+             (block {:space-before "2em" :font-size "12pt"}
                     "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"))]]))
 
 (defn- layout-master-set [date]
