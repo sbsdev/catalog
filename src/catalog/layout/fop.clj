@@ -507,7 +507,7 @@
                :role "H2"}
               (layout/format-date date))]
       [:fo:block-container {:absolute-position "fixed" :width "53mm" :height "53mm"
-                            :left "142mm" :top "119mm" :display-align "center"
+                            :left "143mm" :top "119mm" :display-align "center"
                             :background-color "transparent"}
        (block {:font-size "120pt" :color (color :white)
                :text-align "center"
