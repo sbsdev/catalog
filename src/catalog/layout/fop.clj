@@ -450,7 +450,7 @@
 (defn- coverpage-recto [title year issue]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
-                        :force-page-count "no-force"
+                        :force-page-count "even"
                         :font-family  "StoneSansSemibold"}
      [:fo:static-content {:flow-name "xsl-region-start" :role "artifact"}
       [:fo:block]
@@ -572,12 +572,12 @@
 
 (defn- layout-master-set []
   [:fo:layout-master-set
-   (simple-page-master {:master-name "cover-recto"
+   (simple-page-master {:master-name "cover-recto-main"
                         :margin-left "0mm" :margin-right "0mm" :margin-top "0mm" :margin-bottom "0mm"}
                        [:fo:region-body
                         {:margin-left "30mm" :margin-right "5mm" :margin-top "178mm":margin-bottom "5mm"}]
                        [:fo:region-start {:extent "25mm" :reference-orientation "90"}])
-   (simple-page-master {:master-name "cover-verso"
+   (simple-page-master {:master-name "cover-verso-main"
                         :margin-left "0mm" :margin-right "0mm" :margin-top "0mm" :margin-bottom "0mm"}
                        [:fo:region-body
                         {:margin-left "5mm" :margin-right "30mm" :margin-top "86mm" :margin-bottom "5mm"}]
@@ -589,14 +589,20 @@
 
    [:fo:page-sequence-master {:master-name "main"}
     [:fo:repeatable-page-master-alternatives
-     [:fo:conditional-page-master-reference
-      {:master-reference "first" :page-position "first"}]
+     [:fo:conditional-page-master-reference {:master-reference "first" :page-position "first"}]
      [:fo:conditional-page-master-reference
       {:master-reference "verso" :odd-or-even "even" :blank-or-not-blank "not-blank"}]
      [:fo:conditional-page-master-reference
       {:master-reference "recto" :odd-or-even "odd" :blank-or-not-blank "not-blank"}]
-     [:fo:conditional-page-master-reference
-      {:master-reference "blank" :blank-or-not-blank "blank"}]]]])
+     [:fo:conditional-page-master-reference {:master-reference "blank" :blank-or-not-blank "blank"}]]]
+   [:fo:page-sequence-master {:master-name "cover-recto"}
+    [:fo:repeatable-page-master-alternatives
+     [:fo:conditional-page-master-reference {:master-reference "blank" :blank-or-not-blank "blank"}]
+     [:fo:conditional-page-master-reference {:master-reference "cover-recto-main"}]]]
+   [:fo:page-sequence-master {:master-name "cover-verso"}
+    [:fo:repeatable-page-master-alternatives
+     [:fo:conditional-page-master-reference {:master-reference "blank" :blank-or-not-blank "blank"}]
+     [:fo:conditional-page-master-reference {:master-reference "cover-verso-main"}]]]])
 
 (defn- declarations
   [title description]
