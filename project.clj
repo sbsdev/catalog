@@ -10,7 +10,7 @@
                  [clj-time "0.11.0"]
                  [comb "0.1.0" :exclusions [org.clojure/clojure]]
                  [org.clojure/data.xml "0.0.8"]
-                 [org.apache.xmlgraphics/fop "2.1"]
+                 [org.apache.xmlgraphics/fop "2.1.1-SNAPSHOT"]
                  [hiccup "1.0.5"]
                  [org.immutant/web "2.1.3"]
                  [ring/ring-defaults "0.2.0"]

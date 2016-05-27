@@ -37,6 +37,9 @@
                              :catalog-hörbuch "Neu als Hörbuch"
                              :catalog-braille "Neu in Braille"
                              :catalog-grossdruck "Neu in Grossdruck"
+                             :catalog-hörfilm "Hörfilme in der SBS"
+                             :catalog-ludo "Spiele in der SBS"
+                             :catalog-taktilesbuch "Taktile Kinderbücher der SBS"
                              ;; Names of formats
                              :hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"
@@ -105,14 +108,22 @@
                              :recommendation "Buchtipp"
                              :recommendations "Buchtipps"})
 
+(def ordinal
+  {1 "Erste"
+   2 "Zweite"
+   3 "Dritte"
+   4 "Vierte"
+   5 "Fünfte"
+   6 "Sechste"})
+
 (defn volume-number [date]
   (let [month (time.core/month (time.coerce/from-date date))]
     (quot (inc month) 2)))
 
-(defn format-date [date]
+(defn format-date [year issue]
   (time.format/unparse
    (time.format/with-locale (time.format/formatter "MMMM yyyy") Locale/GERMAN)
-   (time.coerce/from-date date)))
+   (time.core/date-midnight year (* issue 2))))
 
 (defn year [date]
   (when date
@@ -129,7 +140,7 @@
     (string/blank? s) s
     :else (str s ".")))
 
-(defn- insert-zero-width-space
+(defn insert-zero-width-space
   "Add a zero with space after each sequence of white space in `s`.
   This seems to improve the FOP output for screen readers"
   [s]
