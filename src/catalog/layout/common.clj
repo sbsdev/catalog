@@ -140,7 +140,7 @@
     (string/blank? s) s
     :else (str s ".")))
 
-(defn- insert-zero-width-space
+(defn insert-zero-width-space
   "Add a zero with space after each sequence of white space in `s`.
   This seems to improve the FOP output for screen readers"
   [s]

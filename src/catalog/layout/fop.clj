@@ -496,7 +496,7 @@
               :font-size "90pt" :color (color :warmgrey) :line-height "0.9"
               :text-align "start" :hyphenate "false"
               :role "H1"}
-             title)
+             (layout/insert-zero-width-space title))
       [:fo:block-container {:absolute-position "fixed"
                             :width "297mm" :height "25mm"
                             :left "0mm" :top "0mm" :reference-orientation "90"}
