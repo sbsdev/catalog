@@ -572,7 +572,8 @@
              (block {:space-before "2em" :font-size "12pt"}
                     "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"))]]))
 
-(defn- layout-master-set [date]
+
+(defn- layout-master-set []
   [:fo:layout-master-set
    (simple-page-master {:master-name "cover-recto"
                         :margin-left "0mm" :margin-right "0mm" :margin-top "0mm" :margin-bottom "0mm"}
@@ -643,7 +644,7 @@
   (let [title (layout/translations :catalog-grossdruck)]
     (binding [*stylesheet* large-print-stylesheet]
       [:fo:root (style :font (root-attrs))
-       (layout-master-set date)
+       (layout-master-set)
        (declarations title (or description title))
        [:fo:page-sequence {:master-reference "main"
                            :initial-page-number "1"
@@ -665,7 +666,7 @@
   [items fmt editorial recommendations {:keys [description date]}]
   (let [title (layout/translations :catalog-hörbuch)]
     [:fo:root (style :font (root-attrs))
-     (layout-master-set date)
+     (layout-master-set)
      (declarations title (or description title))
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
@@ -725,7 +726,7 @@
   [items fmt _ _ {:keys [description date]}]
   (let [title (layout/translations :catalog-hörfilm)]
     [:fo:root (style :font (root-attrs))
-     (layout-master-set date)
+     (layout-master-set)
      (declarations title (or description title))
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
@@ -745,7 +746,7 @@
   [items fmt _ _ {:keys [description date]}]
   (let [title (layout/translations :catalog-ludo)]
     [:fo:root (style :font (root-attrs))
-     (layout-master-set date)
+     (layout-master-set)
      (declarations title (or description title))
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
@@ -764,7 +765,7 @@
   [items fmt _ _ {:keys [description date]}]
   (let [title (layout/translations :catalog-taktilesbuch)]
     [:fo:root (style :font (root-attrs))
-     (layout-master-set date)
+     (layout-master-set)
      (declarations title (or description title))
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
@@ -782,7 +783,7 @@
   [items _ _ _ {:keys [description date]}]
   (let [title (layout/translations :catalog-all)]
     [:fo:root (style :font (root-attrs))
-     (layout-master-set date)
+     (layout-master-set)
      (declarations title (or description title))
      (coverpage-recto title date)
      [:fo:page-sequence {:master-reference "main"
