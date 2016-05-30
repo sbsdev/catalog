@@ -422,23 +422,31 @@
    (re-seq #"\d+|\D+")
    (map #(or (parse-int %) %))))
 
-(defn- locale-comparator [v1 v2]
-  (let [c1 (count v1)
-        c2 (count v2)]
-    (cond
-      (< c1 c2) -1
-      (> c1 c2) 1
-      :else (reduce
-             (fn [_ [s1 s2]]
-               (let [comparison (if (every? seq? [s1 s2])
-                                  ;; a chunked string
-                                  (locale-comparator s1 s2)
-                                  ;; locale aware comparison
-                                  (locale-compare s1 s2))]
-                 (if (not= 0 comparison)
-                   (reduced comparison)
-                   comparison)))
-             nil (partition 2 (interleave v1 v2))))))
+(defn- locale-comparator [x y]
+  "Compare two sequences `x` and `y` using the locale aware
+  `locale-compare`. See also `cmp-seq-lexi` in
+  http://www.clojure.org/guides/comparators"
+  (loop [x x
+         y y]
+    (if (seq x)
+      (if (seq y)
+        (let [x1 (first x)
+              y1 (first y)
+              c (if (every? seq? [x1 y1])
+                  ;; a chunked string
+                  (locale-comparator x1 y1)
+                  ;; locale aware comparison
+                  (locale-compare x1 y1))]
+          (if (zero? c)
+            (recur (rest x) (rest y))
+            c))
+        ;; else we reached end of y first, so x > y
+        1)
+      (if (seq y)
+        ;; we reached end of x first, so x < y
+        -1
+        ;; Sequences contain same elements.  x = y
+        0))))
 
 (defn- get-update-keys
   "Return the update keys for a given item containing `format`,
