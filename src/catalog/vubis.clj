@@ -400,16 +400,22 @@
      (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items spiele-items])
      others)))
 
-(defn locale-compare
+(defn- locale-compare
   "Comparator similar to `clojure.core/compare`. Uses a locale aware
   collator for string comparison. Unlike `clojure.core/compare` treats
-  `nil` as 'greater than', so that it comes last in the sort order."
+  `nil` as 'greater than', so that it comes last in the sort order.
+  Numbers are smaller than strings to that they come first in sort
+  order."
   [x y]
   (cond
     (every? string? [x y]) (. collator compare x y)
     (and (nil? x) (nil? y)) 0
     (nil? x) -1
     (nil? y) 1
+    ;; when trying to compare strings and numbers make sure that
+    ;; numbers are ordered before strings
+    (and (string? x) (number? y)) 1
+    (and (number? x) (string? y)) -1
     :else (compare x y)))
 
 (defn- chunkify
