@@ -27,6 +27,13 @@
       first
       :content))
 
+(defn read-full-catalog [year type]
+  (-> {:year year :catalog_type (name type)}
+      full-catalog
+      first
+      :items
+      edn/read-string))
+
 (defn save-catalog! [year issue items]
   (-> {:year year :issue issue :items (prn-str items)}
       save-catalog-internal!))
@@ -38,3 +45,8 @@
 (defn save-recommendation! [year issue catalog_type content]
   (-> {:year year :issue issue :catalog_type catalog_type :content content}
       save-recommendation-internal!))
+
+(defn save-full-catalog! [year catalog_type items]
+  (-> {:year year :catalog_type catalog_type :items (prn-str items)}
+      save-full-catalog-internal!))
+

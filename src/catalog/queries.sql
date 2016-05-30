@@ -1,5 +1,5 @@
 -- name: catalog
--- Get the catalog for given year and issue.
+-- Get the catalog for given `year` and `issue`.
 SELECT items
 FROM catalogs
 WHERE issue = :issue AND year = :year
@@ -42,3 +42,18 @@ INSERT INTO recommendations (year, issue, catalog_type, content)
 VALUES (:year, :issue, :catalog_type, :content)
 ON DUPLICATE KEY UPDATE
 content = values(content);
+
+-- name: full-catalog
+-- Get the full catalog for given `year` and `catalog_type`.
+SELECT items
+FROM full_catalogs
+WHERE catalog_type = :catalog_type AND year = :year
+
+-- name: save-full-catalog-internal!
+-- Insert or update the given `items` to the full_catalog for given
+-- `year` and `catalog_type`.
+INSERT INTO full_catalogs (year, catalog_type, items)
+VALUES (:year, :catalog_type, :items)
+ON DUPLICATE KEY UPDATE
+items = values(items);
+
