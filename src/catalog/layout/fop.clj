@@ -701,7 +701,8 @@
      :height "35mm"
      :scaling "uniform"
      :content-width "scale-to-fit"
-     :content-height "scale-to-fit"}]])
+     :content-height "scale-to-fit"
+     :fox:alt-text "SBS Logo"}]])
 
 (defn- impressum []
   (let [creator (layout/translations :sbs)]
