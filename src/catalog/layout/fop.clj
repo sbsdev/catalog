@@ -521,6 +521,8 @@
                         :force-page-count "no-force"
                         :font-family "StoneSans, Arial"}
      [:fo:flow {:flow-name "xsl-region-body"}
+      ;; add an empty page before the back cover
+      [:fo:block {:break-before "page" :break-after "page"} " "]
       [:fo:wrapper {:role "artifact"}
        [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"
                              :left "0mm" :top "0mm" :background-color "transparent"}
