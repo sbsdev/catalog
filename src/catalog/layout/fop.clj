@@ -730,7 +730,7 @@
    (impressum)])
 
 (defmethod document-sexp :hörfilm
-  [items fmt year issue _ _ {:keys [description]}]
+  [items fmt year _ _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-hörfilm)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
@@ -748,7 +748,7 @@
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
 
 (defmethod document-sexp :ludo
-  [items fmt year issue _ _ {:keys [description]}]
+  [items fmt year _ _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-ludo)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
