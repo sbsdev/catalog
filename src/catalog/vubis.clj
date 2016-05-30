@@ -503,11 +503,11 @@
 
 (defn get-update-keys-taktil
   "Return the update keys for a given item (see `get-update-keys`).
-  For the ludo catalog we need to group all other formats under the
-  genre :bücher-über-spiel."
+  For the taktil catalog we need to group the :taktilesbuch items by
+  genre."
   [{fmt :format genre :genre :as item}]
   (cond
-    (= fmt :taktilesbuch) [fmt genre]
+    (#{:taktilesbuch} fmt) [fmt genre]
     :else (get-update-keys item)))
 
 (def ^:private sort-order
