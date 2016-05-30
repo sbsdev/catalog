@@ -21,7 +21,7 @@
 (def BrailleGrade
   (apply s/enum (vals vubis/braille-grade-raw-to-braille-grade)))
 
-(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}")
+(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}|LUD \d{1,3}|BK \d{3}|VI \d{1,3}")
 
 (def SignatureTuple
   [(s/one SignatureRE "signature")
@@ -119,6 +119,7 @@
   :producer s/Str
   :directed-by [s/Str]
   :actors [s/Str]
+  :personel-text s/Str
   :movie_country s/Str})
 
 (abstract-map/extend-schema
