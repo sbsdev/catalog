@@ -160,6 +160,21 @@
         response/response
         (response/content-type "application/pdf"))))
 
+(defn- upload-well
+  [title url errors]
+  [:div.well
+   [:h2 title]
+   (when (seq errors)
+     [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+   (form/form-to
+    {:enctype "multipart/form-data"
+     :class "form-inline"}
+    [:post url]
+    (anti-forgery-field)
+    (form/file-upload "file")
+    " "
+    (form/submit-button {:class "btn btn-default"} "Upload"))])
+
 (defn upload-form [request year issue & [errors]]
   (let [identity (friend/identity request)]
     (layout/common
@@ -167,18 +182,9 @@
      year issue
      [:div.row
       [:div.col-md-12
-       [:div.well
-        [:h2 (format "Upload %s" (translations :catalog-all))]
-        (when (seq errors)
-          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
-        (form/form-to
-         {:enctype "multipart/form-data"
-          :class "form-inline"}
-         [:post (format "/%s/%s/%s/upload-confirm" year issue (name :all-formats))]
-         (anti-forgery-field)
-         (form/file-upload "file")
-         " "
-         (form/submit-button {:class "btn btn-default"} "Upload"))]]])))
+       (upload-well (format "Upload %s" (translations :catalog-all))
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :all-formats))
+                    errors)]])))
 
 (defn upload-confirm [request year issue fmt file]
   (let [{tempfile :tempfile} file
@@ -235,45 +241,18 @@
      year issue
      [:div.row
       [:div.col-md-6
-       [:div.well
-        [:h2 "Upload Gesamtkatalog Hörfilm"]
-        (when (seq errors)
-          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
-        (form/form-to
-         {:enctype "multipart/form-data"
-          :class "form-inline"}
-         [:post (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))]
-         (anti-forgery-field)
-         (form/file-upload "file")
-         " "
-         (form/submit-button {:class "btn btn-default"} "Upload"))]]
+       (upload-well "Upload Gesamtkatalog Hörfilm"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
+                    errors)]
       [:div.col-md-6
-       [:div.well
-        [:h2 "Upload Gesamtkatalog Spiele"]
-        (when (seq errors)
-          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
-        (form/form-to
-         {:enctype "multipart/form-data"
-          :class "form-inline"}
-         [:post (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))]
-         (anti-forgery-field)
-         (form/file-upload "file")
-         " "
-         (form/submit-button {:class "btn btn-default"} "Upload"))]]]
+       (upload-well "Upload Gesamtkatalog Spiele"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
+                    errors)]]
      [:div.row
       [:div.col-md-6
-       [:div.well
-        [:h2 "Upload Gesamtkatalog Taktile Bücher"]
-        (when (seq errors)
-          [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
-        (form/form-to
-         {:enctype "multipart/form-data"
-          :class "form-inline"}
-         [:post (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))]
-         (anti-forgery-field)
-         (form/file-upload "file")
-         " "
-         (form/submit-button {:class "btn btn-default"} "Upload"))]]])))
+       (upload-well "Upload Gesamtkatalog Taktile Bücher"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
+                    errors)]])))
 
 (defn editorial-form [request fmt year issue]
   (let [identity (friend/identity request)
