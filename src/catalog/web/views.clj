@@ -26,6 +26,13 @@
   [:a.btn.btn-default {:href href :role "button" :aria-label label}
    [:span.glyphicon {:class (str "glyphicon-" icon) :aria-hidden "true"}] (str " " label)])
 
+
+(defn- download-well
+  [title url]
+  [:div.well
+   [:h2 title]
+   (icon-button url "download" "Download")])
+
 (defn home
   ([request]
    (home request 2016 3)) ;; FIXME: hard coded for now
@@ -36,18 +43,15 @@
       year issue
       [:div.row
        [:div.col-md-6
-        [:div.well
-         [:h2 (translations :catalog-all)]
-         (icon-button (format "/%s/%s/neu-im-sortiment.pdf" year issue) "download" "Download")]]
+        (download-well (translations :catalog-all)
+                       (format "/%s/%s/neu-im-sortiment.pdf" year issue))]
        [:div.col-md-6
-        [:div.well
-         [:h2 (translations :catalog-grossdruck)]
-         (icon-button (format "/%s/%s/neu-in-grossdruck.pdf" year issue) "download" "Download")]]]
+        (download-well (translations :catalog-grossdruck)
+                       (format "/%s/%s/neu-in-grossdruck.pdf" year issue))]]
       [:div.row
        [:div.col-md-6
-        [:div.well
-         [:h2 (translations :catalog-braille)]
-         (icon-button (format "/%s/%s/neu-in-braille.xml" year issue) "download" "Download")]]
+        (download-well (translations :catalog-braille)
+                       (format "/%s/%s/neu-in-braille.xml" year issue))]
        [:div.col-md-6
         [:div.well
          [:h2 (translations :catalog-hörbuch)]
