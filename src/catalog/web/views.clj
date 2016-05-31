@@ -63,6 +63,24 @@
                  string/lower-case
                  (string/replace #"\s" "-"))]
     (format "%s-%s-%s" name year issue)))
+(defn full-catalogs
+  [request year issue]
+  (let [identity (friend/identity request)]
+    (layout/common
+     identity
+     year issue
+     [:div.row
+      [:div.col-md-6
+       (download-well (translations :catalog-hörfilm)
+                      (format "/%s/hörfilme-in-der-sbs.pdf" year))]
+      [:div.col-md-6
+       (download-well (translations :catalog-ludo)
+                      (format "/%s/spiele-in-der-sbs.pdf" year))]]
+     [:div.row
+      [:div.col-md-6
+       (download-well (translations :catalog-taktilesbuch)
+                      (format "/%s/taktile-kinderbücher-der-sbs.pdf" year))]])))
+
 
 (defn neu-im-sortiment [year issue]
   (let [temp-file (java.io.File/createTempFile (file-name :catalog-all year issue) ".pdf")]
@@ -116,6 +134,26 @@
         (layout.obi/dtbook year issue editorial recommendation)
         response/response
         (response/content-type "application/xml"))))
+
+(defn hörfilme [year]
+  (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörfilm year) ".pdf")]
+    (-> (db/read-full-catalog year :hörfilm)
+        (vubis/order-and-group vubis/get-update-keys-hörfilm)
+        (layout.fop/document :hörfilm year nil nil nil)
+        (layout.fop/generate-pdf! temp-file))
+    (-> temp-file
+        response/response
+        (response/content-type "application/pdf"))))
+
+(defn spiele [year]
+  (let [temp-file (java.io.File/createTempFile (file-name :catalog-ludo year) ".pdf")]
+    (-> (db/read-full-catalog year :ludo)
+        (vubis/order-and-group vubis/get-update-keys-ludo)
+        (layout.fop/document :ludo year nil nil nil)
+        (layout.fop/generate-pdf! temp-file))
+    (-> temp-file
+        response/response
+        (response/content-type "application/pdf"))))
 
 (defn upload-form [request year issue & [errors]]
   (let [identity (friend/identity request)]

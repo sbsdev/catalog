@@ -60,6 +60,14 @@
   (POST "/:year/:issue/upload"
         [year :<< as-int issue :<< as-int items :as r]
         (views/upload r year issue items))
+  ;; full catalogs
+  (GET "/:year/:issue/full-catalogs"
+       [year :<< as-int issue :<< as-int :as r]
+       (views/full-catalogs r year issue))
+  (GET (format "/:year/%s-in-der-sbs.pdf" (url-encode "hörfilme"))
+       [year :<< as-int] (views/hörfilme year))
+  (GET "/:year/spiele-in-der-sbs.pdf"
+       [year :<< as-int] (views/spiele year))
 
   ;; resources and 404
   (route/resources "/")
