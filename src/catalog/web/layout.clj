@@ -35,10 +35,10 @@
         (menu-item "/logout" (glyphicon "log-out")))
        (menu-item "/login" (glyphicon "log-in")))]))
 
-(defn- dropdown-menu [items]
+(defn- dropdown-menu [title items]
   [:li.dropdown
    [:a.dropdown-toggle
-    {:href "#" :role "button" :data-toggle "dropdown" :aria-expanded false} "Editorials" [:span.caret]]
+    {:href "#" :role "button" :data-toggle "dropdown" :aria-expanded false} title [:span.caret]]
    [:ul.dropdown-menu {:role "menu"}
     (for [[link label] items]
       (menu-item link label))]])
@@ -60,10 +60,13 @@
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
      [:ul.nav.navbar-nav
-      (menu-item (format "/%s/%s/upload" year issue) "Upload")
-      (dropdown-menu [[(format "/%s/%s/editorial/grossdruck" year issue) "Grossdruck"]
-                      [(format "/%s/%s/editorial/braille" year issue) "Braille"]
-                      [(format "/%s/%s/editorial/hörbuch" year issue) "Hörbuch"]])]]]])
+      (dropdown-menu "Upload" [[(format "/%s/%s/upload" year issue) "Neu im Sortiment"]
+                               [(format "/%s/%s/upload-full" year issue) "Gesamtkatalog"]])
+      (dropdown-menu "Editorials" [[(format "/%s/%s/editorial/grossdruck" year issue) "Grossdruck"]
+                                   [(format "/%s/%s/editorial/braille" year issue) "Braille"]
+                                   [(format "/%s/%s/editorial/hörbuch" year issue) "Hörbuch"]])
+      (menu-item (format "/%s/%s/full-catalogs" year issue) "Full Catalogs")
+      (menu-item (format "/custom") "Custom Catalogs")]]]])
 
 (defn common
   "Display a page using the bootstrap css"
