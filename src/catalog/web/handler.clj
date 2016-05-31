@@ -52,14 +52,18 @@
 
   ;; upload catalog data
   (GET "/:year/:issue/upload"
-       [year :<< as-int issue :<< as-int file :as r]
+       [year :<< as-int issue :<< as-int :as r]
        (views/upload-form r year issue))
-  (POST "/:year/:issue/upload-confirm"
-        [year :<< as-int issue :<< as-int file :as r]
-        (views/upload-confirm r year issue file))
-  (POST "/:year/:issue/upload"
-        [year :<< as-int issue :<< as-int items :as r]
-        (views/upload r year issue items))
+  (GET "/:year/:issue/upload-full"
+       [year :<< as-int issue :<< as-int :as r]
+       (views/upload-full-form r year issue))
+  (POST "/:year/:issue/:fmt/upload-confirm"
+        [year :<< as-int issue :<< as-int fmt :<< keyword file :as r]
+        (views/upload-confirm r year issue fmt file))
+  (POST "/:year/:issue/:fmt/upload"
+        [year :<< as-int issue :<< as-int fmt :<< keyword items :as r]
+        (views/upload r year issue fmt items))
+
   ;; full catalogs
   (GET "/:year/:issue/full-catalogs"
        [year :<< as-int issue :<< as-int :as r]
