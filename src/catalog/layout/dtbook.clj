@@ -23,7 +23,7 @@
 (defmulti to-dtbook (fn [{:keys [tag attrs content]}] tag))
 (defmethod to-dtbook :p [{content :content}] [:p content])
 (defmethod to-dtbook :a [{content :content {href :href} :attrs}]
-  [:a {:href href} (if (not-empty content) content href)])
+  [:a {:href href :external "true"} (if (not-empty content) content href)])
 ;; make sure the md headings are lower than h1. That way they will
 ;; fit properly into the hierarchy, where :editorial is h1 and the
 ;; actual md content is below
