@@ -23,7 +23,7 @@
                  [mysql/mysql-connector-java "6.0.4"]
                  [yesql "0.5.3"]]
   :plugins [[cider/cider-nrepl "0.14.0-SNAPSHOT"]
-            [refactor-nrepl "2.3.0-SNAPSHOT"]
+;            [refactor-nrepl "2.3.0-SNAPSHOT"]
             [lein-immutant "2.1.0"]
             [lein-codox "0.9.7"]
             [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
