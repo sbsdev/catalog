@@ -449,6 +449,14 @@
    (map #(/ % 100.0))
    rgb))
 
+(def issue-indent
+  "Mapping of indents for each issue."
+  ;; In theory the issue numbers should be centered properly within the
+  ;; circle. Somehow this doesn't seem to pan out, so we resort to
+  ;; fidget with the indent for each issue.
+  {3 "143mm"
+   4 "140mm"})
+
 (defn- coverpage-recto [title year issue]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
@@ -508,7 +516,7 @@
                :role "H2"}
               (layout/format-date year issue))]
       [:fo:block-container {:absolute-position "fixed" :width "53mm" :height "53mm"
-                            :left "143mm" :top "119mm" :display-align "center"
+                            :left (issue-indent issue "140mm") :top "119mm" :display-align "center"
                             :background-color "transparent"}
        (block {:font-size "120pt" :color (color :white)
                :text-align "center"
