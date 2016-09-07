@@ -7,6 +7,8 @@ CREATE TABLE catalog_type (
 CREATE TABLE catalogs (
   year YEAR NOT NULL,
   issue TINYINT NOT NULL,
+  -- the items just contain edn of the data dump of the library data
+  -- for that particular issue
   items MEDIUMTEXT NOT NULL,
   PRIMARY KEY(year, issue)
 );
@@ -14,6 +16,8 @@ CREATE TABLE catalogs (
 CREATE TABLE full_catalogs (
   year YEAR NOT NULL,
   catalog_type VARCHAR(16) NOT NULL,
+  -- the items just contain edn of the data dump of the library data
+  -- for that particular full catalog
   items MEDIUMTEXT NOT NULL,
   PRIMARY KEY(year, catalog_type),
   FOREIGN KEY(catalog_type) REFERENCES catalog_type(id)
