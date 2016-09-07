@@ -27,10 +27,10 @@
             [lein-immutant "2.1.0"]
             [lein-codox "0.9.7"]
             [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
-  :main ^:skip-aot catalog.core
   :codox {:project {:name "Catalog"}
           :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
+  :main ^:skip-aot catalog.web.main
   :immutant {:war {:context-path "/"
                    :nrepl {:port 40021
                            :start? true}}}
