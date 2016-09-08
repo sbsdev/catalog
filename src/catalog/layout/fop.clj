@@ -827,7 +827,7 @@
   ;; generate PDF according to https://xmlgraphics.apache.org/fop/2.0/embedding.html#basics
   (with-open [out (io/output-stream out)]
     (let [;; Construct a FopFactory by specifying a reference to the configuration file
-          factory (FopFactory/newInstance (io/file (io/resource "fop.xconf")))
+          factory (FopFactory/newInstance (.toURI (io/resource "fop.xconf")))
           ;; get a user agent and add a listener to it that logs events
           user-agent (.newFOUserAgent factory)
           broadcaster (.getEventBroadcaster user-agent)
