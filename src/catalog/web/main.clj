@@ -8,4 +8,4 @@
 
 (defn -main []
   ;; start web server
-  (web/run-dmc handler/site))
+  (web/run handler/site))
