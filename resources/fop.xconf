@@ -18,49 +18,49 @@
       </filterList>
 
       <fonts>
-	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/arial.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/msttcorefonts/arial.ttf">
 	  <font-triplet name="Arial" style="normal" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/verdana.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/msttcorefonts/verdana.ttf">
 	  <font-triplet name="Verdana" style="normal" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/Verdana_Bold.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/msttcorefonts/Verdana_Bold.ttf">
 	  <font-triplet name="Verdana" style="normal" weight="bold"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/Verdana_Bold_Italic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/msttcorefonts/Verdana_Bold_Italic.ttf">
 	  <font-triplet name="Verdana" style="italic" weight="bold"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/msttcorefonts/Verdana_Italic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/msttcorefonts/Verdana_Italic.ttf">
 	  <font-triplet name="Verdana" style="italic" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont.ttf">
 	  <font-triplet name="Tiresias" style="normal" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_bold.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_bold.ttf">
 	  <font-triplet name="Tiresias" style="normal" weight="bold"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf">
 	  <font-triplet name="Tiresias" style="italic" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/ttf-tiresias/tiresias_lpfont_italic.ttf">
 	  <font-triplet name="Tiresias" style="italic" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/stone/StoneSans.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/stone/StoneSans.ttf">
 	  <font-triplet name="StoneSans" style="normal" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansBold.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/stone/StoneSansBold.ttf">
 	  <font-triplet name="StoneSans" style="normal" weight="bold"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansItalic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/stone/StoneSansItalic.ttf">
 	  <font-triplet name="StoneSans" style="italic" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansBoldItalic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/stone/StoneSansBoldItalic.ttf">
 	  <font-triplet name="StoneSans" style="italic" weight="bold"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansSemibold.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/stone/StoneSansSemibold.ttf">
 	  <font-triplet name="StoneSansSemibold" style="normal" weight="normal"/>
 	</font>
-	<font embed-url="/usr/share/fonts/truetype/stone/StoneSansSemiboldItalic.ttf" embedding-mode="subset">
+	<font embed-url="file:///usr/share/fonts/truetype/stone/StoneSansSemiboldItalic.ttf">
 	  <font-triplet name="StoneSansSemibold" style="italic" weight="normal"/>
 	</font>
       </fonts>
