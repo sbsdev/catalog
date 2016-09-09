@@ -836,12 +836,12 @@
             ;; get a user agent and add a listener to it that logs events
             user-agent (.newFOUserAgent factory)
             broadcaster (.getEventBroadcaster user-agent)
-            ;; _ (.addEventListener broadcaster
-            ;;                      (reify EventListener
-            ;;                        (processEvent [this event]
-            ;;                          (let [id (.getEventID event)]
-            ;;                            (when (not= id "org.apache.fop.render.RendererEventProducer.endPage")
-            ;;                              (println (EventFormatter/format event)))))))
+            _ (.addEventListener broadcaster
+                                 (reify EventListener
+                                   (processEvent [this event]
+                                     (let [id (.getEventID event)]
+                                       (when (not= id "org.apache.fop.render.RendererEventProducer.endPage")
+                                         (println (EventFormatter/format event)))))))
             ;; Construct fop with desired output format
             fop (.newFop factory MimeConstants/MIME_PDF user-agent out)
             ;; Setup JAXP using identity transformer
