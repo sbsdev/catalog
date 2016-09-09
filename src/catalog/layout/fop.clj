@@ -825,25 +825,30 @@
 
 (defn generate-pdf! [document out]
   ;; generate PDF according to https://xmlgraphics.apache.org/fop/2.0/embedding.html#basics
-  (with-open [out (io/output-stream out)]
-    (let [;; Construct a FopFactory by specifying a reference to the configuration file
-          factory (FopFactory/newInstance (.toURI (io/resource "fop.xconf")))
-          ;; get a user agent and add a listener to it that logs events
-          user-agent (.newFOUserAgent factory)
-          broadcaster (.getEventBroadcaster user-agent)
-          _ (.addEventListener broadcaster
-                               (reify EventListener
-                                 (processEvent [this event]
-                                   (let [id (.getEventID event)]
-                                     (when (not= id "org.apache.fop.render.RendererEventProducer.endPage")
-                                       (println (EventFormatter/format event)))))))
-          ;; Construct fop with desired output format
-          fop (.newFop factory MimeConstants/MIME_PDF user-agent out)
-          ;; Setup JAXP using identity transformer
-          transformer (.newTransformer (TransformerFactory/newInstance))
-          ;; Setup input and output for XSLT transformation
-          source (StreamSource. (StringReader. (xml/emit-str document)))
-          ;; Resulting SAX events (the generated FO) must be piped through to FOP
-          saxresult (SAXResult. (.getDefaultHandler fop))]
-      ;; Start XSLT transformation and FOP processing
-      (.transform transformer source saxresult))))
+  (let [config-url (io/resource "fop.xconf")]
+    (with-open [out (io/output-stream out)
+                conf-stream (io/input-stream config-url)]
+      (let [;; get the base uri to resolve resource URIs against
+            base-uri (.toURI config-url)
+            ;; Construct a FopFactory by specifying a base-uri and an
+            ;; input stream containing the configuration
+            factory (FopFactory/newInstance base-uri conf-stream)
+            ;; get a user agent and add a listener to it that logs events
+            user-agent (.newFOUserAgent factory)
+            broadcaster (.getEventBroadcaster user-agent)
+            ;; _ (.addEventListener broadcaster
+            ;;                      (reify EventListener
+            ;;                        (processEvent [this event]
+            ;;                          (let [id (.getEventID event)]
+            ;;                            (when (not= id "org.apache.fop.render.RendererEventProducer.endPage")
+            ;;                              (println (EventFormatter/format event)))))))
+            ;; Construct fop with desired output format
+            fop (.newFop factory MimeConstants/MIME_PDF user-agent out)
+            ;; Setup JAXP using identity transformer
+            transformer (.newTransformer (TransformerFactory/newInstance))
+            ;; Setup input and output for XSLT transformation
+            source (StreamSource. (StringReader. (xml/emit-str document)))
+            ;; Resulting SAX events (the generated FO) must be piped through to FOP
+            saxresult (SAXResult. (.getDefaultHandler fop))]
+        ;; Start XSLT transformation and FOP processing
+        (.transform transformer source saxresult)))))
