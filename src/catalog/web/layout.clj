@@ -1,6 +1,7 @@
 (ns catalog.web.layout
   "Define the basic page structure and layout"
-  (:require [cemerick.friend :as friend]
+  (:require [catalog.issue :as issue]
+            [cemerick.friend :as friend]
             [hiccup.page :refer [html5 include-css include-js]]))
 
 (defn glyphicon
@@ -56,7 +57,7 @@
       [:span.icon-bar]
       [:span.icon-bar]
       [:span.icon-bar]]
-     [:a.navbar-brand {:href (format "/%s/%s" year issue)} "Catalog"]]
+     [:a.navbar-brand {:href (format "/%s/%s" year issue)} (format "Catalog %s/%s" year issue)]]
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
      [:ul.nav.navbar-nav
@@ -66,7 +67,21 @@
                                    [(format "/%s/%s/editorial/braille" year issue) "Braille"]
                                    [(format "/%s/%s/editorial/hörbuch" year issue) "Hörbuch"]])
       (menu-item (format "/%s/%s/full-catalogs" year issue) "Full Catalogs")
-      (menu-item (format "/custom") "Custom Catalogs")]]]])
+      (menu-item (format "/custom") "Custom Catalogs")]
+
+     [:ul.nav.navbar-nav.navbar-right
+      [:li
+       [:div.btn-group {:role "group"}
+        (let [[year issue] (issue/prev-issue year issue)]
+          [:a.btn.btn-default.navbar-btn
+           {:href (format "/%s/%s" year issue) :role "button"}
+           (glyphicon "step-backward" "Older")])
+        [:a.btn.btn-default.navbar-btn
+         {:href "/" :role "button"} (glyphicon "refresh" "Current")]
+        (let [[year issue] (issue/next-issue year issue)]
+          [:a.btn.btn-default.navbar-btn
+           {:href (format "/%s/%s" year issue) :role "button"}
+           (glyphicon "step-forward" "Newer")])]]]]]])
 
 (defn common
   "Display a page using the bootstrap css"
