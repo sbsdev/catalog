@@ -2,6 +2,7 @@
   "Views for web application"
   (:require [catalog
              [db :as db]
+             [issue :as issue]
              [validation :as validation]
              [vubis :as vubis]]
             [catalog.layout
@@ -11,6 +12,7 @@
              [obi :as layout.obi]]
             [catalog.web.layout :as layout]
             [cemerick.friend :as friend]
+            [clj-time.core :as time.core]
             [clojure
              [edn :as edn]
              [string :as string]]
@@ -35,7 +37,9 @@
 
 (defn home
   ([request]
-   (home request 2016 3)) ;; FIXME: hard coded for now
+   (let [date (time.core/today)
+         [year issue] (issue/issue-for date)]
+     (response/redirect (format "/%s/%s" year issue))))
   ([request year issue]
    (let [identity (friend/identity request)]
      (layout/common
