@@ -546,6 +546,14 @@
         name-of-part]
        (map chunkify)))
 
+(defn order
+  "Order the catalog `items`. Items representing the same book, e.g.
+  different Braille versions of the same book are collated."
+  [items]
+  (->> items
+   collate-all-duplicate-items
+   (sort-by sort-key locale-comparator)))
+
 (defn order-and-group
   "Order and group the catalog `items`. Given a sequence of `items`
   returns a tree where all items are grouped by format, genre and
@@ -554,10 +562,8 @@
   ([items]
    (order-and-group items get-update-keys))
   ([items get-update-keys-fn]
-   (->>
-    items
-    collate-all-duplicate-items
-    (sort-by sort-key locale-comparator)
+   (->> items
+    order
     (reduce
      (fn [m item]
        (let [update-keys (get-update-keys-fn item)]
