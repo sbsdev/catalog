@@ -232,7 +232,7 @@
           (form/hidden-field "items" (prn-str items))
           (form/submit-button "Upload Anyway"))))
       (do
-        ;; add the file
+        ;; FIXME: add the file
         ;; and redirect to the index
         (response/redirect-after-post (format "/%s/%s" year issue))))))
 
