@@ -190,6 +190,27 @@
                     (format "/%s/%s/%s/upload-confirm" year issue (name :all-formats))
                     errors)]])))
 
+(defn- error-table
+  [problems]
+  [:table#productions.table.table-striped
+   [:thead [:tr (map #(vec [:th %]) ["Record-id" "Title" "Field" "Value" "Error"])]]
+   [:tbody
+    (for [[errors {:keys [record-id title] :as item}] problems]
+      (if (map? errors)
+        (for [[k v] errors]
+          [:tr
+           [:td record-id]
+           [:td (h title)]
+           [:td k]
+           [:td (h (item k))]
+           [:td (str v)]])
+        [:tr
+         [:td record-id]
+         [:td (h title)]
+         [:td ]
+         [:td ]
+         [:td (pr-str errors)]]))]])
+
 (defn upload-confirm [request year issue fmt file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)
@@ -203,24 +224,7 @@
          identity
          year issue
          [:h1 "Confirm Upload"]
-         [:table#productions.table.table-striped
-          [:thead [:tr (map #(vec [:th %]) ["Record-id" "Title" "Field" "Value" "Error"])]]
-          [:tbody
-           (for [[errors {:keys [record-id title] :as item}] problems]
-             (if (map? errors)
-               (for [[k v] errors]
-                 [:tr
-                  [:td record-id]
-                  [:td (h title)]
-                  [:td k]
-                  [:td (h (item k))]
-                  [:td (str v)]])
-               [:tr
-                [:td record-id]
-                [:td (h title)]
-                [:td ]
-                [:td ]
-                [:td (pr-str errors)]]))]]
+         (error-table problems)
          (form/form-to
           {:enctype "multipart/form-data"}
           [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
