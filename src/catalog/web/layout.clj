@@ -57,7 +57,7 @@
       [:span.icon-bar]
       [:span.icon-bar]
       [:span.icon-bar]]
-     [:a.navbar-brand {:href (format "/%s/%s" year issue)} (format "Catalog %s/%s" year issue)]]
+     [:a.navbar-brand {:href (format "/%s/%s" year issue)} "Kati"]]
     [:div.collapse.navbar-collapse
      {:id "navbar-collapse-target"}
      [:ul.nav.navbar-nav
