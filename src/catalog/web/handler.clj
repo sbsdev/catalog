@@ -65,13 +65,24 @@
         (views/upload r year issue fmt items))
 
   ;; full catalogs
-  (GET "/:year/:issue/full-catalogs"
+  (GET "/:year/:issue/full"
        [year :<< as-int issue :<< as-int :as r]
        (views/full-catalogs r year issue))
   (GET (format "/:year/%s-in-der-sbs.pdf" (url-encode "hörfilme"))
        [year :<< as-int] (views/hörfilme year))
   (GET "/:year/spiele-in-der-sbs.pdf"
        [year :<< as-int] (views/spiele year))
+
+  ;; custom catalogs
+  (GET "/:year/:issue/custom"
+       [year :<< as-int issue :<< as-int :as r]
+       (views/custom-form r year issue))
+  (POST "/:year/:issue/custom-confirm"
+        [year :<< as-int issue :<< as-int query customer fmt :<< keyword file :as r]
+        (views/custom-confirm r year issue query customer fmt file))
+  (POST "/:year/:issue/custom"
+        [year :<< as-int issue :<< as-int query customer fmt :<< keyword items :as r]
+        (views/custom r year issue query customer fmt items))
 
   ;; resources and 404
   (route/resources "/")

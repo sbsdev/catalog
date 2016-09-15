@@ -290,3 +290,94 @@
   (db/save-editorial! year issue fmt editorial)
   (db/save-recommendation! year issue fmt recommended)
   (response/redirect-after-post (format "/%s/%s" year issue)))
+
+(defn- query-field
+  [query]
+  [:div.form-group
+   (form/label "query" "Query:")
+   (form/text-area {:class "form-control" :rows 3} "query" query)])
+
+(defn- customer-field
+  [customer]
+  [:div.form-group
+   (form/label "customer" "Customer:")
+   (form/text-field {:class "form-control"} "customer" customer)])
+
+(defn- format-field
+  [selected]
+  [:div.form-group
+   (form/label "fmt" "Format:")
+   (form/drop-down
+    {:class "form-control"} "fmt"
+    [["PDF" :pdf]
+     ["Grossdruck" :grossdruck]
+     ["Braille" :braille]]
+    selected)])
+
+(defn custom-form [request year issue]
+  (let [identity (friend/identity request)]
+    (layout/common
+     identity
+     year issue
+     [:h1 "Katalog nach Mass"]
+     (form/form-to
+      {:enctype "multipart/form-data"}
+      [:post (format "/%s/%s/custom-confirm" year issue)]
+      (anti-forgery-field)
+      (form/file-upload "file")
+      (query-field nil)
+      (customer-field nil)
+      (format-field :pdf)
+     (form/submit-button {:class "btn btn-default"} "Submit")))))
+
+(defn custom-confirm [request year issue query customer fmt file]
+  (let [{tempfile :tempfile} file
+        path (.getPath tempfile)
+        items (vubis/read-file path)
+        items-collated (vubis/collate-all-duplicate-items items)
+        checker (s/checker validation/CatalogItem)
+        problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
+    (if (seq problems)
+      (let [identity (friend/identity request)]
+        (layout/common
+         identity
+         year issue
+         [:h1 "Confirm Katalog nach Mass"]
+         (error-table problems)
+         (form/form-to
+          {:enctype "multipart/form-data"}
+          [:post (format "/%s/%s/custom" year issue)]
+          (anti-forgery-field)
+          (form/hidden-field "items" (prn-str items))
+          (query-field query)
+          (customer-field customer)
+          (format-field fmt)
+          (form/submit-button "Upload Anyway"))))
+      (do
+        ;; FIXME: add the file
+        ;; and redirect to the index
+        (response/redirect-after-post (format "/%s/%s" year issue))))))
+
+(defmulti custom (fn [_ _ _ _ _ fmt _] fmt))
+
+(defmethod custom :pdf [request year issue query customer fmt items]
+  (let [temp-file (java.io.File/createTempFile "custom-catalog" ".pdf")]
+    (-> items
+        edn/read-string
+        vubis/order
+        (layout.fop/document :custom year issue nil nil :query query :customer customer)
+        (layout.fop/generate-pdf! temp-file))
+    (-> temp-file
+        response/response
+        (response/content-type "application/pdf"))))
+
+(defmethod custom :grossdruck [request year issue query customer fmt items]
+  (let [temp-file (java.io.File/createTempFile "custom-catalog" ".pdf")]
+    (-> items
+        edn/read-string
+        vubis/order
+        (layout.fop/document :custom-grossdruck year issue nil nil :query query :customer customer)
+        (layout.fop/generate-pdf! temp-file))
+    (-> temp-file
+        response/response
+        (response/content-type "application/pdf"))))
