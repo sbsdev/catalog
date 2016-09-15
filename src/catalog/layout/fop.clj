@@ -9,7 +9,8 @@
              [walk :as walk]]
             [clojure.data.xml :as xml]
             [clojure.java.io :as io]
-            [endophile.core :as endophile])
+            [endophile.core :as endophile]
+            [clj-time.format :as time.format])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -737,6 +738,18 @@
    (logo)
    (impressum)])
 
+(defn- custom-cover-page [title query customer]
+  [:fo:block-container
+   (block {:space-after "50mm"} )
+   (block (style :h1 {:break-before "auto" :space-after "5pt"}) title)
+   (block {:space-after "5pt"}
+          (format "Stand %s"
+                  (time.format/unparse (time.format/formatter "dd.MM.YYYY") (time.core/now))))
+   (block {:space-before "5mm" :space-after "5mm"} query)
+   (block (format "für %s" customer))
+   (logo)
+   (impressum)])
+
 (defmethod document-sexp :hörfilm
   [items fmt year _ _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-hörfilm)]
@@ -790,6 +803,35 @@
          (cover-page [title] year)
          (toc subitems [fmt] 1 {:heading? true})
          (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]]))
+
+(defn- custom-document
+  [title description query customer items]
+  [:fo:root (style :font (root-attrs))
+   (layout-master-set)
+   (declarations title (or description query title))
+   [:fo:page-sequence {:master-reference "main"
+                       :initial-page-number "1"
+                       :language "de"}
+    (header :recto)
+    (header :verso)
+
+    [:fo:flow {:flow-name "xsl-region-body"}
+     (custom-cover-page title query customer)
+     ;; start the items on a new page
+     (block {:break-after "page"})
+     (entries-sexp items {})]]])
+
+(defmethod document-sexp :custom
+  [items fmt year issue _ _ {:keys [description query customer]}]
+  (let [title (layout/translations :catalog-custom)]
+    (custom-document title description query customer items)))
+
+(defmethod document-sexp :custom-grossdruck
+  [items fmt year issue _ _ {:keys [description query customer]}]
+  (let [title (layout/translations :catalog-custom)]
+    (binding [*stylesheet* large-print-stylesheet]
+      (realize-lazy-seqs
+       (custom-document title description query customer items)))))
 
 (defmethod document-sexp :all-formats
   [items _ year issue _ _ {:keys [description]}]

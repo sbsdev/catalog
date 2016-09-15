@@ -40,6 +40,7 @@
                              :catalog-hörfilm "Hörfilme in der SBS"
                              :catalog-ludo "Spiele in der SBS"
                              :catalog-taktilesbuch "Taktile Kinderbücher der SBS"
+                             :catalog-custom "Katalog nach Mass"
                              ;; Names of formats
                              :hörbuch "Neue Hörbücher"
                              :braille "Neue Braillebücher"
