@@ -66,14 +66,16 @@
       (dropdown-menu "Editorials" [[(format "/%s/%s/editorial/grossdruck" year issue) "Grossdruck"]
                                    [(format "/%s/%s/editorial/braille" year issue) "Braille"]
                                    [(format "/%s/%s/editorial/hörbuch" year issue) "Hörbuch"]])
-      (menu-item (format "/%s/%s/full-catalogs" year issue) "Full Catalogs")
-      (menu-item (format "/custom") "Custom Catalogs")
-      (dropdown-menu "Older Catalogs"
+      (menu-item (format "/%s/%s/full" year issue) "Full")
+      (menu-item (format "/%s/%s/custom" year issue) "Custom")
+      (dropdown-menu "Previous"
                      [(let [[year issue] (issue/prev-issue year issue)]
                         [(format "/%s/%s" year issue) "Previous"])
                       ["/" "Current"]
                       (let [[year issue] (issue/next-issue year issue)]
-                        [(format "/%s/%s" year issue) "Next"])])]]]])
+                        [(format "/%s/%s" year issue) "Next"])])]
+     [:ul.nav.navbar-nav.navbar-right
+      [:li [:a (format "%s/%s" year issue)]]]]]])
 
 (defn common
   "Display a page using the bootstrap css"
