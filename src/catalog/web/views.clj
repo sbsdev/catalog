@@ -19,6 +19,7 @@
             [hiccup
              [core :refer [h]]
              [form :as form]]
+            [org.tobereplaced.nio.file :as nio.file]
             [ring.util
              [anti-forgery :refer [anti-forgery-field]]
              [response :as response]]
@@ -214,28 +215,33 @@
 
 (defn upload-confirm [request year issue fmt file]
   (let [{tempfile :tempfile} file
-        path (.getPath tempfile)
-        items (vubis/read-file path)
-        items-collated (vubis/collate-all-duplicate-items items)
-        checker (s/checker validation/CatalogItem)
-        problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
-    (if (seq problems)
-      (let [identity (friend/identity request)]
-        (layout/common
-         identity
-         year issue
-         [:h1 "Confirm Upload"]
-         (error-table problems)
-         (form/form-to
-          {:enctype "multipart/form-data"}
-          [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
-          (anti-forgery-field)
-          (form/hidden-field "items" (prn-str items))
-          (form/submit-button "Upload Anyway"))))
-      (do
-        ;; FIXME: add the file
-        ;; and redirect to the index
-        (response/redirect-after-post (format "/%s/%s" year issue))))))
+        path (.getPath tempfile)]
+    (if-not (= (nio.file/size path) 0)
+      (let [items (vubis/read-file path)
+            items-collated (vubis/collate-all-duplicate-items items)
+            checker (s/checker validation/CatalogItem)
+            problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
+        (if (seq problems)
+          (let [identity (friend/identity request)]
+            (layout/common
+             identity
+             year issue
+             [:h1 "Confirm Upload"]
+             (error-table problems)
+             (form/form-to
+              {:enctype "multipart/form-data"}
+              [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
+              (anti-forgery-field)
+              (form/hidden-field "items" (prn-str items))
+              (form/submit-button "Upload Anyway"))))
+          (do
+            ;; FIXME: add the file
+            ;; and redirect to the index
+            (response/redirect-after-post (format "/%s/%s" year issue)))))
+      ;; if the file is empty go back to the upload form
+      (if (= fmt :all-formats)
+        (upload-form request year issue ["No file selected"])
+        (upload-full-form request year issue {fmt ["No file selected"]})))))
 
 (defn upload [request year issue fmt items]
   (case fmt
@@ -252,16 +258,16 @@
       [:div.col-md-6
        (upload-well "Upload Gesamtkatalog Hörfilm"
                     (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
-                    errors)]
+                    (:hörfilm errors))]
       [:div.col-md-6
        (upload-well "Upload Gesamtkatalog Spiele"
                     (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
-                    errors)]]
+                    (:ludo errors))]]
      [:div.row
       [:div.col-md-6
        (upload-well "Upload Gesamtkatalog Taktile Bücher"
                     (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
-                    errors)]])))
+                    (:taktilesbuch errors))]])))
 
 (defn editorial-form [request fmt year issue]
   (let [identity (friend/identity request)
@@ -315,49 +321,55 @@
      ["Braille" :braille]]
     selected)])
 
-(defn custom-form [request year issue]
+(defn custom-form [request year issue & [errors]]
   (let [identity (friend/identity request)]
     (layout/common
      identity
      year issue
-     [:h1 "Katalog nach Mass"]
-     (form/form-to
-      {:enctype "multipart/form-data"}
-      [:post (format "/%s/%s/custom-confirm" year issue)]
-      (anti-forgery-field)
-      (form/file-upload "file")
-      (query-field nil)
-      (customer-field nil)
-      (format-field :pdf)
-     (form/submit-button {:class "btn btn-default"} "Submit")))))
+     [:div.well
+      [:h2 "Katalog nach Mass"]
+      (when (seq errors)
+        [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+      (form/form-to
+       {:enctype "multipart/form-data"}
+       [:post (format "/%s/%s/custom-confirm" year issue)]
+       (anti-forgery-field)
+       (form/file-upload "file")
+       (query-field nil)
+       (customer-field nil)
+       (format-field :pdf)
+       (form/submit-button {:class "btn btn-default"} "Submit"))])))
 
 (defn custom-confirm [request year issue query customer fmt file]
   (let [{tempfile :tempfile} file
-        path (.getPath tempfile)
-        items (vubis/read-file path)
-        items-collated (vubis/collate-all-duplicate-items items)
-        checker (s/checker validation/CatalogItem)
-        problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
-    (if (seq problems)
-      (let [identity (friend/identity request)]
-        (layout/common
-         identity
-         year issue
-         [:h1 "Confirm Katalog nach Mass"]
-         (error-table problems)
-         (form/form-to
-          {:enctype "multipart/form-data"}
-          [:post (format "/%s/%s/custom" year issue)]
-          (anti-forgery-field)
-          (form/hidden-field "items" (prn-str items))
-          (query-field query)
-          (customer-field customer)
-          (format-field fmt)
-          (form/submit-button "Upload Anyway"))))
-      (do
-        ;; FIXME: add the file
-        ;; and redirect to the index
-        (response/redirect-after-post (format "/%s/%s" year issue))))))
+        path (.getPath tempfile)]
+    (if-not (= (nio.file/size path) 0)
+      (let [items (vubis/read-file path)
+            items-collated (vubis/collate-all-duplicate-items items)
+            checker (s/checker validation/CatalogItem)
+            problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
+        (if (seq problems)
+          (let [identity (friend/identity request)]
+            (layout/common
+             identity
+             year issue
+             [:h1 "Confirm Katalog nach Mass"]
+             (error-table problems)
+             (form/form-to
+              {:enctype "multipart/form-data"}
+              [:post (format "/%s/%s/custom" year issue)]
+              (anti-forgery-field)
+              (form/hidden-field "items" (prn-str items))
+              (query-field query)
+              (customer-field customer)
+              (format-field fmt)
+              (form/submit-button "Upload Anyway"))))
+          (do
+            ;; FIXME: add the file
+            ;; and redirect to the index
+            (response/redirect-after-post (format "/%s/%s" year issue)))))
+      ;; if the file is empty go back to the upload form
+      (custom-form request year issue ["No file selected"]))))
 
 (defmulti custom (fn [_ _ _ _ _ fmt _] fmt))
 
