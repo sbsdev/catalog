@@ -119,7 +119,8 @@
     (-> (db/read-catalog year issue)
         vubis/order-and-group
         :braille
-        (layout.dtbook/dtbook year issue editorial recommendation)
+        (layout.dtbook/dtbook {:year year :issue issue
+                               :editorial editorial :recommendation recommendation})
         response/response
         (response/content-type "application/xml"))))
 
@@ -381,3 +382,12 @@
     (-> temp-file
         response/response
         (response/content-type "application/pdf"))))
+
+(defmethod custom :braille [request year issue query customer fmt items]
+  (-> items
+      edn/read-string
+      vubis/order
+      (layout.dtbook/dtbook {:query query :customer customer})
+      response/response
+      (response/content-type "application/xml")))
+

@@ -97,53 +97,91 @@
      (#{:kinder-und-jugendbücher} genre) (subgenre-entries items)
      :else (catalog-entries items))])
 
-(defn document [items year issue title editorial recommendations &
-                {:keys [creator date language]
-                 :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      date (time.coerce/to-date (time.core/now))
-                      language "de"}}]
-  [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
-            :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
-            :version "2005-3-sbs-full" :xml:lang language}
-   [:head
-    (for [[k v]
-          {:dc:Title title
-           :dc:Creator creator
-           :dc:Publisher creator
-           :dc:Date (time.format/unparse (time.format/formatters :date) (time.coerce/from-date date))
-           :dc:Format "ANSI/NISO Z39.86-2005"
-           :dc:Language language}]
-      [:meta {:name (name k) :content v}])]
-   [:book
-    [:frontmatter
-     [:doctitle title]
-     ;; apparently a long docauthor is annoying, as it wraps around and
-     ;; messes up the sbsform macros. So, as this isn't shown anyway
-     ;; just use a fake value
-     [:docauthor "SBS"]
-     [:level1
-      [:p {:brl:class (format "nr_%s" issue)}]
-      [:p {:brl:class (format "jr_%s" year)}]]]
-    [:bodymatter
-     [:level1
-      [:h1 (translations :editorial)]
-      (md-to-dtbook editorial)]
-     [:level1
-      [:h1 (translations :recommendations)]
-      (md-to-dtbook recommendations)]
-     (when-let [items (not-empty
-                       (dissoc items :musiknoten :taktilesbuch))]
-       [:level1 [:h1 (translations :braille)]
-        (map genre-entry items)])
-     (when-let [items (not-empty (:musiknoten items))]
-       [:level1 [:h1 (format "Neue %s" (translations :musiknoten))]
-        (catalog-entries items)])
-     (when-let [items (not-empty (:taktilesbuch items))]
-       [:level1 [:h1 (format "Neue %s" (translations :taktilesbuch))]
-        (catalog-entries items)])]]])
+(defn- document-head
+  [title creator date language]
+  [:head
+   (for [[k v]
+         {:dc:Title title
+          :dc:Creator creator
+          :dc:Publisher creator
+          :dc:Date (time.format/unparse (time.format/formatters :date) date)
+          :dc:Format "ANSI/NISO Z39.86-2005"
+          :dc:Language language}]
+     [:meta {:name (name k) :content v}])])
+
+(defn- document-frontmatter
+  [title & body]
+  [:frontmatter
+   [:doctitle title]
+   ;; apparently a long docauthor is annoying, as it wraps around and
+   ;; messes up the sbsform macros. So, as this isn't shown anyway
+   ;; just use a fake value
+   [:docauthor "SBS"]
+   body])
+
+(defn- standard-catalog?
+  "If `items` is a map, i.e. are grouped by genre, then we assume that
+  we are dealing with a standard catalog. Otherwise if the items are
+  just a flat list then we have a custom catalog."
+  [items]
+  (map? items))
+
+(defmulti document-sexp (fn [items _] (if (standard-catalog? items) :standard :custom)))
+
+(defmethod document-sexp :standard
+  [items {:keys [year issue editorial recommendations]}]
+  (let [title (translations :catalog-braille)
+        creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
+        date (time.core/now)
+        language "de"]
+    [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
+              :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
+              :version "2005-3-sbs-full" :xml:lang language}
+     (document-head title creator date language)
+     [:book
+      (document-frontmatter title
+       [:level1
+        [:p {:brl:class (format "nr_%s" issue)}]
+        [:p {:brl:class (format "jr_%s" year)}]])
+      [:bodymatter
+       [:level1
+        [:h1 (translations :editorial)]
+        (md-to-dtbook editorial)]
+       [:level1
+        [:h1 (translations :recommendations)]
+        (md-to-dtbook recommendations)]
+       (when-let [items (not-empty
+                         (dissoc items :musiknoten :taktilesbuch))]
+         [:level1 [:h1 (translations :braille)]
+          (map genre-entry items)])
+       (when-let [items (not-empty (:musiknoten items))]
+         [:level1 [:h1 (format "Neue %s" (translations :musiknoten))]
+          (catalog-entries items)])
+       (when-let [items (not-empty (:taktilesbuch items))]
+         [:level1 [:h1 (format "Neue %s" (translations :taktilesbuch))]
+          (catalog-entries items)])]]]))
+
+(defmethod document-sexp :custom
+  [items {:keys [query customer]}]
+  (let [title (translations :catalog-custom)
+        creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
+        date (time.core/now)
+        language "de"]
+    [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
+              :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
+              :version "2005-3-sbs-full" :xml:lang language}
+     (document-head title creator date language)
+     [:book
+      (document-frontmatter title
+       [:level1
+        [:p {:brl:class "query"} query]
+        [:p {:brl:class "customer"} (format "für %s" customer)]])
+      [:bodymatter
+       [:level1
+        (catalog-entries items)]]]]))
 
 (defn dtbook
-  [items year issue editorial recommendations]
-  (-> (document items year issue (translations :catalog-braille) editorial recommendations)
+  [items options]
+  (-> (document-sexp items options)
       xml/sexp-as-element
       xml/indent-str))
