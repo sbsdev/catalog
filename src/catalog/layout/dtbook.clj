@@ -52,35 +52,148 @@
    endophile/to-clj
    (walk/postwalk #(visitor %))))
 
-(defn catalog-entry [{:keys [creator record-id title subtitles name-of-part source-publisher
-                             source-date genre genre-text description producer-brief
-                             rucksackbuch? rucksackbuch-number
-                             library-signature product-number price]}]
+(defn- entry-heading-sexp
+  [{:keys [creator title subtitles name-of-part source-publisher source-date]}]
+  [:p {:brl:class "tit"} (wrap creator "" ": " false)
+   (->> [(wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part)]
+        flatten
+        (remove empty-or-blank?)
+        (string/join " "))
+   (when (or source-publisher source-date) " - ")
+   (wrap source-publisher "" (if source-date ", " "") false) (wrap (layout/year source-date))])
+
+(defmulti entry-sexp (fn [{fmt :format}] fmt))
+
+(defn- ausleihe
+  [library-signature]
+  (when library-signature
+    [:p {:brl:class "aus"} "Ausleihe: "
+     (binding [layout/translations translations] (layout/braille-signatures library-signature))]))
+
+(defn- ausleihe-simple
+  [library-signature]
+  (when library-signature
+    [:p {:brl:class "aus"} (wrap library-signature "Ausleihe: ")]))
+
+(defn- verkauf
+  [product-number price]
+  (when product-number
+    [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false)
+     (binding [layout/translations translations] (layout/braille-signatures product-number))]))
+
+(defn- description-sexp
+  [description]
+  [:p {:brl:class "ann"} (wrap description)])
+
+(defn- producer-sexp
+  ([producer-brief]
+   [:p {:brl:class "pro"} (wrap producer-brief)])
+  ([producer-brief rucksackbuch-number]
+   [:p {:brl:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]))
+
+(defn- genre-sexp
+  [genre-text]
+  [:p {:brl:class "gen"} (wrap genre-text "Genre: ")])
+
+(defmethod entry-sexp :braille
+  [{:keys [creator title subtitles name-of-part source-publisher
+           source-date genre-text description producer-brief
+           rucksackbuch? rucksackbuch-number
+           library-signature product-number price] :as item}]
   [:div {:brl:class "ps"}
-   [:p {:brl:class "tit"} (wrap creator "" ": " false)
-    (->> [(wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part)]
-         flatten
-         (remove empty-or-blank?)
-         (string/join " "))
-    " - "
-    (wrap source-publisher "" ", " false) (wrap (layout/year source-date))]
-   (when ((set layout/genres) genre)
-     ;; don't show the genre for :musiknoten and :taktilesbuch
-     [:p {:brl:class "gen"} (wrap genre-text "Genre: ")])
-   [:p {:brl:class "ann"} (wrap description)]
+   (entry-heading-sexp item)
+   (genre-sexp genre-text)
+   (description-sexp description)
    (if rucksackbuch?
-     [:p {:brl:class "pro"} (wrap producer-brief "" ", " false) (wrap rucksackbuch-number "Rucksackbuch Nr. ")]
-     [:p {:brl:class "pro"} (wrap producer-brief)])
-   (when library-signature
-     [:p {:brl:class "aus"} "Ausleihe: "
-      (binding [layout/translations translations] (layout/braille-signatures library-signature))])
+     (producer-sexp producer-brief rucksackbuch-number)
+     (producer-sexp producer-brief))
+   (ausleihe library-signature)
+   (verkauf product-number price)])
+
+(defmethod entry-sexp :musiknoten
+  [{:keys [creator title subtitles name-of-part source-publisher
+           source-date genre-text description producer-brief
+           library-signature product-number price] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   (description-sexp description)
+   (producer-sexp producer-brief)
+   (ausleihe library-signature)
+   (verkauf product-number price)])
+
+(defmethod entry-sexp :taktilesbuch
+  [{:keys [creator title subtitles name-of-part source-publisher
+           source-date genre-text description producer-brief
+           library-signature product-number price] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   (description-sexp description)
+   (producer-sexp producer-brief)
+   (ausleihe library-signature)
+   (verkauf product-number price)])
+
+(defmethod entry-sexp :hörbuch
+  [{:keys [genre-text description duration narrators producer-brief
+           produced-commercially? library-signature product-number price] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   (genre-sexp genre-text)
+   (description-sexp description)
+   [:p {:brl:class "duration"} (wrap duration "" " Min., " false) (layout/render-narrators narrators)]
+   (if produced-commercially?
+     [:p {:brl:class "pro"} (wrap producer-brief "" ", Hörbuch aus dem Handel")]
+     (producer-sexp producer-brief))
+   (ausleihe-simple library-signature)
    (when product-number
-     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false)
-      (binding [layout/translations translations] (layout/braille-signatures product-number))])])
+     [:p {:brl:class "ver"} "Verkauf: " product-number ", " price])])
+
+(defmethod entry-sexp :grossdruck
+  [{:keys [genre-text description library-signature volumes product-number price] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   (genre-sexp genre-text)
+   (description-sexp description)
+   (when library-signature
+     [:p {:brl:class "aus"} "Ausleihe: " library-signature (wrap volumes ", " " Bd. " false)])
+   (when product-number
+     [:p {:brl:class "ver"} "Verkauf: " price])])
+
+(defmethod entry-sexp :e-book
+  [{:keys [genre-text description library-signature] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   (genre-sexp genre-text)
+   (description-sexp description)
+   (ausleihe-simple library-signature)])
+
+(defmethod entry-sexp :hörfilm
+  [{:keys [personel-text movie_country genre-text
+           description producer library-signature] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   [:p {:brl:class "personel"} (wrap personel-text)]
+   [:p {:brl:class "country"} (wrap movie_country)]
+   (genre-sexp genre-text)
+   (description-sexp description)
+   (producer-sexp producer)
+   (ausleihe-simple library-signature)])
+
+(defmethod entry-sexp :ludo
+  [{:keys [source-publisher genre-text description
+           game-description accompanying-material library-signature
+           product-number price] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   [:p {:brl:class "publisher"} (wrap source-publisher)]
+   (genre-sexp genre-text)
+   (description-sexp description)
+   [:p {:brl:class "game-desc"} (wrap game-description)]
+   (ausleihe library-signature)
+   (verkauf product-number price)])
 
 (defn catalog-entries [items]
   [:div {:brl:class "list"}
-   (map catalog-entry items)])
+   (map entry-sexp items)])
 
 (defn subgenre-entry [[subgenre items]]
   [:level3
