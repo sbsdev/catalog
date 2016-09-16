@@ -194,6 +194,12 @@
    (keep (fn [k] (braille-signature (first (get items k)))))
    (string/join ". ")))
 
+(defn render-narrators [narrators]
+  (let [narrator (first narrators)]
+    (if (> (count narrators) 1)
+      (wrap narrator "gelesen von: " " u.a. " false)
+      (wrap narrator "gelesen von: "))))
+
 (defn render-subtitles [subtitles]
   (string/join " " (map periodify subtitles)))
 

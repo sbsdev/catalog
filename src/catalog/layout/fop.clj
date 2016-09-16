@@ -1,16 +1,15 @@
 (ns catalog.layout.fop
   (:require [catalog.layout.common :as layout :refer [wrap]]
             [clj-time
-             [coerce :as time.coerce]
-             [core :as time.core]]
+             [core :as time.core]
+             [format :as time.format]]
             [clojure
              [set :as set]
              [string :as string]
              [walk :as walk]]
             [clojure.data.xml :as xml]
             [clojure.java.io :as io]
-            [endophile.core :as endophile]
-            [clj-time.format :as time.format])
+            [endophile.core :as endophile])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -184,12 +183,6 @@
                  :role "TOC"}
       (map #(toc-entry (get items %) (conj path %) depth 1 opts) (keys items))]]))
 
-(defn- narrators-sexp [narrators]
-  (let [narrator (first narrators)]
-    (if (> (count narrators) 1)
-      (wrap narrator "gelesen von: " " u.a. " false)
-      (wrap narrator "gelesen von: "))))
-
 (defmulti entry-heading-sexp (fn [{fmt :format}] fmt))
 (defmethod entry-heading-sexp :ludo
   [{:keys [creator record-id title subtitles]}]
@@ -244,7 +237,7 @@
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
-   (block (wrap duration "" " Min., " false) (narrators-sexp narrators))
+   (block (wrap duration "" " Min., " false) (layout/render-narrators narrators))
    (block producer-brief (if produced-commercially? ", Hörbuch aus dem Handel" "") ".")
    (ausleihe library-signature)
    (when product-number
