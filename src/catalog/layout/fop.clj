@@ -699,7 +699,7 @@
          (mapcat #(format-sexp (get subitems %) % 1 {:path-to-numbers path-to-numbers :with-toc? false}) (keys subitems))])]]))
 
 (defn- logo []
-  [:fo:block {:space-before "100mm" :text-align "right"}
+  [:fo:block {:space-before.optimum "100mm" :space-before.minimum "70mm" :text-align "right"}
    [:fo:external-graphic
     {:src (io/resource "images/sbs_logo.jpg")
      :height "35mm"
@@ -711,7 +711,7 @@
 (defn- impressum []
   (let [creator (layout/translations :sbs)]
     [:fo:block-container {:break-before "page"}
-     (block {:space-after "175mm"} )
+     (block {:space-after.optimum "175mm" :space-after.minimum "150mm"} )
      (block "Herausgeber:")
      (block creator)
      (block "Grubenstrasse 12")
@@ -720,7 +720,7 @@
      (block "Fax +41 43 333 32 33")
      (block (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website"))
      (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch" "Email des SBS Nutzerservice"))
-     (block {:space-before "5mm"} (format "© %s" creator))]))
+     (block {:space-before "5mm" :keep-with-previous.within-column "always"} (format "© %s" creator))]))
 
 (defn- cover-page [titles year]
   [:fo:block-container
