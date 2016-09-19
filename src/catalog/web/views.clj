@@ -213,6 +213,27 @@
          [:td ]
          [:td (pr-str errors)]]))]])
 
+
+(defn upload-full-form [request year issue & [errors]]
+  (let [identity (friend/identity request)]
+    (layout/common
+     identity
+     year issue
+     [:div.row
+      [:div.col-md-6
+       (upload-well "Upload Gesamtkatalog Hörfilm"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
+                    (:hörfilm errors))]
+      [:div.col-md-6
+       (upload-well "Upload Gesamtkatalog Spiele"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
+                    (:ludo errors))]]
+     [:div.row
+      [:div.col-md-6
+       (upload-well "Upload Gesamtkatalog Taktile Bücher"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
+                    (:taktilesbuch errors))]])))
+
 (defn upload-confirm [request year issue fmt file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)]
@@ -248,26 +269,6 @@
     (:hörfilm :ludo :taktilesbuch) (db/save-full-catalog! year (name fmt) (edn/read-string items))
     (db/save-catalog! year issue (edn/read-string items)))
   (response/redirect-after-post (format "/%s/%s" year issue)))
-
-(defn upload-full-form [request year issue & [errors]]
-  (let [identity (friend/identity request)]
-    (layout/common
-     identity
-     year issue
-     [:div.row
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Hörfilm"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
-                    (:hörfilm errors))]
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Spiele"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
-                    (:ludo errors))]]
-     [:div.row
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Taktile Bücher"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
-                    (:taktilesbuch errors))]])))
 
 (defn editorial-form [request fmt year issue]
   (let [identity (friend/identity request)
