@@ -68,14 +68,13 @@
                                    [(format "/%s/%s/editorial/hörbuch" year issue) "Hörbuch"]])
       (menu-item (format "/%s/%s/full" year issue) "Full")
       (menu-item (format "/%s/%s/custom" year issue) "Custom")
-      (dropdown-menu "Previous"
-                     [(let [[year issue] (issue/prev-issue year issue)]
-                        [(format "/%s/%s" year issue) "Previous"])
-                      ["/" "Current"]
-                      (let [[year issue] (issue/next-issue year issue)]
-                        [(format "/%s/%s" year issue) "Next"])])]
-     [:ul.nav.navbar-nav.navbar-right
-      [:li [:a (format "%s/%s" year issue)]]]]]])
+      ]
+     [:div.nav.navbar-nav.navbar-right
+      [:p.navbar-text (format "%s/%s" year issue)]
+      (let [[year issue] (issue/prev-issue year issue)]
+        [:a.btn.btn-default.btn-sm.navbar-btn {:href (format "/%s/%s" year issue)} (glyphicon "chevron-left" "Older catalogs")])
+      (let [[year issue] (issue/next-issue year issue)]
+        [:a.btn.btn-default.btn-sm.navbar-btn {:href (format "/%s/%s" year issue)} (glyphicon "chevron-right" "Newer catalogs")])]]]])
 
 (defn common
   "Display a page using the bootstrap css"
