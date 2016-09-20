@@ -68,10 +68,10 @@
   (GET "/:year/:issue/full"
        [year :<< as-int issue :<< as-int :as r]
        (views/full-catalogs r year issue))
-  (GET (format "/:year/%s-in-der-sbs.pdf" (url-encode "hörfilme"))
-       [year :<< as-int] (views/hörfilme year))
-  (GET "/:year/spiele-in-der-sbs.pdf"
-       [year :<< as-int] (views/spiele year))
+  (GET (format "/:year/:issue/%s-in-der-sbs.pdf" (url-encode "hörfilme"))
+       [year :<< as-int issue :<< as-int] (views/hörfilme year))
+  (GET "/:year/:issue/spiele-in-der-sbs.pdf"
+       [year :<< as-int issue :<< as-int] (views/spiele year))
 
   ;; custom catalogs
   (GET "/:year/:issue/custom"

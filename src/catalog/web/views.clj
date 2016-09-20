@@ -25,16 +25,18 @@
              [response :as response]]
             [schema.core :as s]))
 
-(defn icon-button [href icon label]
-  [:a.btn.btn-default {:href href :role "button" :aria-label label}
-   [:span.glyphicon {:class (str "glyphicon-" icon) :aria-hidden "true"}] (str " " label)])
-
+(defn- download-button
+  ([href file-name]
+   (download-button href file-name "Download"))
+  ([href file-name label]
+   [:a.btn.btn-default {:href href :role "button" :download file-name :aria-label label}
+    [:span.glyphicon {:class "glyphicon-download" :aria-hidden "true"}] (str " " label)]))
 
 (defn- download-well
-  [title url]
+  [title year issue file-name]
   [:div.well
    [:h2 title]
-   (icon-button url "download" "Download")])
+   (download-button (format "/%s/%s/%s" year issue file-name) file-name)])
 
 (defn home
   ([request]
@@ -48,20 +50,17 @@
       year issue
       [:div.row
        [:div.col-md-6
-        (download-well (translations :catalog-all)
-                       (format "/%s/%s/neu-im-sortiment.pdf" year issue))]
+        (download-well (translations :catalog-all) year issue "neu-im-sortiment.pdf")]
        [:div.col-md-6
-        (download-well (translations :catalog-grossdruck)
-                       (format "/%s/%s/neu-in-grossdruck.pdf" year issue))]]
+        (download-well (translations :catalog-grossdruck) year issue "neu-in-grossdruck.pdf")]]
       [:div.row
        [:div.col-md-6
-        (download-well (translations :catalog-braille)
-                       (format "/%s/%s/neu-in-braille.xml" year issue))]
+        (download-well (translations :catalog-braille) year issue "neu-in-braille.xml")]
        [:div.col-md-6
         [:div.well
          [:h2 (translations :catalog-hörbuch)]
-         (icon-button (format "/%s/%s/neu-als-hörbuch.pdf" year issue) "download" "Download")
-         (icon-button (format "/%s/%s/neu-als-hörbuch.ncc" year issue) "download" "NCC")]]]))))
+         (download-button (format "/%s/%s/neu-als-hörbuch.pdf" year issue) "neu-als-hörbuch.pdf")
+         (download-button (format "/%s/%s/neu-als-hörbuch.ncc" year issue) "neu-als-hörbuch.ncc" "NCC")]]]))))
 
 (defn full-catalogs
   [request year issue]
@@ -71,15 +70,12 @@
      year issue
      [:div.row
       [:div.col-md-6
-       (download-well (translations :catalog-hörfilm)
-                      (format "/%s/hörfilme-in-der-sbs.pdf" year))]
+       (download-well (translations :catalog-hörfilm) year issue "hörfilme-in-der-sbs.pdf")]
       [:div.col-md-6
-       (download-well (translations :catalog-ludo)
-                      (format "/%s/spiele-in-der-sbs.pdf" year))]]
+       (download-well (translations :catalog-ludo) year issue "spiele-in-der-sbs.pdf")]]
      [:div.row
       [:div.col-md-6
-       (download-well (translations :catalog-taktilesbuch)
-                      (format "/%s/taktile-kinderbücher-der-sbs.pdf" year))]])))
+       (download-well (translations :catalog-taktilesbuch) year issue "taktile-kinderbücher-der-sbs.pdf")]])))
 
 (defn- file-name
   ([k year]
