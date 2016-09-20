@@ -32,11 +32,14 @@
    [:a.btn.btn-default {:href href :role "button" :download file-name :aria-label label}
     [:span.glyphicon {:class "glyphicon-download" :aria-hidden "true"}] (str " " label)]))
 
+(defn- download-url [& items]
+  (str "/" (string/join "/" (remove nil? items))))
+
 (defn- download-well
   [title year issue file-name]
   [:div.well
    [:h2 title]
-   (download-button (format "/%s/%s/%s" year issue file-name) file-name)])
+   (download-button (download-url year issue file-name) file-name)])
 
 (defn home
   ([request]
@@ -59,8 +62,8 @@
        [:div.col-md-6
         [:div.well
          [:h2 (translations :catalog-hörbuch)]
-         (download-button (format "/%s/%s/neu-als-hörbuch.pdf" year issue) "neu-als-hörbuch.pdf")
-         (download-button (format "/%s/%s/neu-als-hörbuch.ncc" year issue) "neu-als-hörbuch.ncc" "NCC")]]]))))
+         (download-button (download-url year issue "neu-als-hörbuch.pdf") "neu-als-hörbuch.pdf")
+         (download-button (download-url year issue "neu-als-hörbuch.ncc") "neu-als-hörbuch.ncc" "NCC")]]]))))
 
 (defn full-catalogs
   [request year issue]
@@ -70,12 +73,12 @@
      year issue
      [:div.row
       [:div.col-md-6
-       (download-well (translations :catalog-hörfilm) year issue "hörfilme-in-der-sbs.pdf")]
+       (download-well (translations :catalog-hörfilm) year nil "hörfilme-in-der-sbs.pdf")]
       [:div.col-md-6
-       (download-well (translations :catalog-ludo) year issue "spiele-in-der-sbs.pdf")]]
+       (download-well (translations :catalog-ludo) year nil "spiele-in-der-sbs.pdf")]]
      [:div.row
       [:div.col-md-6
-       (download-well (translations :catalog-taktilesbuch) year issue "taktile-kinderbücher-der-sbs.pdf")]])))
+       (download-well (translations :catalog-taktilesbuch) year nil "taktile-kinderbücher-der-sbs.pdf")]])))
 
 (defn- file-name
   ([k year]
