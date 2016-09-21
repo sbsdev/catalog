@@ -1,5 +1,5 @@
 (ns catalog.layout.fop
-  (:require [catalog.layout.common :as layout :refer [wrap]]
+  (:require [catalog.layout.common :as layout :refer [wrap non-blank?]]
             [clj-time
              [core :as time.core]
              [format :as time.format]]
@@ -664,8 +664,9 @@
 
         (let [subitems (-> items
                            (get fmt)
-                           (assoc :editorial editorial
-                                  :recommendation recommendations))]
+                           (cond->
+                               (non-blank? editorial) (assoc :editorial editorial)
+                               (non-blank? recommendations) (assoc :recommendation recommendations)))]
           [:fo:flow {:flow-name "xsl-region-body"}
            (toc subitems [fmt] 2 {:heading? true})
            (realize-lazy-seqs
@@ -688,8 +689,9 @@
                          ;; cannot use select-keys as we need to retain
                          ;; the sorted map.
                          (#(apply dissoc % (remove #{fmt} (keys %))))
-                         (assoc :editorial editorial
-                                :recommendations recommendations))
+                         (cond->
+                             (non-blank? editorial) (assoc :editorial editorial)
+                             (non-blank? recommendations) (assoc :recommendations recommendations)))
             path-to-numbers (layout/path-to-number subitems)]
         [:fo:flow {:flow-name "xsl-region-body"}
          ;; Cover page
