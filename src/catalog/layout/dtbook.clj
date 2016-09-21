@@ -258,11 +258,12 @@
         [:p {:brl:class (format "jr_%s" year)}]])
       [:bodymatter
        [:level1
-        [:h1 (translations :editorial)]
-        (md-to-dtbook editorial)]
-       [:level1
         [:h1 (translations :recommendations)]
         (md-to-dtbook recommendations)]
+       (when (not (string/blank? editorial))
+         [:level1
+          [:h1 (translations :editorial)]
+          (md-to-dtbook editorial)])
        (when-let [items (not-empty
                          (dissoc items :musiknoten :taktilesbuch))]
          [:level1 [:h1 (translations :braille)]
