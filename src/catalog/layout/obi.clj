@@ -95,7 +95,13 @@
        [:level1 [:h1 "Impressum"] [:p]]
        [:level1 [:h1 (format "Ende von %s" title)] [:p]]]]]))
 
+(def ^:private doctype
+  (str
+   "<!DOCTYPE dtbook PUBLIC "
+  "\"-//NISO//DTD dtbook 2005-3//EN\" "
+  "\"http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd\">"))
+
 (defn dtbook [items year issue editorial recommendations]
   (-> (document items year issue editorial recommendations)
       xml/sexp-as-element
-      xml/indent-str))
+      (xml/indent-str :doctype doctype)))
