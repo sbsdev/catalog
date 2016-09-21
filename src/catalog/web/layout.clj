@@ -73,6 +73,7 @@
       [:p.navbar-text (format "%s/%s" year issue)]
       (let [[year issue] (issue/prev-issue year issue)]
         [:a.btn.btn-default.btn-sm.navbar-btn {:href (format "/%s/%s" year issue)} (glyphicon "chevron-left" "Older catalogs")])
+      [:a.btn.btn-default.btn-sm.navbar-btn {:href "/"} (glyphicon "stop" "Current catalogs")]
       (let [[year issue] (issue/next-issue year issue)]
         [:a.btn.btn-default.btn-sm.navbar-btn {:href (format "/%s/%s" year issue)} (glyphicon "chevron-right" "Newer catalogs")])]]]])
 
