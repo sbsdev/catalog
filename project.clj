@@ -26,7 +26,7 @@
   :plugins [[cider/cider-nrepl "0.14.0-SNAPSHOT"]
 ;            [refactor-nrepl "2.3.0-SNAPSHOT"]
             [lein-immutant "2.1.0"]
-            [lein-codox "0.9.7"]
+            [lein-codox "0.10.0"]
             [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
   :codox {:project {:name "Catalog"}
           :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
