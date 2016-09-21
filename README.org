@@ -6,7 +6,7 @@ Generate bi-monthly catalogs of the new items in the library.
 Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
 
 #+BEGIN_SRC shell
-lein immutant war --nrepl-start --nrepl-port 42279
+lein immutant war --nrepl-start --nrepl-port 40021
 #+END_SRC
 
 Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
@@ -18,22 +18,20 @@ Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
 
 Essentialy the system is a small service where dumps of the library
 database can be uploaded and catalogs in various formats downloaded.
-There will be a web interface to download catalogs and, if this cannot
-be automated, also to upload database exports from the library
-database.
+There is a web interface to download catalogs and, if this cannot be
+automated, also to upload database exports from the library database.
 
-A database will contain all items. The catalogs will be produced based
-on those items.
+A database contains all items. The catalogs are produced based on
+those items.
 
-** configuration and Dependencies
-Configuration is fairly complex and involves a lot of dependencies. It
-is recommended to use the [[https://github.com/sbsdev/sbs-infrastructure/blob/master/catalog.yml][ansible installation script]] which automates
-the whole process.
+** Configuration and Dependencies
+Installation and configuration can be done using an [[https://github.com/sbsdev/sbs-infrastructure/blob/master/kati.yml][ansible
+installation script]] which automates the whole process.
 
-Amongst other you will need [[http://wildfly.org/][Wildfly]], LaTeX, etc.
+Mostly you will need [[http://wildfly.org/][Wildfly]], and some fonts.
 
 ** License
 
-Copyright © 2015 Swiss Library for the Blind, Visually Impaired and Print Disabled.
+Copyright © 2015-2016 Swiss Library for the Blind, Visually Impaired and Print Disabled.
 
 Distributed under the [[http://www.gnu.org/licenses/agpl-3.0.html][GNU Affero General Public License]]. See the file LICENSE.
