@@ -242,7 +242,7 @@
 (defmulti document-sexp (fn [items _] (if (standard-catalog? items) :standard :custom)))
 
 (defmethod document-sexp :standard
-  [items {:keys [year issue editorial recommendations]}]
+  [items {:keys [year issue editorial recommendation]}]
   (let [title (translations :catalog-braille)
         creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
         date (time.core/now)
