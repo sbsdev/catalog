@@ -172,12 +172,12 @@
    (when (seq errors)
      [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
    (form/form-to
-    {:enctype "multipart/form-data"
-     :class "form-inline"}
+    {:enctype "multipart/form-data"}
     [:post url]
     (anti-forgery-field)
-    (form/file-upload "file")
-    " "
+    [:div.form-group
+     (form/label {:class "sr-only"} "file" "File:")
+     (form/file-upload {:required "required"} "file")]
     (form/submit-button {:class "btn btn-default"} "Upload"))])
 
 (defn upload-form [request year issue & [errors]]
@@ -253,7 +253,10 @@
               [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
               (anti-forgery-field)
               (form/hidden-field "items" (prn-str items))
-              (form/submit-button "Upload Anyway"))))
+              (layout/button (format "/%s/%s/%s"
+                                     year issue
+                                     (if (= fmt :all-formats) "upload" "upload-full")) "Cancel")
+              (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
           (do
             ;; FIXME: add the file
             ;; and redirect to the index
@@ -302,13 +305,18 @@
   [query]
   [:div.form-group
    (form/label "query" "Query:")
-   (form/text-area {:class "form-control" :rows 3} "query" query)])
+   (form/text-area {:class "form-control"
+                    :rows 3
+                    :placeholder "Description of the catalog"}
+                   "query" query)])
 
 (defn- customer-field
   [customer]
   [:div.form-group
    (form/label "customer" "Customer:")
-   (form/text-field {:class "form-control"} "customer" customer)])
+   (form/text-field {:class "form-control"
+                     :placeholder "Name of the customer that will receive the catalog"}
+                    "customer" customer)])
 
 (defn- format-field
   [selected]
@@ -334,7 +342,9 @@
        {:enctype "multipart/form-data"}
        [:post (format "/%s/%s/custom-confirm" year issue)]
        (anti-forgery-field)
-       (form/file-upload "file")
+       [:div.form-group
+        (form/label "file" "File:")
+        (form/file-upload {:required "required"} "file")]
        (query-field nil)
        (customer-field nil)
        (format-field :pdf)
@@ -360,10 +370,11 @@
               [:post (format "/%s/%s/custom" year issue)]
               (anti-forgery-field)
               (form/hidden-field "items" (prn-str items))
-              (query-field query)
-              (customer-field customer)
-              (format-field fmt)
-              (form/submit-button "Upload Anyway"))))
+              (form/hidden-field "query" query)
+              (form/hidden-field "customer" customer)
+              (form/hidden-field "fmt" fmt)
+              (layout/button (format "/%s/%s/custom" year issue) "Cancel")
+              (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
           (do
             ;; FIXME: add the file
             ;; and redirect to the index
