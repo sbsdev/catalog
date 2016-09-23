@@ -1,4 +1,5 @@
 (ns catalog.layout.fop
+  "Functionality to render a tree of catalog items as accessible PDF"
   (:require [catalog.layout.common :as layout :refer [wrap non-blank?]]
             [clj-time
              [core :as time.core]
@@ -43,12 +44,23 @@
 (def ^:private ^:dynamic *stylesheet* default-stylesheet)
 
 (defn style
+  "Return a map of style attributes for given `class`. The attributes
+  are looked up in the `*stylesheet*` dynamic var. Optionally additional
+  `attrs` can be defined that will be merged with the attrs of given
+  `class`"
   ([class]
    (style class {}))
   ([class attrs]
    (merge (*stylesheet* class {}) attrs)))
 
 (defn heading
+  "Return a heading block for given `level` and `path`.
+
+  The last part of `path` is used as the title of the section. If
+  `path` is found in `path-to-numbers` then the heading is numbered.
+  If the last part of path is a keyword then this is looked up in the
+  translations and the actual translation is used as the title
+  instead."
   [level path {:keys [path-to-numbers]}]
   [:fo:block (style level {:id (hash path)})
    (when-let [numbers (get path-to-numbers path)]
@@ -108,7 +120,11 @@
     {:start-indent "body-start()"}
     (block body)]])
 
-(defmulti to-fop (fn [{:keys [tag attrs content]} _ _] tag))
+(defmulti to-fop
+  "Return a hiccup style sexp containing the fo markup for given
+  node at `path` and `opts`."
+  (fn [{:keys [tag attrs content]} _ _] tag))
+
 (defmethod to-fop :p [{content :content} _ _] (block {:space-before "17pt"} content))
 (defmethod to-fop :a [{content :content {href :href} :attrs} _ _]
   (if (not-empty content)
@@ -135,7 +151,14 @@
     (to-fop node path opts)
     node))
 
-(defn md-to-fop [markdown path opts]
+(defn md-to-fop
+  "Return a hiccup style sexp for given `markdown` at `path` with
+  `opts`.
+
+  The `markdown` is parsed, converted to a clojure data structure and
+  finally converted to a hiccup style sexp by the [[to-fop]]
+  multimethod."
+  [markdown path opts]
   (->>
    markdown
    endophile/mp
@@ -170,7 +193,13 @@
       (map #(toc-entry % (conj path %) depth (inc current-depth) opts)
            (layout/md-extract-headings items))))])
 
-(defn toc [items path depth {:keys [heading?] :as opts}]
+(defn toc
+  "Return a hiccup style sexp for a fo TOC for given `items`, `path`
+  and `depth`.
+
+  Optionally a TOC heading (the actual value is looked up in the
+  translation map) can be enabled through `opts`."
+  [items path depth {:keys [heading?] :as opts}]
   (when (map? items)
     [:fo:block (if heading?
                  ;; if the toc has a heading we assume that it is the
@@ -183,7 +212,10 @@
                  :role "TOC"}
       (map #(toc-entry (get items %) (conj path %) depth 1 opts) (keys items))]]))
 
-(defmulti entry-heading-sexp (fn [{fmt :format}] fmt))
+(defmulti entry-heading-sexp
+  "Return a hiccup style sexp for a heading for a given item."
+  (fn [{fmt :format}] fmt))
+
 (defmethod entry-heading-sexp :ludo
   [{:keys [creator record-id title subtitles]}]
   (block {:keep-with-next.within-column "always" :role "Lbl"}
@@ -226,7 +258,9 @@
    heading
    (list-body args)))
 
-(defmulti entry-sexp (fn [{fmt :format} opts] fmt))
+(defmulti entry-sexp
+  "Return a hiccup style sexp for a given item."
+  (fn [{fmt :format} opts] fmt))
 
 (defmethod entry-sexp :hörbuch
   [{:keys [genre-text description duration narrators producer-brief
@@ -333,23 +367,30 @@
    (ausleihe-multi library-signature)
    (verkauf product-number price)))
 
-(defn entries-sexp [items opts]
+(defn entries-sexp
+  "Return a hiccup style sexp for given `items` and `opts`"
+  [items opts]
   [:fo:block {:role "L"}
    (map #(entry-sexp % opts) items)])
 
 (defn- level-to-h [level]
   (keyword (str "h" level)))
 
-(defn subgenre-sexp [items fmt genre subgenre level opts]
+(defn subgenre-sexp
+  "Return a hiccup style sexp for a subgenre"
+  [items fmt genre subgenre level opts]
   [(heading (level-to-h level) [fmt genre subgenre] opts)
    (when-not (#{:kinder-und-jugendbücher} genre)
      (set-marker (layout/translations subgenre)))
    (entries-sexp items opts)])
 
-(defn subgenres-sexp [items fmt genre level opts]
+(defn subgenres-sexp
+  "Return a hiccup style sexp for all subgenres for given `genre`"
+  [items fmt genre level opts]
   (mapcat #(subgenre-sexp (get items %) fmt genre % level opts) (keys items)))
 
 (defn genre-sexp
+  "Return a hiccup style sexp for a genre"
   [items fmt genre level opts]
   [(heading (level-to-h level) [fmt genre] opts)
    (set-marker (layout/translations genre))
@@ -363,6 +404,7 @@
      :else (entries-sexp items opts))])
 
 (defn format-sexp
+  "Return a hiccup style sexp for a format"
   [items fmt level {:keys [with-toc?] :or {with-toc? true} :as opts}]
   [(heading (level-to-h level) [fmt] opts)
    (when with-toc?
@@ -409,12 +451,14 @@
                            :extent (to-mm (dec region-body-margin-top))}]])))
 
 (def font-colors
+  "Defines the font colors used on the cover page"
   {:white [0 0 0 0]
    :warmgrey [0 12 10 62]
    :blue [85 65 0 0]
    :lightgrey [0 12 20 70]})
 
 (def issue-colors
+  "Defines the bg colors used for the cover page of the respective issues"
   {1 [100 90 10 0]
    2 [69 0 31 7]
    3 [0 25 100 5]
@@ -451,7 +495,10 @@
   {3 "143mm"
    4 "140mm"})
 
-(defn- coverpage-recto [title year issue]
+(defn- coverpage-recto
+  "Return a hiccup style sexp for the recto (the front) of the
+  coverpage for given `title`, `year` and `issue`"
+  [title year issue]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
                         :force-page-count "even"
@@ -517,7 +564,10 @@
                :fox:alt-text (format "%s Ausgabe" (layout/ordinal issue))}
               (str issue))]]]))
 
-(defn- coverpage-verso [issue]
+(defn- coverpage-verso
+  "Return a hiccup style sexp for the verso (the back) of the
+  coverpage"
+  [issue]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"
                         :force-page-count "no-force"
@@ -640,13 +690,25 @@
   ;; Maybe the binding solution isn't the bees knees after all.
   (walk/postwalk identity tree))
 
-(defn root-attrs []
+(defn- root-attrs []
   {:xmlns:fo "http://www.w3.org/1999/XSL/Format"
    :xmlns:fox "http://xmlgraphics.apache.org/fop/extensions"
    :line-height "1.3"
    :xml:lang "de"})
 
-(defmulti document-sexp (fn [items fmt year issue editorial recommendations options] fmt))
+(defmulti document-sexp
+  "Return a hiccup style sexp for a catalog document. Dispatch on the
+  format (`fmt`) of the requested catalog.
+
+  - `:all-formats` a standard catalog
+  - `:grossdruck` a large print catalog using a big font
+  - `:hörbuch` a catalog used for narrators to read the catalog with some specific sorting requirements
+  - `:hörfilm` a catalog with all hörfile for a given year
+  - `:ludo` a catalog with all games for a given year
+  - `:taktilesbuch` a catalog with all tactile books for a given year
+  - `:custom` a catalog with a custom selection of catalog entries specific for a customer
+  - `:custom-grossdruck` a catalog with a custom selection of catalog entries specific for a customer and in large print"
+  (fn [items fmt year issue editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
   [items fmt _ _ editorial recommendations {:keys [description]}]
@@ -848,19 +910,36 @@
      (coverpage-verso issue)]))
 
 (defn document
+  "Return the xsl-fo XML for a catalog document. To produce PDF pass
+  this XML to a xsl-fo processor. `items` contains a tree of catalog
+  entries. `fmt` is the kind of format we want the catalog
+  in (see [[document-sexp]]). `year` and `issue` are placed on the
+  coverpage. `editorial` and `recommendations` are also placed inside
+  the catalog (at least for some formats). Lastly optional args such
+  as `query` or `customer` can be passed. These will be used on the
+  cover page of custom catalogs."
   [items fmt year issue editorial recommendations &
    {:keys [description] :as args}]
   (-> items
       (document-sexp fmt year issue editorial recommendations args)
       xml/sexp-as-element))
 
-(defn generate-document [items fmt year issue editorial recommendations out]
+(defn generate-document
+  "Return the xsl-fo XML for a catalog document and store it in `out`.
+  Similar to [[document]] but additionally stores the XML. Used for
+  debugging."
+  [items fmt year issue editorial recommendations out]
   (with-open [out (io/writer out)]
     (-> items
         (document fmt year issue editorial recommendations)
         (xml/indent out))))
 
-(defn generate-pdf! [document out]
+(defn generate-pdf!
+  "Return a pdf in `out` for given `document`, which is a string
+  containing xsl-fo XML. The pdf is generated using the [Apache
+  Fop](https://xmlgraphics.apache.org/fop/) xsl-fo formatting objects
+  processor."
+  [document out]
   ;; generate PDF according to https://xmlgraphics.apache.org/fop/2.0/embedding.html#basics
   (let [config-url (io/resource "fop.xconf")]
     (with-open [out (io/output-stream out)

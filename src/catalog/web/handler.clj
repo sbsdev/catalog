@@ -1,5 +1,7 @@
 (ns catalog.web.handler
-  "Main entry points to the application"
+  "Main entry points to the application
+
+  Defines routes and the main handler."
   (:require [catalog.web.views :as views]
             [compojure
              [coercions :refer [as-int]]

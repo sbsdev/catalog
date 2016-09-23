@@ -1,4 +1,6 @@
 (ns catalog.layout.common
+  "Layout functionality that is common across all output formats. Such
+  as translation strings, formatting of dates or braille signatures."
   (:require [clj-time
              [coerce :as time.coerce]
              [core :as time.core]
@@ -212,7 +214,9 @@
 (defn- mapcat-indexed [f coll]
   (apply concat (map-indexed f coll)))
 
-(defn md-extract-headings [markdown]
+(defn md-extract-headings
+  "Return a coll of headings from a markdown string"
+  [markdown]
   (->>
    markdown
    endophile/mp
@@ -247,6 +251,8 @@
   [tree]
   (apply hash-map (tree-walk tree [] [])))
 
-(defn section-numbers [numbers]
+(defn section-numbers
+  "Format a seq of numbers into a human readable section number"
+  [numbers]
   (when (not-empty numbers)
     (str (string/join "." numbers) ". ")))

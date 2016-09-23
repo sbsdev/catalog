@@ -1,4 +1,8 @@
 (ns catalog.validation
+  "Validation for catalog data
+
+  Items come from the library system and are converted into clj data
+  structures from XML. This tree is then validated."
   (:require [catalog.vubis :as vubis]
             [schema.core :as s]
             [schema.experimental.abstract-map :as abstract-map]))

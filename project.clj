@@ -1,5 +1,5 @@
 (defproject catalog "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "A webapp to generate catalogs of the new items in the library"
   :url "https://github.com/sbsdev/catalog"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -28,7 +28,8 @@
             [lein-immutant "2.1.0"]
             [lein-codox "0.10.0"]
             [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
-  :codox {:project {:name "Catalog"}
+  :codox {:project {:name "Kati"}
+          :source-paths ["src"]
           :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
   :main ^:skip-aot catalog.web.main

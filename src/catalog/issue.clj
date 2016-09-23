@@ -1,4 +1,6 @@
 (ns catalog.issue
+  "Functionality to calculate next and previous issues and getting the
+  issue for a given date"
   (:require [clj-time.core :as time.core]))
 
 (defn issue-for

@@ -1,7 +1,8 @@
 (ns catalog.layout.obi
   "Render a structure of all catalog items as [DTBook
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html). This will be
-  used to narrate the book in Obi later in the tool chain"
+  used to narrate the book in [Obi](http://www.daisy.org/project/obi)
+  later in the tool chain."
   (:require [catalog.layout.common :as layout]
             [clj-time
              [coerce :as time.coerce]
@@ -48,7 +49,9 @@
        (vector? items) (map #(entry-sexp (inc level) %) items)
        :else (map #(level-sexp (get items %) (conj path %) path-to-numbers) (keys items)))]))
 
-(defn document [items year issue editorial recommendations &
+(defn document
+  "Return a hiccup style sexp of DTBook XML for a catalog"
+  [items year issue editorial recommendations &
                 {:keys [creator date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       date (time.coerce/to-date (time.core/today))
@@ -101,7 +104,10 @@
   "\"-//NISO//DTD dtbook 2005-3//EN\" "
   "\"http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd\">"))
 
-(defn dtbook [items year issue editorial recommendations]
+(defn dtbook
+  "Return a catalog in the form of DTBook XML. This will be imported
+  into obi so the narrator has a structure when reading the catalog."
+  [items year issue editorial recommendations]
   (-> (document items year issue editorial recommendations)
       xml/sexp-as-element
       (xml/indent-str :doctype doctype)))
