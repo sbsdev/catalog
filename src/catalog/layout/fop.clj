@@ -493,7 +493,8 @@
   ;; circle. Somehow this doesn't seem to pan out, so we resort to
   ;; fidget with the indent for each issue.
   {3 "143mm"
-   4 "140mm"})
+   4 "140mm"
+   5 "142mm"})
 
 (defn- coverpage-recto
   "Return a hiccup style sexp for the recto (the front) of the
