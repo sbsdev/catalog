@@ -4,7 +4,9 @@
              [db :as db]
              [validation :as validation]
              [vubis :as vubis]]
-            [catalog.layout.fop :as layout.fop]
+            [catalog.layout
+             [fop :as layout.fop]
+             [text :as layout.text]]
             [schema.core :as s]))
 
 (defn neu-im-sortiment-fop
@@ -26,6 +28,24 @@
      (db/read-catalog year issue)
      vubis/order-and-group
      (layout.fop/generate-document :grossdruck year issue editorial recommendations out))))
+
+(defn neu-im-sortiment-text
+  "Generate plain text for the *Neu im Sortiment* catalog for given
+  `year` and `issue`"
+  [year issue]
+  (->
+   (db/read-catalog year issue)
+   vubis/order-and-group
+   (layout.text/text {:year year :issue issue})))
+
+(defn custom-text
+  "Generate plain text for the *Katalog nach Mass* catalog for given
+  `year` and `issue`"
+  [in query customer]
+  (-> in
+   vubis/read-file
+   vubis/order
+   (layout.text/text {:query query :customer customer})))
 
 (defn validate [in]
   (let [checker (s/checker validation/CatalogItem)]
