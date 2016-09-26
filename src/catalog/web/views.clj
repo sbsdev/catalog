@@ -12,7 +12,9 @@
              [obi :as layout.obi]]
             [catalog.web.layout :as layout]
             [cemerick.friend :as friend]
-            [clj-time.core :as time.core]
+            [clj-time
+             [core :as time.core]
+             [format :as time.format]]
             [clojure
              [edn :as edn]
              [string :as string]]
@@ -26,10 +28,10 @@
             [schema.core :as s]))
 
 (defn- download-button
-  ([href file-name]
-   (download-button href file-name "Download"))
-  ([href file-name label]
-   [:a.btn.btn-default {:href href :role "button" :download file-name :aria-label label}
+  ([href]
+   (download-button href "Download"))
+  ([href label]
+   [:a.btn.btn-default {:href href :role "button" :aria-label label}
     [:span.glyphicon {:class "glyphicon-download" :aria-hidden "true"}] (str " " label)]))
 
 (defn- download-url [& items]
@@ -39,7 +41,7 @@
   [title year issue file-name]
   [:div.well
    [:h2 title]
-   (download-button (download-url year issue file-name) file-name)])
+   (download-button (download-url year issue file-name))])
 
 (defn home
   ([request]
@@ -62,8 +64,8 @@
        [:div.col-md-6
         [:div.well
          [:h2 (translations :catalog-hörbuch)]
-         (download-button (download-url year issue "neu-als-hörbuch.pdf") "neu-als-hörbuch.pdf")
-         (download-button (download-url year issue "neu-als-hörbuch.ncc") "neu-als-hörbuch.ncc" "NCC")]]]))))
+         (download-button (download-url year issue "neu-als-hörbuch.pdf"))
+         (download-button (download-url year issue "neu-als-hörbuch.ncc") "NCC")]]]))))
 
 (defn full-catalogs
   [request year issue]
@@ -80,90 +82,133 @@
       [:div.col-md-6
        (download-well (translations :catalog-taktilesbuch) year nil "taktile-kinderbücher-der-sbs.pdf")]])))
 
+(defn- clean-string
+  "Clean a string so that it can be used to generate a file name"
+  [s]
+  (-> s
+   string/lower-case
+   (string/replace #"\s" "-")))
+
+;; FIXME: we should probably use time zone that is defined in the
+;; browser of the user. For simplicity sake we just hard code it here.
+(def ^:private local-time-zone-id "Europe/Zurich")
+
+(defn- local-time
+  "Return a string representing the local time that can be used for
+  file names."
+  []
+  (let [time-zone (time.core/time-zone-for-id local-time-zone-id)
+        formatter (time.format/formatter "yyyy-MM-dd-kk-mm-ss" time-zone)]
+    (time.format/unparse formatter (time.core/now))))
+
 (defn- file-name
-  ([k year]
-   (file-name k year nil))
-  ([k year issue]
-   (let [name (-> (k translations)
-                  string/lower-case
-                  (string/replace #"\s" "-"))]
-     (if issue
-       (format "%s-%s-%s" name year issue)
-       (format "%s-%s" name year)))))
+  "Return a file-name for a given key `k` a value `v` (usually the
+  year) and optionaly an `issue`. The key is looked up in the
+  translation map and cleaned to have a clean file name. In the case
+  of custom catalogs the date and the value (in this case the
+  customer) is added to the file name."
+  ([k v]
+   (file-name k v nil))
+  ([k v issue]
+   (let [name (clean-string (k translations))]
+     (cond
+       (= k :catalog-custom) (format "%s-%s-%s" name (clean-string v) (local-time))
+       issue (format "%s-%s-%s" name v issue)
+       :default (format "%s-%s" name v)))))
+
+(defn- content-disposition
+  "Returns an updated Ring response with the Content-Disposition
+  header set to \"attachment\" and the filename corresponding to the
+  given `filename`."
+  [resp filename]
+  (response/header resp "Content-Disposition" (format "attachment; filename=%s" filename)))
+
+(defn- pdf-response
+  "Create a response with proper content-type and content-disposition
+  for given pdf `file` and `filename`"
+  [file filename]
+  (-> file
+   response/response
+   (response/content-type "application/pdf")
+   (content-disposition (str filename ".pdf"))))
+
+(defn- xml-response
+  "Create a response with proper content-type and content-disposition
+  for given `body` and `filename`"
+  [body filename]
+  (-> body
+   response/response
+   (response/content-type "application/xml")
+   (content-disposition (str filename ".xml"))))
 
 (defn neu-im-sortiment [year issue]
-  (let [temp-file (java.io.File/createTempFile (file-name :catalog-all year issue) ".pdf")]
+  (let [filename (file-name :catalog-all year issue)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
     (-> (db/read-catalog year issue)
         vubis/order-and-group
         (layout.fop/document :all-formats year issue nil nil)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defn neu-in-grossdruck [year issue]
-  (let [temp-file (java.io.File/createTempFile (file-name :catalog-grossdruck year issue) ".pdf")
+  (let [filename (file-name :catalog-grossdruck year issue)
+        temp-file (java.io.File/createTempFile filename ".pdf")
         editorial (db/read-editorial year issue :grossdruck)
         recommendation (db/read-recommendation year issue :grossdruck)]
     (-> (db/read-catalog year issue)
         vubis/order-and-group
         (layout.fop/document :grossdruck year issue editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defn neu-in-braille [year issue]
-  (let [editorial (db/read-editorial year issue :braille)
+  (let [filename (str (file-name :catalog-braille year issue) ".xml")
+        editorial (db/read-editorial year issue :braille)
         recommendation (db/read-recommendation year issue :braille)]
     (-> (db/read-catalog year issue)
         vubis/order-and-group
         :braille
         (layout.dtbook/dtbook {:year year :issue issue
                                :editorial editorial :recommendation recommendation})
-        response/response
-        (response/content-type "application/xml"))))
+        (xml-response filename))))
 
 (defn neu-als-hörbuch [year issue]
-  (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörbuch year issue) ".pdf")
+  (let [filename (file-name :catalog-hörbuch year issue)
+        temp-file (java.io.File/createTempFile filename ".pdf")
         editorial (db/read-editorial year issue :hörbuch)
         recommendation (db/read-recommendation year issue :hörbuch)]
     (-> (db/read-catalog year issue)
         (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
         (layout.fop/document :hörbuch year issue editorial recommendation)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defn neu-als-hörbuch-ncc [year issue]
-  (let [editorial (db/read-editorial year issue :hörbuch)
+  (let [filename (file-name :catalog-hörbuch year issue)
+        editorial (db/read-editorial year issue :hörbuch)
         recommendation (db/read-recommendation year issue :hörbuch)]
     (-> (db/read-catalog year issue)
         (vubis/order-and-group vubis/get-update-keys-neu-als-hörbuch)
         (layout.obi/dtbook year issue editorial recommendation)
-        response/response
-        (response/content-type "application/xml"))))
+        (xml-response filename))))
 
 (defn hörfilme [year]
-  (let [temp-file (java.io.File/createTempFile (file-name :catalog-hörfilm year) ".pdf")]
+  (let [filename (file-name :catalog-hörfilm year)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
     (-> (db/read-full-catalog year :hörfilm)
         (vubis/order-and-group vubis/get-update-keys-hörfilm)
         (layout.fop/document :hörfilm year nil nil nil)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defn spiele [year]
-  (let [temp-file (java.io.File/createTempFile (file-name :catalog-ludo year) ".pdf")]
+  (let [filename (file-name :catalog-ludo year)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
     (-> (db/read-full-catalog year :ludo)
         (vubis/order-and-group vubis/get-update-keys-ludo)
         (layout.fop/document :ludo year nil nil nil)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defn- upload-well
   [title url errors]
@@ -385,32 +430,29 @@
 (defmulti custom (fn [_ _ _ _ _ fmt _] fmt))
 
 (defmethod custom :pdf [request year issue query customer fmt items]
-  (let [temp-file (java.io.File/createTempFile "custom-catalog" ".pdf")]
+  (let [filename (file-name :catalog-custom customer)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
     (-> items
         edn/read-string
         vubis/order
         (layout.fop/document :custom year issue nil nil :query query :customer customer)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defmethod custom :grossdruck [request year issue query customer fmt items]
-  (let [temp-file (java.io.File/createTempFile "custom-catalog" ".pdf")]
+  (let [filename (file-name :catalog-custom customer)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
     (-> items
         edn/read-string
         vubis/order
         (layout.fop/document :custom-grossdruck year issue nil nil :query query :customer customer)
         (layout.fop/generate-pdf! temp-file))
-    (-> temp-file
-        response/response
-        (response/content-type "application/pdf"))))
+    (pdf-response temp-file filename)))
 
 (defmethod custom :braille [request year issue query customer fmt items]
   (-> items
       edn/read-string
       vubis/order
       (layout.dtbook/dtbook {:query query :customer customer})
-      response/response
-      (response/content-type "application/xml")))
+      (xml-response (str (file-name :catalog-custom customer) ".xml"))))
 
