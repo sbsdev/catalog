@@ -64,8 +64,8 @@
     (wrap library-signature "Ausleihe: ")))
 
 (defn- verkauf
-  [product-number price]
-  (when product-number
+  [{:keys [product-number price price-on-request?]}]
+  (when (or product-number price-on-request?)
     (str "Verkauf: "
          (wrap price "" ". " false)
          (layout/braille-signatures product-number))))
@@ -99,7 +99,7 @@
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
            rucksackbuch? rucksackbuch-number
-           library-signature product-number price] :as item}]
+           library-signature] :as item}]
   (join
    (entry-heading-str item)
    (genre-str genre-text)
@@ -108,33 +108,34 @@
      (producer-str producer-brief rucksackbuch-number)
      (producer-str producer-brief))
    (ausleihe library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defmethod entry-str :musiknoten
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
-           library-signature product-number price] :as item}]
+           library-signature] :as item}]
   (join
    (entry-heading-str item)
    (description-str description)
    (producer-str producer-brief)
    (ausleihe library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defmethod entry-str :taktilesbuch
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
-           library-signature product-number price] :as item}]
+           library-signature] :as item}]
   (join
    (entry-heading-str item)
    (description-str description)
    (producer-str producer-brief)
    (ausleihe library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defmethod entry-str :hörbuch
   [{:keys [genre-text description duration narrators producer-brief
-           produced-commercially? library-signature product-number price] :as item}]
+           produced-commercially? library-signature
+           product-number price price-on-request?] :as item}]
   (join
    (entry-heading-str item)
    (genre-str genre-text)
@@ -144,18 +145,19 @@
      (wrap producer-brief "" ", Hörbuch aus dem Handel")
      (producer-str producer-brief))
    (ausleihe-simple library-signature)
-   (when product-number
-     (str "Verkauf: " product-number ", " price))))
+   (when (or product-number price-on-request?)
+     (str "Verkauf: " (when product-number (str product-number ", ")) price))))
 
 (defmethod entry-str :grossdruck
-  [{:keys [genre-text description library-signature volumes product-number price] :as item}]
+  [{:keys [genre-text description library-signature volumes
+           product-number price price-on-request?] :as item}]
   (join
    (entry-heading-str item)
    (genre-str genre-text)
    (description-str description)
    (when library-signature
      (str "Ausleihe: " library-signature (wrap volumes ", " " Bd. " false)))
-   (when product-number
+   (when (or product-number price-on-request?)
      (str "Verkauf: " price))))
 
 (defmethod entry-str :e-book
@@ -180,8 +182,7 @@
 
 (defmethod entry-str :ludo
   [{:keys [source-publisher genre-text description
-           game-description accompanying-material library-signature
-           product-number price] :as item}]
+           game-description accompanying-material library-signature] :as item}]
   (join
    (entry-heading-str item)
    (wrap source-publisher)
@@ -189,7 +190,7 @@
    (description-str description)
    (wrap game-description)
    (ausleihe library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defn- level-str [items path path-to-numbers]
   (str
