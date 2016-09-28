@@ -164,11 +164,14 @@
    "I2" :dokumentarfilm
    "I3" :mundartfilm})
 
-(def braille-grade-raw-to-braille-grade
+(defn braille-grade-raw-to-braille-grade
   "Mapping between braille-grade-raw and braille-grade"
-  {"kr" :kurzschrift
-   "vd" :vollschrift
-   "ka" :schachschrift})
+  [grade]
+  (condp #(string/starts-with? %2 %1) grade
+    "k" :kurzschrift
+    "v" :vollschrift
+    "s" :schwarzschrift
+    nil))
 
 (def braille-music-grade-raw-to-braille-grade
   "Mapping between braille-music-grade-raw and braille-grade"
