@@ -18,7 +18,7 @@
                  [ring/ring-devel "1.5.0"]
                  [com.cemerick/friend "0.2.3"]
                  [compojure "1.5.1"]
-                 [endophile "0.1.2"]
+                 [endophile "0.2.0-SNAPSHOT"]
                  [org.clojure/java.jdbc "0.6.1"]
                  [mysql/mysql-connector-java "6.0.4"]
                  [yesql "0.5.3"]
