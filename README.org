@@ -1,12 +1,28 @@
-* Catalog (aka Neuplanung Katalogangebot)
+* Kati
 
-Generate bi-monthly catalogs of the new items in the library.
+Kati is a web-based system to generate catalogs of new items in the
+library. It takes [[https://www.loc.gov/marc/bibliographic/][MARC21 XML]] bibliographic data from the library
+system and produces catalogs in various formats such as [[http://www.access-for-all.ch/en/pdf-lab/pdf-accessibility-checker-pac.html][accessible PDF]]
+or [[https://en.wikipedia.org/wiki/DTBook][DTBook XML]]. The PDFs contain either all of the new catalog items or
+various subsets of the items such as all new large print books or all
+new audio books for example.
 
-** Installation
+For the DTBook there are actually two variations produced. One can be
+used for the production of Braille with a separate tool chain while
+the other is imported into [[http://www.daisy.org/project/obi][Obi]] for audio production.
+
+** Build and Installation
 Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
 
 #+BEGIN_SRC shell
 lein immutant war --nrepl-start --nrepl-port 40021
+#+END_SRC
+
+Since we depend on an unreleased version of [[https://xmlgraphics.apache.org/fop/][Apache FOP]] for the moment
+we have to build with LEIN_SNAPSHOTS_IN_RELEASE enabled:
+
+#+BEGIN_SRC shell
+LEIN_SNAPSHOTS_IN_RELEASE=yes lein immutant war --nrepl-start --nrepl-port 40021
 #+END_SRC
 
 Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
