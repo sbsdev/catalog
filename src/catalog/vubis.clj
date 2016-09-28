@@ -52,6 +52,7 @@
    :library-signature [:datafield (attr= :tag "091") :subfield (attr= :code "a")] ; Signaturen
    :product-number [:datafield (attr= :tag "024") :subfield (attr= :code "a")] ; MVL-Bestellnummer
    :price [:datafield (attr= :tag "024") :subfield (attr= :code "c")] ; Preis
+   :price-on-request? [:datafield (attr= :tag "024") :subfield (attr= :code "d")] ; Preis auf Anfrage
    :game-description [:datafield (attr= :tag "300") :subfield (attr= :code "a")] ; Beschreibung von Spielen
    })
 
@@ -242,7 +243,7 @@
   translate the language tag into proper ISO 639-1 codes"
   [{:keys [record-id source description source-publisher
            library-signature title subtitles name-of-part creator
-           price product-number language format producer
+           price price-on-request? product-number language format producer
            genre genre-code genre-text
            produced-commercially? source-date general-note
            series-title series-volume duration
@@ -281,7 +282,8 @@
                   :source-date (get-year source-date)
                   :library-signature library-signature
                   :product-number product-number
-                  :price price))]
+                  :price-on-request? (when price-on-request? true)
+                  :price (if price-on-request? (layout/translations :price-on-request) price)))]
     (case fmt
       :hörbuch (-> item
                    (assoc-some

@@ -53,6 +53,7 @@
     :library-signature LibrarySignature
     (s/optional-key :product-number) LibrarySignature
     (s/optional-key :price) s/Str
+    (s/optional-key :price-on-request?) s/Bool
     (s/optional-key :language) Language
     }))
 

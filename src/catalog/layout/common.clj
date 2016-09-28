@@ -109,7 +109,8 @@
                              ;; other strings
                              :editorial "Editorial"
                              :recommendation "Buchtipp"
-                             :recommendations "Buchtipps"})
+                             :recommendations "Buchtipps"
+                             :price-on-request "auf Anfrage"})
 
 (def ordinal
   {1 "Erste"

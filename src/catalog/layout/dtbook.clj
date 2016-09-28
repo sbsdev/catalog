@@ -76,8 +76,8 @@
     [:p {:brl:class "aus"} (wrap library-signature "Ausleihe: ")]))
 
 (defn- verkauf
-  [product-number price]
-  (when product-number
+  [{:keys [product-number price price-on-request?]}]
+  (when (or product-number price-on-request?)
     [:p {:brl:class "ver"} "Verkauf: " (wrap price "" ". " false)
      (binding [layout/translations translations] (layout/braille-signatures product-number))]))
 
@@ -99,7 +99,7 @@
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
            rucksackbuch? rucksackbuch-number
-           library-signature product-number price] :as item}]
+           library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (genre-sexp genre-text)
@@ -108,33 +108,33 @@
      (producer-sexp producer-brief rucksackbuch-number)
      (producer-sexp producer-brief))
    (ausleihe library-signature)
-   (verkauf product-number price)])
+   (verkauf item)])
 
 (defmethod entry-sexp :musiknoten
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
-           library-signature product-number price] :as item}]
+           library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (description-sexp description)
    (producer-sexp producer-brief)
    (ausleihe library-signature)
-   (verkauf product-number price)])
+   (verkauf item)])
 
 (defmethod entry-sexp :taktilesbuch
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
-           library-signature product-number price] :as item}]
+           library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (description-sexp description)
    (producer-sexp producer-brief)
    (ausleihe library-signature)
-   (verkauf product-number price)])
+   (verkauf item)])
 
 (defmethod entry-sexp :hörbuch
   [{:keys [genre-text description duration narrators producer-brief
-           produced-commercially? library-signature product-number price] :as item}]
+           produced-commercially? library-signature product-number price price-on-request?] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (genre-sexp genre-text)
@@ -144,18 +144,19 @@
      [:p {:brl:class "pro"} (wrap producer-brief "" ", Hörbuch aus dem Handel")]
      (producer-sexp producer-brief))
    (ausleihe-simple library-signature)
-   (when product-number
+   (when (or product-number price-on-request?)
      [:p {:brl:class "ver"} "Verkauf: " product-number ", " price])])
 
 (defmethod entry-sexp :grossdruck
-  [{:keys [genre-text description library-signature volumes product-number price] :as item}]
+  [{:keys [genre-text description library-signature volumes
+           product-number price price-on-request?] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (genre-sexp genre-text)
    (description-sexp description)
    (when library-signature
      [:p {:brl:class "aus"} "Ausleihe: " library-signature (wrap volumes ", " " Bd. " false)])
-   (when product-number
+   (when (or product-number price-on-request?)
      [:p {:brl:class "ver"} "Verkauf: " price])])
 
 (defmethod entry-sexp :e-book
@@ -180,8 +181,7 @@
 
 (defmethod entry-sexp :ludo
   [{:keys [source-publisher genre-text description
-           game-description accompanying-material library-signature
-           product-number price] :as item}]
+           game-description accompanying-material library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    [:p {:brl:class "publisher"} (wrap source-publisher)]
@@ -189,7 +189,7 @@
    (description-sexp description)
    [:p {:brl:class "game-desc"} (wrap game-description)]
    (ausleihe library-signature)
-   (verkauf product-number price)])
+   (verkauf item)])
 
 (defn catalog-entries [items]
   [:div {:brl:class "list"}

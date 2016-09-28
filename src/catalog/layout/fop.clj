@@ -245,8 +245,8 @@
     (block {:keep-with-previous.within-column "always"}
            (bold "Ausleihe:") " " (layout/braille-signatures signatures))))
 
-(defn- verkauf [product-number price]
-  (when product-number
+(defn- verkauf [{:keys [product-number price price-on-request?]}]
+  (when (or product-number price-on-request?)
     (block {:keep-with-previous.within-column "always"}
            (bold "Verkauf:") " " price ". " (layout/braille-signatures product-number))))
 
@@ -264,7 +264,7 @@
 
 (defmethod entry-sexp :hörbuch
   [{:keys [genre-text description duration narrators producer-brief
-           produced-commercially? library-signature product-number price] :as item}
+           produced-commercially? library-signature product-number price price-on-request?] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
@@ -274,12 +274,12 @@
    (block (wrap duration "" " Min., " false) (layout/render-narrators narrators))
    (block producer-brief (if produced-commercially? ", Hörbuch aus dem Handel" "") ".")
    (ausleihe library-signature)
-   (when product-number
+   (when (or product-number price-on-request?)
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " product-number ", " price))))
 
 (defmethod entry-sexp :braille
   [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
-           library-signature product-number price] :as item}
+           library-signature] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
@@ -291,10 +291,10 @@
       (wrap producer-brief "" (str ", Rucksackbuch Nr. " rucksackbuch-number) false)
       (wrap producer-brief)))
    (ausleihe-multi library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defmethod entry-sexp :grossdruck
-  [{:keys [genre-text description library-signature volumes product-number price] :as item}
+  [{:keys [genre-text description library-signature volumes product-number price price-on-request?] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
@@ -304,7 +304,7 @@
    (when library-signature
      (block {:keep-with-previous "always"}
             (bold "Ausleihe:") " " library-signature (wrap volumes ", " " Bd. " false)))
-   (when product-number
+   (when (or product-number price-on-request?)
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price))))
 
 (defmethod entry-sexp :e-book
@@ -333,8 +333,7 @@
 
 (defmethod entry-sexp :ludo
   [{:keys [source-publisher genre-text description
-           game-description accompanying-material library-signature
-           product-number price] :as item}
+           game-description accompanying-material library-signature] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
@@ -344,19 +343,19 @@
    (block (wrap description))
    (block (wrap game-description))
    (ausleihe-multi library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defmethod entry-sexp :musiknoten
-  [{:keys [description producer-brief library-signature product-number price] :as item} opts]
+  [{:keys [description producer-brief library-signature] :as item} opts]
   (list-item
    (entry-heading-sexp item)
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defmethod entry-sexp :taktilesbuch
-  [{:keys [genre-text description producer-brief library-signature product-number price] :as item}
+  [{:keys [genre-text description producer-brief library-signature] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
@@ -365,7 +364,7 @@
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
-   (verkauf product-number price)))
+   (verkauf item)))
 
 (defn entries-sexp
   "Return a hiccup style sexp for given `items` and `opts`"
