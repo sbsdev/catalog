@@ -29,16 +29,39 @@ Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
 
 ** Documentation
 
-- [[https://github.com/sbsdev/catalog/wiki][Wiki]]
 - [[https://sbsdev.github.io/catalog][API Docs]]
 
-Essentialy the system is a small service where dumps of the library
-database can be uploaded and catalogs in various formats downloaded.
-There is a web interface to download catalogs and, if this cannot be
-automated, also to upload database exports from the library database.
+*** Data structure
 
-A database contains all items. The catalogs are produced based on
-those items.
+The data is read from [[https://www.loc.gov/marc/bibliographic/][MARC21 XML]] and converted into a Clojure sequence
+of maps. These maps are quite free form, they contain different fields
+depending on the format of the entry, e.g. a braille book might have a
+grade while an audio book probably has a narrator. The entries are
+validated through prismatic/schema.
+
+*** Output generation
+
+For most outputs the sequence of entries is grouped by format and
+genre (possibly sub-genre) and essentially converted into a tree of
+maps. This tree is then passed to the different output functions that
+render the data. Most of these generate a [[https://github.com/weavejester/hiccup][hiccup style]] data structure
+from the tree which is then passed to [[https://xmlgraphics.apache.org/fop/][Apache FOP]] or used as is in the
+case of [[https://en.wikipedia.org/wiki/DTBook][DTBook XML]]. The text formatter just generates text from the
+tree structure.
+
+**** Accessible PDF
+
+Quite a bit of work has gone into making sure the PDF produced by FOP
+is accessible. Roles are attached to the appropriate elements,
+atifacts are tagged as such and alt texts are added using the
+~fox:alt-text~ attributes.
+
+*** Database
+
+A relational db is used to persist the data. Well, it is really more
+used like a [[https://en.wikipedia.org/wiki/Document-oriented_database][document-oriented database]] as we essentially just store
+the sequence of entries as an [[https://github.com/edn-format/edn][edn]] string. For the exact details refer
+to the [[https://github.com/sbsdev/catalog/blob/master/resources/schema.sql][schema]].
 
 ** Configuration and Dependencies
 Installation and configuration can be done using an [[https://github.com/sbsdev/sbs-infrastructure/blob/master/kati.yml][ansible
