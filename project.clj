@@ -30,7 +30,7 @@
             [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
   :codox {:project {:name "Kati"}
           :source-paths ["src"]
-          :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
+          :source-uri "https://github.com/sbsdev/catalog/blob/v{version}/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
   :main ^:skip-aot catalog.web.main
   :immutant {:war {:context-path "/"
