@@ -64,6 +64,14 @@ used like a [[https://en.wikipedia.org/wiki/Document-oriented_database][document
 the sequence of entries as an [[https://github.com/edn-format/edn][edn]] string. For the exact details refer
 to the [[https://github.com/sbsdev/catalog/blob/master/resources/schema.sql][schema]].
 
+*** Markdown
+
+The editorial part of some of the catalogs is edited directly in the
+browser using markdown. In the browser this is implemented using
+[[http://www.codingdrama.com/bootstrap-markdown/][Bootstrap Markdown]] and [[https://github.com/evilstreak/markdown-js/releases/download/v0.6.0-beta1/markdown-browser-0.6.0-beta1.tgz][markdown-browser]]. On the server side we use
+[[https://github.com/theJohnnyBrown/endophile][endophile]] to convert markdown into clj data structures which are then
+again converted to a [[https://github.com/weavejester/hiccup][hiccup style]] data structure.
+
 ** Configuration and Dependencies
 Installation and configuration can be done using an [[https://github.com/sbsdev/sbs-infrastructure/blob/master/kati.yml][ansible
 installation script]] which automates the whole process.
