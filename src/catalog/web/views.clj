@@ -9,7 +9,8 @@
              [common :refer [translations]]
              [dtbook :as layout.dtbook]
              [fop :as layout.fop]
-             [obi :as layout.obi]]
+             [obi :as layout.obi]
+             [text :as layout.text]]
             [catalog.web.layout :as layout]
             [cemerick.friend :as friend]
             [clj-time
@@ -123,23 +124,32 @@
   [resp filename]
   (response/header resp "Content-Disposition" (format "attachment; filename=%s" filename)))
 
+(defn- download-response
+  "Create a response with proper content-type and content-disposition
+  for given `file`, `mime-type` and `filename`"
+  [file mime-type filename]
+  (-> file
+   response/response
+   (response/content-type mime-type)
+   (content-disposition filename)))
+
 (defn- pdf-response
   "Create a response with proper content-type and content-disposition
   for given pdf `file` and `filename`"
   [file filename]
-  (-> file
-   response/response
-   (response/content-type "application/pdf")
-   (content-disposition (str filename ".pdf"))))
+  (download-response file "application/pdf" (str filename ".pdf")))
 
 (defn- xml-response
   "Create a response with proper content-type and content-disposition
   for given `body` and `filename`"
   [body filename]
-  (-> body
-   response/response
-   (response/content-type "application/xml")
-   (content-disposition (str filename ".xml"))))
+  (download-response body "application/xml" (str filename ".xml")))
+
+(defn- text-response
+  "Create a response with proper content-type and content-disposition
+  for given `body` and `filename`"
+  [body filename]
+  (download-response body "text/plain" (str filename ".txt")))
 
 (defn neu-im-sortiment [year issue]
   (let [filename (file-name :catalog-all year issue)
@@ -380,7 +390,8 @@
     {:class "form-control"} "fmt"
     [["PDF" :pdf]
      ["Grossdruck" :grossdruck]
-     ["Braille" :braille]]
+     ["Braille" :braille]
+     ["Text" :plain-text]]
     selected)])
 
 (defn custom-form [request year issue & [errors]]
@@ -463,5 +474,11 @@
       edn/read-string
       vubis/order
       (layout.dtbook/dtbook {:query query :customer customer})
-      (xml-response (str (file-name :catalog-custom customer) ".xml"))))
+      (xml-response (file-name :catalog-custom customer))))
 
+(defmethod custom :plain-text [request year issue query customer fmt items]
+  (-> items
+      edn/read-string
+      vubis/order
+      (layout.text/text {:query query :customer customer})
+      (text-response (file-name :catalog-custom customer))))
