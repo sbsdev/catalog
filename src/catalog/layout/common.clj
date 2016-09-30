@@ -169,16 +169,15 @@
        (str prefix s postfix))
      "")))
 
+(defn- safe-blank? [s]
+  (and (string? s) (string/blank? s)))
 
 (defn empty-or-blank? [s]
-  ;; FIXME: might not be needed with clojure 1.8
-  (let [safe-blank? (fn [s] (and (string? s)
-                                 (string/blank? s)))]
-    (or (nil? s)
-        (and (coll? s)
-             (or (empty? s) (every? safe-blank? s)))
-        (safe-blank? s)
-        false)))
+  (or (nil? s)
+      (and (coll? s)
+           (or (empty? s) (every? safe-blank? s)))
+      (safe-blank? s)
+      false))
 
 (defn- braille-signature [[signature grade volumes double-spaced? accompanying-material :as item]]
   (when item
