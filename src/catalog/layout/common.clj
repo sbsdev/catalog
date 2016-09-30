@@ -169,8 +169,6 @@
        (str prefix s postfix))
      "")))
 
-(defn non-blank? [s]
-  (not (string/blank? s)))
 
 (defn empty-or-blank? [s]
   ;; FIXME: might not be needed with clojure 1.8

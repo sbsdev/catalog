@@ -2,9 +2,8 @@
   "Render catalog items as [DTBook
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html) to be
   converted to Braille later in the tool chain"
-  (:require [catalog.layout.common :as layout :refer [empty-or-blank? non-blank? wrap]]
+  (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
             [clj-time
-             [coerce :as time.coerce]
              [core :as time.core]
              [format :as time.format]]
             [clojure
@@ -257,11 +256,11 @@
         [:p {:brl:class (format "nr_%s" issue)}]
         [:p {:brl:class (format "jr_%s" year)}]])
       [:bodymatter
-       (when (non-blank? editorial)
+       (when-not (string/blank? editorial)
          [:level1
           [:h1 (translations :editorial)]
           (md-to-dtbook editorial)])
-       (when (non-blank? recommendation)
+       (when-not (string/blank? recommendation)
          [:level1
           [:h1 (translations :recommendations)]
           [:level2

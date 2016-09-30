@@ -1,6 +1,6 @@
 (ns catalog.layout.fop
   "Functionality to render a tree of catalog items as accessible PDF"
-  (:require [catalog.layout.common :as layout :refer [wrap non-blank?]]
+  (:require [catalog.layout.common :as layout :refer [wrap]]
             [clj-time
              [core :as time.core]
              [format :as time.format]]
@@ -727,8 +727,8 @@
         (let [subitems (-> items
                            (get fmt)
                            (cond->
-                               (non-blank? editorial) (assoc :editorial editorial)
-                               (non-blank? recommendations) (assoc :recommendation recommendations)))]
+                               (not (string/blank? editorial)) (assoc :editorial editorial)
+                               (not (string/blank? recommendations)) (assoc :recommendation recommendations)))]
           [:fo:flow {:flow-name "xsl-region-body"}
            (toc subitems [fmt] 2 {:heading? true})
            (realize-lazy-seqs
@@ -752,8 +752,8 @@
                          ;; the sorted map.
                          (#(apply dissoc % (remove #{fmt} (keys %))))
                          (cond->
-                             (non-blank? editorial) (assoc :editorial editorial)
-                             (non-blank? recommendations) (assoc :recommendations recommendations)))
+                             (not (string/blank? editorial)) (assoc :editorial editorial)
+                             (not (string/blank? recommendations)) (assoc :recommendations recommendations)))
             path-to-numbers (layout/path-to-number subitems)]
         [:fo:flow {:flow-name "xsl-region-body"}
          ;; Cover page
