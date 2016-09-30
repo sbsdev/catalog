@@ -36,16 +36,23 @@
    (walk/postwalk #(visitor %))
    string/join))
 
+(def ^:private line-length 72)
+
+(defn wrap-line [text]
+  ;; see http://rosettacode.org/wiki/Word_wrap#Clojure
+  (string/join "\n" (re-seq (re-pattern (str ".{1," line-length "}(?:\\s|\\z)")) text)))
+
 (defn- entry-heading-str
   [{:keys [creator title subtitles name-of-part source-publisher source-date]}]
-  (str
-   (wrap creator "" ": " false)
-   (->> [(wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part)]
-        flatten
-        (remove empty-or-blank?)
-        (string/join " "))
-   (when (or source-publisher source-date) " - ")
-   (wrap source-publisher "" (if source-date ", " "") false) (wrap (layout/year source-date))))
+  (wrap-line
+   (str
+    (wrap creator "" ": " false)
+    (->> [(wrap title) (for [s subtitles] (wrap s)) (wrap name-of-part)]
+         flatten
+         (remove empty-or-blank?)
+         (string/join " "))
+    (when (or source-publisher source-date) " - ")
+    (wrap source-publisher "" (if source-date ", " "") false) (wrap (layout/year source-date)))))
 
 (defmulti entry-str (fn [{fmt :format}] fmt))
 
@@ -65,12 +72,6 @@
     (str "Verkauf: "
          (wrap price "" ". " false)
          (layout/braille-signatures product-number))))
-
-(def ^:private line-length 72)
-
-(defn wrap-line [text]
-  ;; see http://rosettacode.org/wiki/Word_wrap#Clojure
-  (string/join "\n" (re-seq (re-pattern (str ".{1," line-length "}(?:\\s|\\z)")) text)))
 
 (defn- description-str
   [description]
