@@ -50,4 +50,4 @@ INSERT INTO catalog_type VALUES
 ('hörbuch'),
 ('hörfilm'),
 ('ludo'),
-('taktil');
+('taktilesbuch');
