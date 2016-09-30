@@ -168,11 +168,12 @@
 (defn braille-grade-raw-to-braille-grade
   "Mapping between braille-grade-raw and braille-grade"
   [grade]
-  (condp #(string/starts-with? %2 %1) grade
-    "k" :kurzschrift
-    "v" :vollschrift
-    "s" :schwarzschrift
-    nil))
+  (when grade
+    (condp #(string/starts-with? %2 %1) grade
+      "k" :kurzschrift
+      "v" :vollschrift
+      "s" :schwarzschrift
+      nil)))
 
 (def braille-music-grade-raw-to-braille-grade
   "Mapping between braille-music-grade-raw and braille-grade"
