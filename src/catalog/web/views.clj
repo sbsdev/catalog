@@ -210,6 +210,15 @@
         (layout.fop/generate-pdf! temp-file))
     (pdf-response temp-file filename)))
 
+(defn taktile-bücher [year]
+  (let [filename (file-name :catalog-taktilesbuch year)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
+    (-> (db/read-full-catalog year :taktilesbuch)
+        (vubis/order-and-group vubis/get-update-keys-taktil)
+        (layout.fop/document :taktilesbuch year nil nil nil)
+        (layout.fop/generate-pdf! temp-file))
+    (pdf-response temp-file filename)))
+
 (defn- upload-well
   [title url errors]
   [:div.well
