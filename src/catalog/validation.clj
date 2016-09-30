@@ -24,7 +24,7 @@
 
 (def BrailleGrade (s/enum :kurzschrift :vollschrift :schwarzschrift))
 
-(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}|LUD \d{1,3}|BK \d{3}|VI \d{1,3}")
+(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}|LUD \d{1,3}|BK \d{3}|VI \d{1,3}|TB \d{1,3}")
 
 (def SignatureTuple
   [(s/one SignatureRE "signature")
