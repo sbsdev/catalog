@@ -1,15 +1,11 @@
 (ns catalog.layout.text
   "Render catalog items as plain textx"
-  (:require [catalog.layout.common :as layout :refer [empty-or-blank? non-blank? wrap]]
-            [clj-time
-             [coerce :as time.coerce]
-             [core :as time.core]
-             [format :as time.format]]
+  (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
+            [clj-time.core :as time.core]
             [clojure
              [set :as set]
              [string :as string]
              [walk :as walk]]
-            [clojure.data.xml :as xml]
             [endophile.core :as endophile]))
 
 (defmulti to-text (fn [{:keys [tag attrs content]}] tag))
@@ -221,8 +217,8 @@
         date (time.core/now)
         language "de"
         items (cond-> items
-                (layout/non-blank? editorial) (assoc :editorial editorial)
-                (layout/non-blank? recommendation) (assoc :recommendation recommendation))
+                (not (string/blank? editorial)) (assoc :editorial editorial)
+                (not (string/blank? recommendation)) (assoc :recommendation recommendation))
         path-to-numbers (layout/path-to-number items)]
     (str
      title
