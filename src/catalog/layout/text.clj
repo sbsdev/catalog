@@ -1,7 +1,9 @@
 (ns catalog.layout.text
   "Render catalog items as plain textx"
   (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
-            [clj-time.core :as time.core]
+            [clj-time
+             [core :as time.core]
+             [format :as time.format]]
             [clojure
              [set :as set]
              [string :as string]
@@ -211,38 +213,49 @@
 
 (defmulti document-str (fn [items _] (if (standard-catalog? items) :standard :custom)))
 
+(defn- impressum []
+  (let [creator (layout/translations :sbs)]
+    (string/join
+     "\n"
+     ["Herausgeber:"
+      creator
+      "Grubenstrasse 12"
+      "CH-8045 Zürich"
+      "Fon +41 43 333 32 32"
+      "Fax +41 43 333 32 33"
+      "www.sbs.ch"
+      "nutzerservice@sbs.ch"
+      (format "© %s" creator)])))
+
 (defmethod document-str :standard
   [items {:keys [year issue editorial recommendation]}]
   (let [title (layout/translations :catalog-all)
-        creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-        date (time.core/now)
-        language "de"
         items (cond-> items
                 (not (string/blank? editorial)) (assoc :editorial editorial)
                 (not (string/blank? recommendation)) (assoc :recommendation recommendation))
         path-to-numbers (layout/path-to-number items)]
-    (str
-     title
+    (string/join
      "\n\n"
-     (format "%s-%s" year issue)
-     "\n\n"
-     (string/join "\n\n" (map #(level-str (get items %) [%] path-to-numbers) (keys items))))))
+     (concat
+      [title
+       (format "%s-%s" year issue)
+       (impressum)]
+      (map #(level-str (get items %) [%] path-to-numbers) (keys items))))))
+
+(def ^:private date-formatter (time.format/formatter "dd.MM.YYYY"))
 
 (defmethod document-str :custom
   [items {:keys [query customer]}]
   (let [title (layout/translations :catalog-custom)
-        creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
         date (time.core/now)
-        language "de"
         path-to-numbers (layout/path-to-number items)]
-    (str
-     title
-     "\n\n"
-     query
-     "\n\n"
-     (format "für %s" customer)
-     "\n\n"
-     (level-str items [] path-to-numbers))))
+    (string/join "\n\n"
+     [title
+      (format "Stand %s" (time.format/unparse date-formatter date))
+      query
+      (format "für %s" customer)
+      (impressum)
+      (level-str items [] path-to-numbers)])))
 
 (defn text
   [items options]
