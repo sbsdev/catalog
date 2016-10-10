@@ -94,7 +94,12 @@
             (string/replace record-id "/" "."))))
 
 (defn- link-to-online-catalog [record-id title]
-  (external-link (to-url record-id) title "Link zum Online-Katalog"))
+  ;; FIXME: The use of the alt-text isn't quite clear. Apparently when
+  ;; using Acrobat Reader with the standard settings the screen reader
+  ;; will just read the alt text and not read the title. So we add the
+  ;; title to the alt-text.
+  (external-link (to-url record-id) title
+                 (format "%s (Link zum Online-Katalog)" title)))
 
 (defn- block [& args]
   (cond
