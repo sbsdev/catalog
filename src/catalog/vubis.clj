@@ -283,7 +283,7 @@
                   :source-date (get-year source-date)
                   :library-signature library-signature
                   :product-number product-number
-                  :price-on-request? (when price-on-request? true)
+                  :price-on-request? (when (some? price-on-request?) true)
                   :price (if price-on-request? (layout/translations :price-on-request) price)))]
     (case fmt
       :hörbuch (-> item
