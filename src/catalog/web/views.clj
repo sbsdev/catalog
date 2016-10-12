@@ -172,7 +172,7 @@
     (pdf-response temp-file filename)))
 
 (defn neu-in-braille [year issue]
-  (let [filename (str (file-name :catalog-braille year issue) ".xml")
+  (let [filename (file-name :catalog-braille year issue)
         editorial (db/read-editorial year issue :braille)
         recommendation (db/read-recommendation year issue :braille)]
     (-> (db/read-catalog year issue)
