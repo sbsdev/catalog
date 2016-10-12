@@ -10,8 +10,8 @@
              [walk :as walk]]
             [endophile.core :as endophile]))
 
-(def ^:private newline "\r\n")
-(def ^:private double-newline (str newline newline))
+(def ^:private dos-newline "\r\n")
+(def ^:private double-newline (str dos-newline dos-newline))
 
 (defmulti to-text (fn [{:keys [tag attrs content]}] tag))
 
@@ -22,7 +22,7 @@
 (defmethod to-text :h3 [{content :content}] (str  content double-newline))
 (defmethod to-text :ul [{content :content}] [:list {:type "ul"} content])
 (defmethod to-text :li [{content :content}] [:li content])
-(defmethod to-text :br [_] newline)
+(defmethod to-text :br [_] dos-newline)
 (defmethod to-text :default [{content :content}] content) ; just assume :p
 
 (defn- node? [node]
@@ -45,7 +45,7 @@
 
 (defn wrap-line [text]
   ;; see http://rosettacode.org/wiki/Word_wrap#Clojure
-  (string/join newline (re-seq (re-pattern (str ".{1," line-length "}(?:\\s|\\z)")) text)))
+  (string/join dos-newline (re-seq (re-pattern (str ".{1," line-length "}(?:\\s|\\z)")) text)))
 
 (defn- entry-heading-str
   [{:keys [creator title subtitles name-of-part source-publisher source-date]}]
@@ -95,7 +95,7 @@
 (defn- join [& more]
   (->> more
    (remove empty-or-blank?)
-   (string/join newline)))
+   (string/join dos-newline)))
 
 (defmethod entry-str :braille
   [{:keys [creator title subtitles name-of-part source-publisher
@@ -220,7 +220,7 @@
 (defn- impressum []
   (let [creator (layout/translations :sbs)]
     (string/join
-     newline
+     dos-newline
      ["Herausgeber:"
       creator
       "Grubenstrasse 12"
