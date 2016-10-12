@@ -10,16 +10,19 @@
              [walk :as walk]]
             [endophile.core :as endophile]))
 
+(def ^:private newline "\r\n")
+(def ^:private double-newline (str newline newline))
+
 (defmulti to-text (fn [{:keys [tag attrs content]}] tag))
 
 (defmethod to-text :a [{content :content {href :href} :attrs}]
   (if (not-empty content) content href))
-(defmethod to-text :h1 [{content :content}] (str  content "\n\n"))
-(defmethod to-text :h2 [{content :content}] (str  content "\n\n"))
-(defmethod to-text :h3 [{content :content}] (str  content "\n\n"))
+(defmethod to-text :h1 [{content :content}] (str content double-newline))
+(defmethod to-text :h2 [{content :content}] (str  content double-newline))
+(defmethod to-text :h3 [{content :content}] (str  content double-newline))
 (defmethod to-text :ul [{content :content}] [:list {:type "ul"} content])
 (defmethod to-text :li [{content :content}] [:li content])
-(defmethod to-text :br [_] "\n")
+(defmethod to-text :br [_] newline)
 (defmethod to-text :default [{content :content}] content) ; just assume :p
 
 (defn- node? [node]
@@ -42,7 +45,7 @@
 
 (defn wrap-line [text]
   ;; see http://rosettacode.org/wiki/Word_wrap#Clojure
-  (string/join "\n" (re-seq (re-pattern (str ".{1," line-length "}(?:\\s|\\z)")) text)))
+  (string/join newline (re-seq (re-pattern (str ".{1," line-length "}(?:\\s|\\z)")) text)))
 
 (defn- entry-heading-str
   [{:keys [creator title subtitles name-of-part source-publisher source-date]}]
@@ -92,7 +95,7 @@
 (defn- join [& more]
   (->> more
    (remove empty-or-blank?)
-   (string/join "\n")))
+   (string/join newline)))
 
 (defmethod entry-str :braille
   [{:keys [creator title subtitles name-of-part source-publisher
@@ -194,15 +197,16 @@
 (defn- level-str [items path path-to-numbers]
   (str
    (when-let [section-title (last path)]
-     (format "%s%s\n\n"
+     (format "%s%s%s"
              (layout/section-numbers (get path-to-numbers path))
-             (layout/translations section-title "FIXME")))
+             (layout/translations section-title "FIXME")
+             double-newline))
    (cond
      ;; handle the special case where the editorial or the recommendations are passed in the tree
      (#{:editorial :recommendation} (last path)) (md-to-text items)
      ;; handle a list of entries
-     (sequential? items) (string/join "\n\n" (map entry-str items))
-     :else (string/join "\n\n" (map #(level-str (get items %) (conj path %) path-to-numbers) (keys items))))))
+     (sequential? items) (string/join double-newline (map entry-str items))
+     :else (string/join double-newline (map #(level-str (get items %) (conj path %) path-to-numbers) (keys items))))))
 
 (defn- standard-catalog?
   "If `items` is a map, i.e. are grouped by genre, then we assume that
@@ -216,7 +220,7 @@
 (defn- impressum []
   (let [creator (layout/translations :sbs)]
     (string/join
-     "\n"
+     newline
      ["Herausgeber:"
       creator
       "Grubenstrasse 12"
@@ -235,7 +239,7 @@
                 (not (string/blank? recommendation)) (assoc :recommendation recommendation))
         path-to-numbers (layout/path-to-number items)]
     (string/join
-     "\n\n"
+     double-newline
      (concat
       [title
        (format "%s-%s" year issue)
@@ -249,7 +253,7 @@
   (let [title (layout/translations :catalog-custom)
         date (time.core/now)
         path-to-numbers (layout/path-to-number items)]
-    (string/join "\n\n"
+    (string/join double-newline
      [title
       (format "Stand %s" (time.format/unparse date-formatter date))
       query
