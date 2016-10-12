@@ -34,6 +34,7 @@
           :metadata {:doc/format :markdown}}
   :main ^:skip-aot catalog.web.main
   :immutant {:war {:context-path "/"
+                   :name "%p%v%t"
                    :nrepl {:port 40021
                            :start? true}}}
   :target-path "target/%s"
