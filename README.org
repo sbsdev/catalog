@@ -16,14 +16,14 @@ audio production.
 Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
 
 #+BEGIN_SRC shell
-lein immutant war --nrepl-start --nrepl-port 40021
+lein immutant war
 #+END_SRC
 
 Since we depend on an unreleased version of [[https://xmlgraphics.apache.org/fop/][Apache FOP]] for the moment
 we have to build with ~LEIN_SNAPSHOTS_IN_RELEASE~ enabled:
 
 #+BEGIN_SRC shell
-LEIN_SNAPSHOTS_IN_RELEASE=yes lein immutant war --nrepl-start --nrepl-port 40021
+LEIN_SNAPSHOTS_IN_RELEASE=yes lein immutant war
 #+END_SRC
 
 Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
