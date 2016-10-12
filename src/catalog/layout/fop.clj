@@ -1,6 +1,6 @@
 (ns catalog.layout.fop
   "Functionality to render a tree of catalog items as accessible PDF"
-  (:require [catalog.layout.common :as layout :refer [wrap]]
+  (:require [catalog.layout.common :as layout]
             [clj-time
              [core :as time.core]
              [format :as time.format]]
@@ -81,6 +81,12 @@
   [:fo:block {:keep-with-next.within-column "always" :role "NonStruct"}
    [:fo:marker {:marker-class-name running-header-class-name} title]])
 
+(defn- insert-zero-width-space
+  "Add a zero with space after each sequence of white space in `s`.
+  This seems to improve the FOP output for screen readers"
+  [s]
+  (string/replace s #"(\S)\s+(\S)" "$1 ​$2"))
+
 (defn- external-link [url title alt-text]
   [:fo:basic-link
    {:external-destination url :indicate-destination true :fox:alt-text alt-text} title])
@@ -98,7 +104,7 @@
   ;; using Acrobat Reader with the standard settings the screen reader
   ;; will just read the alt text and not read the title. So we add the
   ;; title to the alt-text.
-  (external-link (to-url record-id) title
+  (external-link (to-url record-id) (insert-zero-width-space title)
                  (format "%s (Link zum Online-Katalog)" title)))
 
 (defn- block [& args]
@@ -217,6 +223,21 @@
                  :role "TOC"}
       (map #(toc-entry (get items %) (conj path %) depth 1 opts) (keys items))]]))
 
+(def wrap
+  "Same as [[layout/wrap]] but insert zero with spaces.
+  See [[insert-zero-width-space]]"
+  (comp insert-zero-width-space layout/wrap))
+
+(def braille-signatures
+  "Same as [[layout/braille-signatures]] but insert zero with spaces.
+  See [[insert-zero-width-space]]"
+  (comp insert-zero-width-space layout/braille-signatures))
+
+(def render-narrators
+  "Same as [[layout/render-narrators]] but insert zero with spaces.
+  See [[insert-zero-width-space]]"
+  (comp insert-zero-width-space layout/render-narrators))
+
 (defmulti entry-heading-sexp
   "Return a hiccup style sexp for a heading for a given item."
   (fn [{fmt :format}] fmt))
@@ -237,8 +258,8 @@
          (when subtitles " ")
          (layout/render-subtitles subtitles)
          (wrap name-of-part " ")
-         (when (or source-publisher source-date) " - ")
-         (wrap source-publisher "" (if source-date ", " "") false)
+         (when (or source-publisher source-date) " ​- ​")
+         (wrap source-publisher "" (if source-date ", ​" "") false)
          (wrap (layout/year source-date))))
 
 (defn- ausleihe [signature]
@@ -248,12 +269,12 @@
 (defn- ausleihe-multi [signatures]
   (when signatures
     (block {:keep-with-previous.within-column "always"}
-           (bold "Ausleihe:") " " (layout/braille-signatures signatures))))
+           (bold "Ausleihe:") " " (braille-signatures signatures))))
 
 (defn- verkauf [{:keys [product-number price price-on-request?]}]
   (when (or product-number price-on-request?)
     (block {:keep-with-previous.within-column "always"}
-           (bold "Verkauf:") " " price ". " (layout/braille-signatures product-number))))
+           (bold "Verkauf:") " " price ". " (braille-signatures product-number))))
 
 (defn- list-body [& args]
   (block {:role "LBody"} args))
@@ -276,7 +297,7 @@
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
-   (block (wrap duration "" " Min., " false) (layout/render-narrators narrators))
+   (block (wrap duration "" " Min., " false) (render-narrators narrators))
    (block producer-brief (if produced-commercially? ", Hörbuch aus dem Handel" "") ".")
    (ausleihe library-signature)
    (when (or product-number price-on-request?)
@@ -551,7 +572,7 @@
               :font-size "90pt" :color (color :warmgrey) :line-height "0.9"
               :text-align "start" :hyphenate "false"
               :role "H1"}
-             (layout/insert-zero-width-space title))
+             (insert-zero-width-space title))
       [:fo:block-container {:absolute-position "fixed"
                             :width "297mm" :height "25mm"
                             :left "0mm" :top "0mm" :reference-orientation "90"}
