@@ -516,10 +516,9 @@
   "Mapping of indents for each issue."
   ;; In theory the issue numbers should be centered properly within the
   ;; circle. Somehow this doesn't seem to pan out, so we resort to
-  ;; fidget with the indent for each issue.
+  ;; fidget with the indent for some issues.
   {3 "143mm"
-   4 "140mm"
-   5 "142mm"})
+   4 "140mm"})
 
 (defn- coverpage-recto
   "Return a hiccup style sexp for the recto (the front) of the
@@ -583,7 +582,7 @@
                :role "H2"}
               (layout/format-date year issue))]
       [:fo:block-container {:absolute-position "fixed" :width "53mm" :height "53mm"
-                            :left (issue-indent issue "140mm") :top "119mm" :display-align "center"
+                            :left (issue-indent issue "142mm") :top "119mm" :display-align "center"
                             :background-color "transparent"}
        (block {:font-size "120pt" :color (color :white)
                :text-align "center"
