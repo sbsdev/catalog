@@ -11,3 +11,4 @@ pom.xml.asc
 .hg/
 *~
 /catalog-*.war
+/src/catalog/version.clj
