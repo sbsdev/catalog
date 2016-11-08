@@ -321,10 +321,11 @@
                                      year issue
                                      (if (= fmt :all-formats) "upload" "upload-full")) "Cancel")
               (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
-          (do
-            ;; FIXME: add the file
-            ;; and redirect to the index
-            (response/redirect-after-post (format "/%s/%s" year issue)))))
+          ;; if there are no problems just upload the file.
+          (upload request year issue fmt
+                   ;; Repackage the items as edn as the api of the upload function expects
+                   ;; it that way. Wasteful I know, but simple.
+                  (prn-str items))))
       ;; if the file is empty go back to the upload form
       (if (= fmt :all-formats)
         (upload-form request year issue ["No file selected"])
@@ -440,10 +441,12 @@
               (form/hidden-field "fmt" fmt)
               (layout/button (format "/%s/%s/custom" year issue) "Cancel")
               (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
-          (do
-            ;; FIXME: add the file
-            ;; and redirect to the index
-            (response/redirect-after-post (format "/%s/%s" year issue)))))
+          ;; if there are no problems just produce a response with a
+          ;; custom catalog.
+          (custom request year issue query customer fmt
+                  ;;  Repackage the items as edn as the api of the custom function expects
+                  ;;  it that way. Wasteful, I know, but simple.
+                  (prn-str items))))
       ;; if the file is empty go back to the upload form
       (custom-form request year issue ["No file selected"]))))
 
