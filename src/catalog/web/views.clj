@@ -297,6 +297,12 @@
                     (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
                     (:taktilesbuch errors))]])))
 
+(defn upload [request year issue fmt items]
+  (case fmt
+    (:hörfilm :ludo :taktilesbuch) (db/save-full-catalog! year (name fmt) (edn/read-string items))
+    (db/save-catalog! year issue (edn/read-string items)))
+  (response/redirect-after-post (format "/%s/%s" year issue)))
+
 (defn upload-confirm [request year issue fmt file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)]
@@ -330,12 +336,6 @@
       (if (= fmt :all-formats)
         (upload-form request year issue ["No file selected"])
         (upload-full-form request year issue {fmt ["No file selected"]})))))
-
-(defn upload [request year issue fmt items]
-  (case fmt
-    (:hörfilm :ludo :taktilesbuch) (db/save-full-catalog! year (name fmt) (edn/read-string items))
-    (db/save-catalog! year issue (edn/read-string items)))
-  (response/redirect-after-post (format "/%s/%s" year issue)))
 
 (defn editorial-form [request fmt year issue]
   (let [identity (friend/identity request)
@@ -416,40 +416,6 @@
        (format-field :pdf)
        (form/submit-button {:class "btn btn-default"} "Submit"))])))
 
-(defn custom-confirm [request year issue query customer fmt file]
-  (let [{tempfile :tempfile} file
-        path (.getPath tempfile)]
-    (if-not (= (nio.file/size path) 0)
-      (let [items (vubis/read-file path)
-            items-collated (vubis/collate-all-duplicate-items items)
-            checker (s/checker validation/CatalogItem)
-            problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
-        (if (seq problems)
-          (let [identity (friend/identity request)]
-            (layout/common
-             identity
-             year issue
-             [:h1 "Confirm Katalog nach Mass"]
-             (error-table problems)
-             (form/form-to
-              {:enctype "multipart/form-data"}
-              [:post (format "/%s/%s/custom" year issue)]
-              (anti-forgery-field)
-              (form/hidden-field "items" (prn-str items))
-              (form/hidden-field "query" query)
-              (form/hidden-field "customer" customer)
-              (form/hidden-field "fmt" fmt)
-              (layout/button (format "/%s/%s/custom" year issue) "Cancel")
-              (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
-          ;; if there are no problems just produce a response with a
-          ;; custom catalog.
-          (custom request year issue query customer fmt
-                  ;;  Repackage the items as edn as the api of the custom function expects
-                  ;;  it that way. Wasteful, I know, but simple.
-                  (prn-str items))))
-      ;; if the file is empty go back to the upload form
-      (custom-form request year issue ["No file selected"]))))
-
 (defmulti custom (fn [_ _ _ _ _ fmt _] fmt))
 
 (defmethod custom :pdf [request year issue query customer fmt items]
@@ -485,3 +451,37 @@
       vubis/order
       (layout.text/text {:query query :customer customer})
       (text-response (file-name :catalog-custom customer))))
+
+(defn custom-confirm [request year issue query customer fmt file]
+  (let [{tempfile :tempfile} file
+        path (.getPath tempfile)]
+    (if-not (= (nio.file/size path) 0)
+      (let [items (vubis/read-file path)
+            items-collated (vubis/collate-all-duplicate-items items)
+            checker (s/checker validation/CatalogItem)
+            problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
+        (if (seq problems)
+          (let [identity (friend/identity request)]
+            (layout/common
+             identity
+             year issue
+             [:h1 "Confirm Katalog nach Mass"]
+             (error-table problems)
+             (form/form-to
+              {:enctype "multipart/form-data"}
+              [:post (format "/%s/%s/custom" year issue)]
+              (anti-forgery-field)
+              (form/hidden-field "items" (prn-str items))
+              (form/hidden-field "query" query)
+              (form/hidden-field "customer" customer)
+              (form/hidden-field "fmt" fmt)
+              (layout/button (format "/%s/%s/custom" year issue) "Cancel")
+              (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
+          ;; if there are no problems just produce a response with a
+          ;; custom catalog.
+          (custom request year issue query customer fmt
+                  ;;  Repackage the items as edn as the api of the custom function expects
+                  ;;  it that way. Wasteful, I know, but simple.
+                  (prn-str items))))
+      ;; if the file is empty go back to the upload form
+      (custom-form request year issue ["No file selected"]))))
