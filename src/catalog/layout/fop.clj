@@ -484,7 +484,7 @@
 
 (def issue-colors
   "Defines the bg colors used for the cover page of the respective issues"
-  {1 [100 90 10 0]
+  {1 [85 65 0 0]
    2 [69 0 31 7]
    3 [0 25 100 5]
    4 [33 71 0 0]
