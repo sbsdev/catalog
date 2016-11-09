@@ -255,9 +255,10 @@
       trim-punctuation
       normalize-name))
 
-(defn get-format [s]
+(defn get-format
   "Find the given format for a string `s`. If the string doesn't
   correspond to any of BR, DVD, DY, ER, GD, LU, MN or TB return nil"
+   [s]
   (->> s
    (re-find #"^(?:BR|DVD|DY|ER|GD|LU|MN|TB)$")
    format-raw-to-format))
