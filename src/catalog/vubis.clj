@@ -261,8 +261,8 @@
   "Get the accompanying material for `item`. Use
   `accompanying-material` and `accompanying-material-legacy`. If
   `accompanying-material-legacy-other` use that instead of
-  `accompanying-material-legacy`. Return `nil` if none of the input
-  values are non-nil."
+  `accompanying-material-legacy`. Return `nil` if all of the input
+  values are nil."
   [{:keys [accompanying-material accompanying-material-legacy accompanying-material-legacy-other]}]
   (let [materials [accompanying-material (or accompanying-material-legacy
                                              accompanying-material-legacy-other)]]
