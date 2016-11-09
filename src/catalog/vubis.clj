@@ -32,6 +32,8 @@
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
    :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
+   :accompanying-material-legacy [:datafield (attr= :tag "392") :subfield (attr= :code "f")] ; Begleitmaterial oder Spiel-Materialdetails for old records
+   :accompanying-material-legacy-other [:datafield (attr= :tag "300") :subfield (attr= :code "b")] ; Begleitmaterial oder Spiel-Materialdetails for very old records
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
    :personel-text [:datafield (attr= :tag "246") :subfield (attr= :code "g")] ; Regie/Darsteller bei Hörfilm
@@ -263,6 +265,21 @@
    (re-find #"^(?:BR|DVD|DY|ER|GD|LU|MN|TB)$")
    format-raw-to-format))
 
+(defn get-accompanying-material
+  "Get the accompanying material for `item`. Use
+  `accompanying-material` and `accompanying-material-legacy`. If
+  `accompanying-material-legacy-other` use that instead of
+  `accompanying-material-legacy`. Return `nil` if none of the input
+  values are non-nil."
+  [{:keys [accompanying-material accompanying-material-legacy accompanying-material-legacy-other]}]
+  (let [materials [accompanying-material (or accompanying-material-legacy
+                                             accompanying-material-legacy-other)]]
+    (when (some some? materials)
+      (->>
+       materials
+       (remove nil?)
+       (string/join ", ")))))
+
 (defn clean-raw-item
   "Return a proper production based on a raw item, e.g.
   translate the language tag into proper ISO 639-1 codes"
@@ -276,8 +293,7 @@
            game-description double-spaced?
            braille-grade
            directed-by actors personel-text
-           accompanying-material
-           braille-music-grade ismn] :as item
+           braille-music-grade ismn] :as raw-item
     :or {genre "" ; an invalid genre
          genre-code ""}}] ; an invalid genre-code
   (let [fmt (get-format format)
@@ -329,7 +345,7 @@
                       :braille-grade braille-grade
                       :double-spaced? double-spaced?
                       :volumes (parse-int volumes)
-                      :accompanying-material accompanying-material)))
+                      :accompanying-material (get-accompanying-material raw-item))))
       :grossdruck (-> item
                       (assoc-some
                        :volumes (parse-int volumes)))
@@ -344,7 +360,7 @@
       :ludo (-> item
                 (assoc-some
                  :game-description game-description
-                 :accompanying-material accompanying-material
+                 :accompanying-material (get-accompanying-material raw-item)
                  ;; some games are braillified
                  :braille-grade (braille-grade-raw-to-braille-grade braille-grade)))
 
@@ -360,12 +376,12 @@
                                           (when (and (string? product-number)
                                                      (re-find #"^SS\d{5,}" product-number)) :schwarzschrift))
                        :volumes (parse-int volumes)
-                       :accompanying-material accompanying-material))
+                       :accompanying-material (get-accompanying-material raw-item)))
       :taktilesbuch (-> item
                         (assoc-some
                          :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
                          :double-spaced? double-spaced?
-                         :accompanying-material accompanying-material))
+                         :accompanying-material (get-accompanying-material raw-item)))
       ; default case that shouldn't really happen. When the MARC21
       ; entry contains a faulty format then just return the item with
       ; the faulty format. The validation will filter the item out.
