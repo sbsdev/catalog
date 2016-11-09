@@ -257,14 +257,6 @@
       trim-punctuation
       normalize-name))
 
-(defn get-format
-  "Find the given format for a string `s`. If the string doesn't
-  correspond to any of BR, DVD, DY, ER, GD, LU, MN or TB return nil"
-   [s]
-  (->> s
-   (re-find #"^(?:BR|DVD|DY|ER|GD|LU|MN|TB)$")
-   format-raw-to-format))
-
 (defn get-accompanying-material
   "Get the accompanying material for `item`. Use
   `accompanying-material` and `accompanying-material-legacy`. If
@@ -296,7 +288,7 @@
            braille-music-grade ismn] :as raw-item
     :or {genre "" ; an invalid genre
          genre-code ""}}] ; an invalid genre-code
-  (let [fmt (get-format format)
+  (let [fmt (format-raw-to-format format)
         ;; tactile books aren't properly tagged in the format field.
         ;; They are tagged as :ludo and their library signature starts
         ;; with "TB"
