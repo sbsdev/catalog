@@ -272,31 +272,34 @@
        (remove nil?)
        (string/join ", ")))))
 
+(defn- construct-producer-brief [producer-long producer-place]
+  "Return a producer-brief string based on `producer-long` and
+  `producer-place`. Both of these can potentially be nil or blank."
+  (some->>
+   [producer-long producer-place]
+   (remove nil?)
+   (remove string/blank?)
+   (seq) ; short-circuit if both producer-long and producer-place are
+         ; nil or blank
+   (string/join ", ")))
+
 (defn get-producer-brief
   "Get the producer-brief. If `producer` contains a valid numerical
   value other than `0` then return the string from the lookup table in
-  [[producer-raw-to-producer]]. If `producer` contains `0` then generate
-  a brief from `producer-long` and `producer-place`. Otherwise return
-  nil."
+  [[producer-raw-to-producer]]. If `producer` contains `0` or is nil
+  then generate a brief from `producer-long` and `producer-place`."
   [{:keys [producer producer-long producer-place]}]
-  (let [producer-key (parse-int producer)]
+  (let [producer-key (parse-int producer)
+        producer-brief (construct-producer-brief producer-long producer-place)]
     (cond
-      (nil? producer-key)
        ;; no valid producer key
-      nil
-      (= producer-key 0)
+      (nil? producer-key) producer-brief
       ;; the producer is known to be unknown: create a producer based
       ;; on producer-long and producer-place
-      (some->>
-       [producer-long producer-place]
-       (remove nil?)
-       (remove string/blank?)
-       (seq) ; short-circuit if both producer-long and producer-place
-             ; are nil or blank
-       (string/join ", "))
-      :else
-      ;; the producer has a valid key. Return the brief string from the lookup map.
-      (producer-raw-to-producer producer-key))))
+      (= producer-key 0) producer-brief
+      ;; the producer has a valid key. Return the brief string from
+      ;; the lookup map.
+      :else (producer-raw-to-producer producer-key))))
 
 (defn clean-raw-item
   "Return a proper production based on a raw item, e.g.
