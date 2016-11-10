@@ -133,8 +133,7 @@
 
 (def producer-raw-to-producer
   "Mapping between producer-raw and producer"
-  {0   "Anderer/unbekannter Produzent"
-   1   "Blista, Marburg"
+  {1   "Blista, Marburg"
    2   "BBH, Berlin"
    4   "NBH, Hamburg"
    5   "BBH, München"
