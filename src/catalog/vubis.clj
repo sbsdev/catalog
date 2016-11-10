@@ -279,8 +279,8 @@
    [producer-long producer-place]
    (remove nil?)
    (remove string/blank?)
-   (seq) ; short-circuit if both producer-long and producer-place are
-         ; nil or blank
+   seq ; short-circuit if both producer-long and producer-place are
+       ; nil or blank
    (string/join ", ")))
 
 (defn get-producer-brief
