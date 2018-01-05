@@ -23,11 +23,11 @@
                  [mysql/mysql-connector-java "6.0.5"]
                  [yesql "0.5.3"]
                  [org.tobereplaced/nio.file "0.4.0"]]
-  :plugins [[cider/cider-nrepl "0.14.0-SNAPSHOT"]
-;            [refactor-nrepl "2.3.0-SNAPSHOT"]
+  :plugins [[cider/cider-nrepl "0.17.0-SNAPSHOT"]
+            [refactor-nrepl "2.4.0-SNAPSHOT"]
             [lein-immutant "2.1.0"]
-            [lein-codox "0.10.0"]
-            [org.clojars.cvillecsteele/lein-git-version "1.0.3"]]
+            [lein-codox "0.10.3"]
+            [org.clojars.cvillecsteele/lein-git-version "1.2.7"]]
   :codox {:project {:name "Kati"}
           :source-paths ["src"]
           :source-uri "https://github.com/sbsdev/catalog/blob/v{version}/{filepath}#L{line}"
