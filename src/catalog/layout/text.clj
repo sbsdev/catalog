@@ -1,5 +1,5 @@
 (ns catalog.layout.text
-  "Render catalog items as plain textx"
+  "Render catalog items as plain text"
   (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
             [clj-time
              [core :as time.core]
