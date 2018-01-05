@@ -1,8 +1,8 @@
 (defproject catalog "0.1.0-SNAPSHOT"
   :description "A webapp to generate catalogs of the new items in the library"
   :url "https://github.com/sbsdev/catalog"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "GNU Affero General Public License"
+            :url "https://www.gnu.org/licenses/agpl.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/data.zip "0.1.2"]
                  [medley "0.8.4"]
