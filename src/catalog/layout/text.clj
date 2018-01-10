@@ -100,8 +100,7 @@
    (string/join dos-newline)))
 
 (defmethod entry-str :braille
-  [{:keys [creator title subtitles name-of-part source-publisher
-           source-date genre-text description producer-brief
+  [{:keys [genre-text description producer-brief
            rucksackbuch? rucksackbuch-number
            library-signature] :as item}]
   (join
@@ -186,7 +185,7 @@
 
 (defmethod entry-str :ludo
   [{:keys [source-publisher genre-text description
-           game-description accompanying-material library-signature] :as item}]
+           game-description library-signature] :as item}]
   (join
    (entry-heading-str item)
    (wrap source-publisher)
