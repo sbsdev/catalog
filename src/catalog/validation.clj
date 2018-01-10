@@ -22,6 +22,9 @@
 (def ProducerBrief
   (apply s/enum (set (vals vubis/producer-raw-to-producer))))
 
+(def TargetAudience
+  (apply s/enum (set (vals vubis/target-audience-raw-to-target-audience))))
+
 (def BrailleGrade (s/enum :kurzschrift :vollschrift :schwarzschrift))
 
 (def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}|LUD \d{1,3}|BK \d{3}|VI \d{1,3}|TB \d{1,3}")
@@ -55,6 +58,7 @@
     (s/optional-key :price) s/Str
     (s/optional-key :price-on-request?) s/Bool
     (s/optional-key :language) Language
+    :target-audience TargetAudience
     }))
 
 (abstract-map/extend-schema

@@ -8,6 +8,7 @@
              [string :as string]
              [xml :as xml]
              [zip :as zip]]
+            [clojure.data.zip :as data-zip]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
             [clojure.java.io :as io]
             [medley.core :refer [assoc-some]])
@@ -30,6 +31,7 @@
    :source-date [:datafield (attr= :tag "534") :subfield (attr= :code "d")] ; Erscheinungsjahr
    :ismn  [:datafield (attr= :tag "534") :subfield (attr= :code "z")] ; International Standard Music Number
    :language [:datafield (attr= :tag "041") :subfield (attr= :code "a")] ; Sprache
+   :general-information [:controlfield (attr= :tag "008")] ; used to extract target audience
    :general-note [:datafield (attr= :tag "500") :subfield (attr= :code "a")] ; Land, Erscheinungsjahr (des Originalfilms)
    :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
    :accompanying-material-legacy [:datafield (attr= :tag "392") :subfield (attr= :code "f")] ; Begleitmaterial oder Spiel-Materialdetails for old records
@@ -212,6 +214,23 @@
    ;; need to handle other contraction grades as well
    "kr" :kurzschrift})
 
+(def target-audience-raw-to-target-audience
+  "Mapping between raw target-audience and target-audience. See
+  also [Marc21](https://www.loc.gov/marc/bibliographic/bd008b.html)"
+  {\a :kinderbücher-ab-3
+   \b :kinderbücher-ab-6
+   \c :kinderbücher-ab-10
+   \d :kinderbücher-ab-14
+   \e :bücher-für-erwachsene})
+
+(defn get-target-audience
+  "Extract the target audience from a string `s` according to the rules
+  of [008 - MARC
+  21](https://www.loc.gov/marc/bibliographic/bd008b.html). Return nil
+  if `s` doesn't comply with the standard."
+  [s]
+  (get target-audience-raw-to-target-audience (nth s 22)))
+
 (defn parse-int [s]
    (when-let [number (and s (re-find #"\d+" s))]
      (Integer/parseInt number)))
@@ -307,6 +326,7 @@
            library-signature title subtitles name-of-part creator
            price price-on-request? product-number language format producer
            genre genre-code genre-text
+           general-information
            produced-commercially? source-date general-note
            series-title series-volume duration
            volumes narrators producer-long
@@ -333,6 +353,7 @@
                   :source-publisher source-publisher
                   :source source
                   :language (iso-639-2-to-iso-639-1 language)
+                  :target-audience (get-target-audience general-information)
                   :genre (or (genre-raw-to-genre (trunc genre 1))
                              (genre-raw-to-ludo-genre (trunc genre 3))
                              (genre-code-to-genre (trunc genre-code 2)))
@@ -649,6 +670,19 @@
   (some->>
    (apply xml-> record path) (map text) (map string/trim) (map ignore-sine-nomine)))
 
+(defn text-raw
+  "Similar
+  to [clojure.data.zip/text](https://clojure.github.io/data.zip/#clojure.data.zip.xml/text)
+  but doesn't normalize the text"
+  [loc]
+  (apply str (xml-> loc data-zip/descendants zip/node string?)))
+
+(defn get-controlfield
+  "Same as [[get-subfield]] but returns the text unaltered"
+  [record path]
+  (some->
+   (apply xml1-> record path) text-raw))
+
 (defn get-personel-role
   "Return `:director` if `personel` is a director, `actor` if
   `personel` is an actor or nil otherwise"
@@ -694,6 +728,7 @@
       (->> (for [[key path] param-mapping
                  :let [val (cond
                              (#{:narrators :subtitles} key) (get-multi-subfields record path)
+                             (#{:general-information} key) (get-controlfield record path)
                              :else (get-subfield record path))]
                  :when (some? val)]
              [key val])
