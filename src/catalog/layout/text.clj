@@ -64,7 +64,8 @@
 (defn- ausleihe
   [library-signature]
   (when library-signature
-    (str "Ausleihe: " (layout/braille-signatures library-signature))))
+    (wrap-line
+     (str "Ausleihe: " (layout/braille-signatures library-signature)))))
 
 (defn- ausleihe-simple
   [library-signature]
@@ -74,9 +75,10 @@
 (defn- verkauf
   [{:keys [product-number price price-on-request?]}]
   (when (or product-number price-on-request?)
-    (str "Verkauf: "
-         (wrap price "" ". " false)
-         (layout/braille-signatures product-number))))
+    (wrap-line
+     (str "Verkauf: "
+          (wrap price "" ". " false)
+          (layout/braille-signatures product-number)))))
 
 (defn- description-str
   [description]
