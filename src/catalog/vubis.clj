@@ -480,12 +480,15 @@
   braille grades. In the catalog we want one entry"
   [items]
   (let [braille-items (filter #(= (:format %) :braille) items)
+        print-and-braille-items (filter #(= (:format %) :print-and-braille) items)
         musiknoten-items (filter #(= (:format %) :musiknoten) items)
         taktile-items (filter #(= (:format %) :taktilesbuch) items)
         spiele-items (filter #(= (:format %) :ludo) items)
-        others (remove #(#{:braille :musiknoten :taktilesbuch :ludo} (:format %)) items)]
+        others (remove #(#{:braille :print-and-braille :musiknoten
+                           :taktilesbuch :ludo} (:format %)) items)]
     (concat
-     (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items spiele-items])
+     (mapcat collate-duplicate-items [braille-items print-and-braille-items
+                                      musiknoten-items taktile-items spiele-items])
      others)))
 
 (defn- locale-compare

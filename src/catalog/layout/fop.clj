@@ -319,6 +319,13 @@
    (ausleihe-multi library-signature)
    (verkauf item)))
 
+(defmethod entry-sexp :print-and-braille
+  [item opts]
+  ;; a :print-and-braille item has the exact same layout as a :braille
+  ;; item, so just delegate to the :braille version of `entry-sexp` by
+  ;; pretending to be a :braille item
+  (entry-sexp (assoc item :format :braille) opts))
+
 (defmethod entry-sexp :grossdruck
   [{:keys [genre-text description library-signature volumes product-number price price-on-request?] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
