@@ -35,10 +35,12 @@ Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
 *** Data structure
 
 The data is read from [[https://www.loc.gov/marc/bibliographic/][MARC21 XML]] and converted into a Clojure sequence
-of maps. These maps are quite free form, they contain different fields
-depending on the format of the entry, e.g. a braille book might have a
-grade while an audio book probably has a narrator. The entries are
-validated through prismatic/schema.
+of sorted maps. These maps are quite free form, they contain different
+fields depending on the format of the entry, e.g. a braille book might
+have a grade while an audio book probably has a narrator. The entries
+are validated through prismatic/schema. The maps are sorted to
+maintain order, which is later used to emit the genres or sub-genres in
+the desired sequence and to create the TOC accordingly.
 
 *** Output generation
 
