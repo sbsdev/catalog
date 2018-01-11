@@ -15,7 +15,7 @@
 (def game-genres [:lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
                   :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
                   :bücher-über-spiel])
-(def braille-genres (conj genres :musiknoten :taktilesbuch))
+(def braille-genres (conj genres :print-and-braille :taktilesbuch :musiknoten))
 (def subgenres [;; Belletristik
                 :action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :historische-romane :hörspiele :krimis
