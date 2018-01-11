@@ -85,6 +85,17 @@
   (s/optional-key :rucksackbuch-number) s/Int})
 
 (abstract-map/extend-schema
+ Braille CatalogItem [:print-and-braille]
+ {:source-publisher s/Str
+  :source-date s/Inst
+  :genre Genre
+  :sub-genre SubGenre
+  :genre-text s/Str
+  :producer-brief ProducerBrief
+  :rucksackbuch? s/Bool
+  (s/optional-key :rucksackbuch-number) s/Int})
+
+(abstract-map/extend-schema
  Taktil CatalogItem [:taktilesbuch]
  {:source-publisher s/Str
   :source-date s/Inst

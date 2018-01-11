@@ -47,6 +47,7 @@
    :producer-place [:datafield (attr= :tag "260") :subfield (attr= :code "a")] ; Produzent Stadt
    :produced-date [:datafield (attr= :tag "260") :subfield (attr= :code "c")]
    :produced-commercially? [:datafield (attr= :tag "260") :subfield (attr= :code "d")] ; kommerziell?
+   :series-type [:datafield (attr= :tag "492") :subfield (attr= :code "a")] ; Easyreader, Print&Braille, etc
    :series-title [:datafield (attr= :tag "830") :subfield (attr= :code "a")] ; u.a. Rucksackbuch
    :series-volume [:datafield (attr= :tag "830") :subfield (attr= :code "v")]
    :format [:datafield (attr= :tag "091") :subfield (attr= :code "c")]
@@ -328,7 +329,7 @@
            genre genre-code genre-text
            general-information
            produced-commercially? source-date general-note
-           series-title series-volume duration
+           series-title series-volume series-type duration
            volumes narrators producer-long
            game-description double-spaced?
            braille-grade
@@ -337,11 +338,16 @@
     :or {genre "" ; an invalid genre
          genre-code ""}}] ; an invalid genre-code
   (let [fmt (format-raw-to-format format)
-        ;; tactile books aren't properly tagged in the format field.
-        ;; They are tagged as :ludo and their library signature starts
-        ;; with "TB"
-        fmt (if (and (= fmt :ludo) library-signature (re-find #"^TB " library-signature))
-              :taktilesbuch fmt)
+        ;; tactile and print-and-braille books aren't properly tagged in
+        ;; the format field.
+        fmt (cond
+              ;; print-and-braille books have a special series-type
+              (= series-type "printundbraille") :print-and-braille
+              ;; tactile books are tagged as :ludo and their library
+              ;; signature starts with "TB"
+              (and (= fmt :ludo) library-signature
+                   (re-find #"^TB " library-signature)) :taktilesbuch
+              :else fmt)
         item (-> {}
                  (assoc-some
                   :record-id record-id
@@ -372,21 +378,23 @@
                     :produced-commercially? (some? produced-commercially?)
                     :duration (parse-int duration)
                     :narrators (not-empty (map normalize-name narrators))))
-      :braille (let [rucksackbuch-number (and series-title
-                                              (re-find #"^Rucksackbuch" series-title)
-                                              (parse-int series-volume))
-                     double-spaced? (boolean
-                                      (and double-spaced?
-                                           (re-find #"^Weitzeilig" double-spaced?)))
-                     braille-grade (braille-grade-raw-to-braille-grade braille-grade)]
-                 (-> item
-                     (assoc-some
-                      :rucksackbuch-number rucksackbuch-number
-                      :rucksackbuch? (boolean rucksackbuch-number)
-                      :braille-grade braille-grade
-                      :double-spaced? double-spaced?
-                      :volumes (parse-int volumes)
-                      :accompanying-material (get-accompanying-material raw-item))))
+      ;; print-and-braille books are very similar to braille books
+      (:print-and-braille
+       :braille) (let [rucksackbuch-number (and series-title
+                                                (re-find #"^Rucksackbuch" series-title)
+                                                (parse-int series-volume))
+                       double-spaced? (boolean
+                                       (and double-spaced?
+                                            (re-find #"^Weitzeilig" double-spaced?)))
+                       braille-grade (braille-grade-raw-to-braille-grade braille-grade)]
+                   (-> item
+                       (assoc-some
+                        :rucksackbuch-number rucksackbuch-number
+                        :rucksackbuch? (boolean rucksackbuch-number)
+                        :braille-grade braille-grade
+                        :double-spaced? double-spaced?
+                        :volumes (parse-int volumes)
+                        :accompanying-material (get-accompanying-material raw-item))))
       :grossdruck (-> item
                       (assoc-some
                        :volumes (parse-int volumes)))
