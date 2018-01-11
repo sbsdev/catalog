@@ -338,11 +338,13 @@
     :or {genre "" ; an invalid genre
          genre-code ""}}] ; an invalid genre-code
   (let [fmt (format-raw-to-format format)
+        ;; print-and-braille books have a special series-type
+        print-and-braille? (when (= series-type "printundbraille") true)
         ;; tactile and print-and-braille books aren't properly tagged in
         ;; the format field.
         fmt (cond
-              ;; print-and-braille books have a special series-type
-              (= series-type "printundbraille") :print-and-braille
+              ;; treat print-and-braille books as braille books
+              print-and-braille? :braille
               ;; tactile books are tagged as :ludo and their library
               ;; signature starts with "TB"
               (and (= fmt :ludo) library-signature
@@ -378,23 +380,22 @@
                     :produced-commercially? (some? produced-commercially?)
                     :duration (parse-int duration)
                     :narrators (not-empty (map normalize-name narrators))))
-      ;; print-and-braille books are very similar to braille books
-      (:print-and-braille
-       :braille) (let [rucksackbuch-number (and series-title
-                                                (re-find #"^Rucksackbuch" series-title)
-                                                (parse-int series-volume))
-                       double-spaced? (boolean
-                                       (and double-spaced?
-                                            (re-find #"^Weitzeilig" double-spaced?)))
-                       braille-grade (braille-grade-raw-to-braille-grade braille-grade)]
-                   (-> item
-                       (assoc-some
-                        :rucksackbuch-number rucksackbuch-number
-                        :rucksackbuch? (boolean rucksackbuch-number)
-                        :braille-grade braille-grade
-                        :double-spaced? double-spaced?
-                        :volumes (parse-int volumes)
-                        :accompanying-material (get-accompanying-material raw-item))))
+      :braille (let [rucksackbuch-number (and series-title
+                                              (re-find #"^Rucksackbuch" series-title)
+                                              (parse-int series-volume))
+                     double-spaced? (boolean
+                                     (and double-spaced?
+                                          (re-find #"^Weitzeilig" double-spaced?)))
+                     braille-grade (braille-grade-raw-to-braille-grade braille-grade)]
+                 (-> item
+                     (assoc-some
+                      :rucksackbuch-number rucksackbuch-number
+                      :rucksackbuch? (boolean rucksackbuch-number)
+                      :braille-grade braille-grade
+                      :double-spaced? double-spaced?
+                      :volumes (parse-int volumes)
+                      :accompanying-material (get-accompanying-material raw-item)
+                      :print-and-braille? print-and-braille?)))
       :grossdruck (-> item
                       (assoc-some
                        :volumes (parse-int volumes)))
@@ -480,15 +481,12 @@
   braille grades. In the catalog we want one entry"
   [items]
   (let [braille-items (filter #(= (:format %) :braille) items)
-        print-and-braille-items (filter #(= (:format %) :print-and-braille) items)
         musiknoten-items (filter #(= (:format %) :musiknoten) items)
         taktile-items (filter #(= (:format %) :taktilesbuch) items)
         spiele-items (filter #(= (:format %) :ludo) items)
-        others (remove #(#{:braille :print-and-braille :musiknoten
-                           :taktilesbuch :ludo} (:format %)) items)]
+        others (remove #(#{:braille :musiknoten :taktilesbuch :ludo} (:format %)) items)]
     (concat
-     (mapcat collate-duplicate-items [braille-items print-and-braille-items
-                                      musiknoten-items taktile-items spiele-items])
+     (mapcat collate-duplicate-items [braille-items musiknoten-items taktile-items spiele-items])
      others)))
 
 (defn- locale-compare

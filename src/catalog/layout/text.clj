@@ -113,13 +113,6 @@
    (ausleihe library-signature)
    (verkauf item)))
 
-(defmethod entry-str :print-and-braille
-  [item]
-  ;; a :print-and-braille item has the exact same layout as a :braille
-  ;; item, so just delegate to the :braille version of `entry-str` by
-  ;; pretending to be a :braille item
-  (entry-str (assoc item :format :braille)))
-
 (defmethod entry-str :musiknoten
   [{:keys [creator title subtitles name-of-part source-publisher
            source-date genre-text description producer-brief
