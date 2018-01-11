@@ -23,6 +23,7 @@
                  [mysql/mysql-connector-java "6.0.5"]
                  [yesql "0.5.3"]
                  [org.tobereplaced/nio.file "0.4.0"]]
+  :git-version {}
   :plugins [[cider/cider-nrepl "0.17.0-SNAPSHOT"]
             [refactor-nrepl "2.4.0-SNAPSHOT"]
             [lein-immutant "2.1.0"]
