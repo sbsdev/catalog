@@ -548,13 +548,15 @@
   `genre` and `sub-genre`. The update-key determines where in the tree
   a particular catalog item will be inserted. This is used to group
   the catalog items."
-  [{fmt :format genre :genre subgenre :sub-genre}]
+  [{fmt :format genre :genre subgenre :sub-genre print-and-braille? :print-and-braille?}]
   (cond
     (= fmt :hörbuch) [fmt genre subgenre]
     (#{:hörfilm :ludo} fmt) [fmt]
-    ;; file tactile books and musiknoten under braille with
-    ;; the original format as genre
-    (#{:taktilesbuch :musiknoten} fmt) [:braille fmt]
+    ;; file musiknoten under braille with the original format as genre
+    (= fmt :musiknoten) [:braille fmt]
+    ;; file tactile books and print-and-braille books under braille
+    ;; with :print-and-braille as genre
+    (or (= fmt :taktilesbuch) print-and-braille?) [:braille :print-and-braille]
     (= genre :kinder-und-jugendbücher) [fmt genre subgenre]
     :else [fmt genre]))
 
