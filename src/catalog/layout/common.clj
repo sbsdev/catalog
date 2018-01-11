@@ -27,8 +27,13 @@
                 :lebensgestaltung-gesundheit-erziehung :philosophie-religion-esoterik
                 :reisen-natur-tiere :sprache :wissenschaft-technik
                 ;; Kinder und Jugendbücher
-                :kinderbücher-ab-6 :kinderbücher-ab-10 :jugendbücher
+                :kinderbücher-ab-3
+                :kinderbücher-ab-6
+                :kinderbücher-ab-10
+                :kinderbücher-ab-14
+                :jugendbücher
                 :kinder-und-jugendsachbücher
+                :bücher-für-erwachsene
                 ;; Bücher in Fremdsprachen
                 :englisch :weitere-fremdsprachen])
 
@@ -53,7 +58,6 @@
                              ;; Names for genres
                              :belletristik "Belletristik"
                              :sachbücher "Sachbücher"
-                             :kinder-und-jugendbücher "Kinder- und Jugendbücher"
                              :bücher-in-fremdsprachen "Bücher in Fremdsprachen"
                              :action-und-thriller "Action und Thriller"
                              :beziehungsromane "Beziehungsromane"
@@ -76,16 +80,21 @@
                              :sprache "Sprache"
                              :wissenschaft-technik "Wissenschaft, Technik"
                              :kinder-und-jugendsachbücher "Kinder- und Jugendsachbücher"
+                             :kinderbücher-ab-3 "Kinderbücher (ab 3)"
                              :kinderbücher-ab-6 "Kinderbücher (ab 6)"
                              :kinderbücher-ab-10 "Kinderbücher (ab 10)"
+                             :kinderbücher-ab-14 "Kinderbücher (ab 14)"
+                             :bücher-für-erwachsene "Bücher für Erwachsene"
+                             :kinder-und-jugendbücher "Kinder- und Jugendbücher"
+                             :jugendbücher "Jugendbücher (ab 14)"
                              :englisch "Englisch"
                              :weitere-fremdsprachen "Weitere Fremdsprachen"
                              :spielfilm "Spielfilme"
                              :mundartfilm "Mundartfilme"
                              :dokumentarfilm "Dokumentarfilme"
-                             :jugendbücher "Jugendbücher (ab 14)"
                              :musiknoten "Braille-Musiknoten"
                              :taktilesbuch "Taktile Bücher"
+                             :print-and-braille "Print & Braille Bücher"
                              :spiel "Spiele"
                              :lernspiel "Lernspiele"
                              :solitairspiel "Solitairspiele"
