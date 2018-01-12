@@ -1,7 +1,7 @@
 -- Type of a catalog
 -- a classic reference table
 CREATE TABLE catalog_type (
-  id VARCHAR(16) PRIMARY KEY
+  id VARCHAR(25) PRIMARY KEY
 );
 
 CREATE TABLE catalogs (
@@ -50,4 +50,14 @@ INSERT INTO catalog_type VALUES
 ('hörbuch'),
 ('hörfilm'),
 ('ludo'),
-('taktilesbuch');
+('taktilesbuch')
+('print-and-braille');
+
+-- Update the catalog_type column of the full_catalogs table
+SHOW CREATE TABLE full_catalogs;
+
+ALTER TABLE catalog_type MODIFY id VARCHAR(25);
+ALTER TABLE full_catalogs DROP FOREIGN KEY full_catalogs_ibfk_1;
+ALTER TABLE full_catalogs MODIFY catalog_type VARCHAR(25), ADD FOREIGN KEY full_catalogs_ibfk_1 (catalog_type) REFERENCES catalog_type(id);
+
+INSERT INTO catalog_type VALUES ('print-and-braille');
