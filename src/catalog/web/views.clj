@@ -81,6 +81,8 @@
        (download-well (translations :catalog-ludo) year nil "spiele-in-der-sbs.pdf")]]
      [:div.row
       [:div.col-md-6
+       (download-well (translations :catalog-print-and-braille) year nil "print-und-braille-bücher-in-der-sbs.pdf")]
+      [:div.col-md-6
        (download-well (translations :catalog-taktilesbuch) year nil "taktile-kinderbücher-der-sbs.pdf")]])))
 
 (defn- clean-string
@@ -88,7 +90,8 @@
   [s]
   (-> s
    string/lower-case
-   (string/replace #"\s" "-")))
+   (string/replace #"\s" "-")
+   (string/replace #"&" "und")))
 
 ;; FIXME: we should probably use time zone that is defined in the
 ;; browser of the user. For simplicity sake we just hard code it here.
@@ -229,6 +232,15 @@
         (layout.fop/generate-pdf! temp-file))
     (pdf-response temp-file filename)))
 
+(defn print-and-braille-bücher [year]
+  (let [filename (file-name :catalog-print-and-braille year)
+        temp-file (java.io.File/createTempFile filename ".pdf")]
+    (-> (db/read-full-catalog year :print-and-braille)
+        (vubis/order-and-group vubis/get-update-keys-print-and-braille)
+        (layout.fop/document :print-and-braille year nil nil nil)
+        (layout.fop/generate-pdf! temp-file))
+    (pdf-response temp-file filename)))
+
 (defn- upload-well
   [title url errors]
   [:div.well
@@ -293,13 +305,20 @@
                     (:ludo errors))]]
      [:div.row
       [:div.col-md-6
+       (upload-well "Upload Gesamtkatalog Print & Braille"
+                    (format "/%s/%s/%s/upload-confirm" year issue (name :print-and-braille))
+                    (:print-and-braille errors))]
+      [:div.col-md-6
        (upload-well "Upload Gesamtkatalog Taktile Bücher"
                     (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
                     (:taktilesbuch errors))]])))
 
 (defn upload [request year issue fmt items]
   (case fmt
-    (:hörfilm :ludo :taktilesbuch) (db/save-full-catalog! year (name fmt) (edn/read-string items))
+    (:hörfilm
+     :ludo
+     :taktilesbuch
+     :print-and-braille) (db/save-full-catalog! year (name fmt) (edn/read-string items))
     (db/save-catalog! year issue (edn/read-string items)))
   (response/redirect-after-post (format "/%s/%s" year issue)))
 

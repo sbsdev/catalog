@@ -76,6 +76,8 @@
        [year :<< as-int] (views/spiele year))
   (GET (format "/:year/taktile-%s-der-sbs.pdf" (url-encode "kinderbücher"))
        [year :<< as-int] (views/taktile-bücher year))
+  (GET (format "/:year/print-und-braille-%s-in-der-sbs.pdf" (url-encode "bücher"))
+       [year :<< as-int] (views/print-and-braille-bücher year))
 
   ;; custom catalogs
   (GET "/:year/:issue/custom"
