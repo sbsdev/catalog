@@ -422,8 +422,8 @@
    (cond
      ;; special case where the editorial or the recommendations are passed in the tree
      (#{:editorial :recommendations :recommendation} genre) (md-to-fop items [fmt genre] opts)
-     ;; special case when printing the whole catalog of tactile books
-     (#{:taktilesbuch} fmt) (entries-sexp items opts)
+     ;; special case when printing the whole catalog of tactile and print-and-braille books
+     (#{:taktilesbuch :print-and-braille} fmt) (entries-sexp items opts)
      (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) opts)
      (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) opts)
      :else (entries-sexp items opts))])
@@ -731,6 +731,7 @@
   - `:hörfilm` a catalog with all hörfile for a given year
   - `:ludo` a catalog with all games for a given year
   - `:taktilesbuch` a catalog with all tactile books for a given year
+  - `:print-and-braille` a catalog with all print-and-braille books for a given year
   - `:custom` a catalog with a custom selection of catalog entries specific for a customer
   - `:custom-grossdruck` a catalog with a custom selection of catalog entries specific for a customer and in large print"
   (fn [items fmt year issue editorial recommendations options] fmt))
@@ -871,6 +872,24 @@
 (defmethod document-sexp :taktilesbuch
   [items fmt year issue _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-taktilesbuch)]
+    [:fo:root (style :font (root-attrs))
+     (layout-master-set)
+     (declarations title (or description title))
+     [:fo:page-sequence {:master-reference "main"
+                         :initial-page-number "1"
+                         :language "de"}
+      (header :recto)
+      (header :verso)
+
+      (let [subitems (get items fmt)]
+        [:fo:flow {:flow-name "xsl-region-body"}
+         (cover-page [title] year)
+         (toc subitems [fmt] 1 {:heading? true})
+         (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]]))
+
+(defmethod document-sexp :print-and-braille
+  [items fmt year issue _ _ {:keys [description]}]
+  (let [title (layout/translations :catalog-print-and-braille)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
      (declarations title (or description title))

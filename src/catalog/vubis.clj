@@ -594,11 +594,22 @@
 
 (defn get-update-keys-taktil
   "Return the update keys for a given item (see [[get-update-keys]]).
-  For the taktil catalog we need to group the :taktilesbuch items by
-  genre."
+  For the taktil catalog we group the :taktilesbuch items by genre."
   [{fmt :format genre :genre :as item}]
   (cond
     (#{:taktilesbuch} fmt) [fmt genre]
+    :else (get-update-keys item)))
+
+(defn get-update-keys-print-and-braille
+  "Return the update keys for a given item (see [[get-update-keys]]).
+  For the print-and-braille catalog we group the
+  :print-and-braille items by target-audience."
+  [{fmt :format target-audience :target-audience
+    print-and-braille? :print-and-braille? :as item}]
+  ;; file the items under the format :print-and-braille and use the
+  ;; target-audience as genre.
+  (cond
+    print-and-braille? [:print-and-braille target-audience]
     :else (get-update-keys item)))
 
 (def ^:private sort-order
