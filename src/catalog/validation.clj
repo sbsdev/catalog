@@ -82,7 +82,8 @@
   :genre-text s/Str
   :producer-brief ProducerBrief
   :rucksackbuch? s/Bool
-  (s/optional-key :rucksackbuch-number) s/Int})
+  (s/optional-key :rucksackbuch-number) s/Int
+  (s/optional-key :print-and-braille?) s/Bool})
 
 (abstract-map/extend-schema
  Taktil CatalogItem [:taktilesbuch]
