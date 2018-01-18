@@ -158,7 +158,9 @@
   (let [filename (file-name :catalog-all year issue)
         temp-file (java.io.File/createTempFile filename ".pdf")]
     (-> (db/read-catalog year issue)
-        vubis/order-and-group
+        vubis/order
+        vubis/duplicate-print-and-braille-items
+        vubis/group
         (layout.fop/document :all-formats year issue nil nil)
         (layout.fop/generate-pdf! temp-file))
     (pdf-response temp-file filename)))
@@ -179,7 +181,9 @@
         editorial (db/read-editorial year issue :braille)
         recommendation (db/read-recommendation year issue :braille)]
     (-> (db/read-catalog year issue)
-        vubis/order-and-group
+        vubis/order
+        vubis/duplicate-print-and-braille-items
+        vubis/group
         :braille
         (layout.dtbook/dtbook {:year year :issue issue
                                :editorial editorial :recommendation recommendation})

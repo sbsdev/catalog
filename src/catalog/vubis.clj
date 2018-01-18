@@ -340,15 +340,24 @@
   (let [fmt (format-raw-to-format format)
         ;; print-and-braille books have a special series-type
         print-and-braille? (when (= series-type "printundbraille") true)
+        ;; tactile books are tagged as :ludo and their library signature
+        ;; starts with "TB"
+        taktilesbuch? (when (and (= fmt :ludo) library-signature
+                                 (re-find #"^TB " library-signature)) true)
+        ;; print-and-braille and braille books are treated the same way, as
+        ;; they are rendered exactly the same. However print-and-braille
+        ;; books need to be listed twice in the catalog _except_ if they
+        ;; are realy a :taktilesbuch. That's why we also mark those
+        ;; print-and-braille books with the really-a-taktilesbuch?
+        ;; attribute
+        really-a-taktilesbuch? (and print-and-braille? taktilesbuch?)
         ;; tactile and print-and-braille books aren't properly tagged in
         ;; the format field.
         fmt (cond
-              ;; treat print-and-braille books as braille books
+              ;; treat print-and-braille books as braille books, as they
+              ;; are rendered exactly the same way.
               print-and-braille? :braille
-              ;; tactile books are tagged as :ludo and their library
-              ;; signature starts with "TB"
-              (and (= fmt :ludo) library-signature
-                   (re-find #"^TB " library-signature)) :taktilesbuch
+              taktilesbuch? :taktilesbuch
               :else fmt)
         item (-> {}
                  (assoc-some
@@ -395,7 +404,8 @@
                       :double-spaced? double-spaced?
                       :volumes (parse-int volumes)
                       :accompanying-material (get-accompanying-material raw-item)
-                      :print-and-braille? print-and-braille?)))
+                      :print-and-braille? print-and-braille?
+                      :really-a-taktilesbuch? really-a-taktilesbuch?)))
       :grossdruck (-> item
                       (assoc-some
                        :volumes (parse-int volumes)))
@@ -648,6 +658,24 @@
         name-of-part]
        (map chunkify)))
 
+(defn duplicate-print-and-braille-items
+  "Given a list of `items` return the list while duplicating the
+  `:print-and-braille?` items (but only the ones that aren't a
+  `:taktilesbuch` in reality). They are duplicated such that the
+  original is kept as is and the second item is like the original but
+  doesn't have the `:print-and-braille?` attribute. This will make
+  sure `:print-and-braille?` items are shown under both Braille and
+  Print&Braille in the catalog"
+  [items]
+  (mapcat
+   (fn [item]
+     (if (and (= (:format item) :braille)
+              (:print-and-braille? item)
+              (not (:really-a-taktilesbuch? item)))
+       [item (dissoc item :print-and-braille?)]
+       [item]))
+   items))
+
 (defn order
   "Order the catalog `items`. Items representing the same book, e.g.
   different Braille versions of the same book are collated."
@@ -655,6 +683,21 @@
   (->> items
    collate-all-duplicate-items
    (sort-by sort-key locale-comparator)))
+
+(defn group
+  "Group the catalog `items`. Given a sequence of `items` returns a tree
+  where all items are grouped by format, genre and sometimes even
+  subgenre. The exact details of the grouping are determined by the
+  `get-update-keys-fn`."
+  ([items]
+   (group items get-update-keys))
+  ([items get-update-keys-fn]
+   (reduce
+    (fn [m item]
+      (let [update-keys (get-update-keys-fn item)]
+        (update-in-sorted m update-keys (fnil conj []) item)))
+    (sorted-map-by by-format-genre-subgenre)
+    items)))
 
 (defn order-and-group
   "Order and group the catalog `items`. Given a sequence of `items`
@@ -664,13 +707,9 @@
   ([items]
    (order-and-group items get-update-keys))
   ([items get-update-keys-fn]
-   (->> items
+   (-> items
     order
-    (reduce
-     (fn [m item]
-       (let [update-keys (get-update-keys-fn item)]
-         (update-in-sorted m update-keys (fnil conj []) item)))
-     (sorted-map-by by-format-genre-subgenre)))))
+    (group get-update-keys-fn))))
 
 (defn ignore-sine-nomine [s]
   "Return input string `s` unless it contains \"s.n.\" (Sine nomine),
