@@ -111,6 +111,7 @@
   *Verkauf:* DY 456789, CHF 21.90
   
 ** Neue Braillebücher
+<<Layout Neue Braillebücher>>
 *Muster, Hans: [[foo][Ein ellenlanger Titel]].* Ein ellenlanger Untertitel. Bandangabe. - Aufbau-Verlag, 2014.
   Genre: Abenteuerromane.
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non libero vel quam dictum tincidunt. Duis eleifend leo at neque tristique. 
@@ -162,7 +163,8 @@ Schriftart = ["Kurzschrift" "Vollschrift" "Weitzeilige Vollschrift"]
   DZB, Leipzig.
   *Ausleihe:* Kurzschrift, 5 Bd., DS 12345. Vollschrift, 7 Bd., DS 12346, Weitzeilige Vollschrift, 10 Bd., DS 45678
   *Verkauf:* CHF 21.90. Kurzschrift, 5 Bd., DS 12347. Vollschrift, 7 Bd., DS 12347, Weitzeilige Vollschrift, 10 Bd., DS 45679
-
+** Neue Print & Braille Bücher
+same as [[Layout Neue Braillebücher]]
 
 * Validation
 ** Neue Hörbucher
@@ -175,48 +177,48 @@ Schriftart = ["Kurzschrift" "Vollschrift" "Weitzeilige Vollschrift"]
 - missing :duration
 - missing :narrator
 
-
-
 * Mapping
 Mapping between internal field name and MARC21 field.
 
-| Name                               | MARC21 | Comment                                                         |
-|------------------------------------+--------+-----------------------------------------------------------------|
-| record-id                          | 001    |                                                                 |
-| title                              | 245$a  |                                                                 |
-| subtitles                          | 245$b  |                                                                 |
-| name-of-part                       | 245$p  | Bandangabe                                                      |
-| creator                            | 100    | autor                                                           |
-| source                             | 020    | isbn                                                            |
-| description                        | 520    | abstract                                                        |
-| volumes                            | 300$9  | Anzahl Medien                                                   |
-| source-publisher                   | 534$c  | Verlag                                                          |
-| source-date                        | 534$d  | Erscheinungsjahr                                                |
-| ismn                               | 534$z  | International Standard Music Number                             |
-| language                           | 041$a  | Sprache                                                         |
-| general-note                       | 500$a  | Land, Erscheinungsjahr (des Originalfilms)                      |
-| accompanying-material              | 300$e  | Begleitmaterial oder Spiel-Materialdetails                      |
-| accompanying-material-legacy       | 392$f  | Begleitmaterial oder Spiel-Materialdetails for old records      |
-| accompanying-material-legacy-other | 300$b  | Begleitmaterial oder Spiel-Materialdetails for very old records |
-| narrators                          | 709$a  | Sprecher                                                        |
-| duration                           | 391$a  | Spieldauer                                                      |
-| personel-text                      | 246$g  | Regie/Darsteller bei Hörfilm                                    |
-| braille-grade                      | 392$a  | Schriftart Braille                                              |
-| double-spaced?                     | 392$g  | Weitzeiliger Druck                                              |
-| braille-music-grade                | 393$a  | Schriftart Braille                                              |
-| producer-long                      | 260$b  | Produzent                                                       |
-| producer                           | 260$9  | a number that determines Produzent Kürzel und Stadt             |
-| producer-place                     | 260$a  | Produzent Stadt                                                 |
-| produced-date                      | 260$c  |                                                                 |
-| produced-commercially?             | 260$d  | kommerziell?                                                    |
-| series-title                       | 830$a  | u.a. Rucksackbuch                                               |
-| series-volume                      | 830$v  |                                                                 |
-| format                             | 091$c  |                                                                 |
-| genre                              | 099$b  | also Spiel-Systematikgruppe                                     |
-| genre-code                         | 099$a  | used for movie genre i.e. Filmkategorie                         |
-| genre-text                         | 099$f  | used to display the genre                                       |
-| library-signature                  | 091$a  | Signaturen                                                      |
-| product-number                     | 024$a  | MVL-Bestellnummer                                               |
-| price                              | 024$c  | Preis                                                           |
-| price-on-request?                  | 024$d  | Preis auf Anfrage                                               |
-| game-description                   | 300$a  | Beschreibung von Spielen                                        |
+| Name                               | MARC21  | Comment                                                                             |
+|------------------------------------+---------+-------------------------------------------------------------------------------------|
+| record-id                          | 001     |                                                                                     |
+| title                              | 245$a   |                                                                                     |
+| subtitles                          | 245$b   |                                                                                     |
+| name-of-part                       | 245$p   | Bandangabe                                                                          |
+| creator                            | 100     | autor                                                                               |
+| source                             | 020     | isbn                                                                                |
+| description                        | 520     | abstract                                                                            |
+| volumes                            | 300$9   | Anzahl Medien                                                                       |
+| source-publisher                   | 534$c   | Verlag                                                                              |
+| source-date                        | 534$d   | Erscheinungsjahr                                                                    |
+| ismn                               | 534$z   | International Standard Music Number                                                 |
+| language                           | 041$a   | Sprache                                                                             |
+| general-note                       | 500$a   | Land, Erscheinungsjahr (des Originalfilms)                                          |
+| accompanying-material              | 300$e   | Begleitmaterial oder Spiel-Materialdetails                                          |
+| accompanying-material-legacy       | 392$f   | Begleitmaterial oder Spiel-Materialdetails for old records                          |
+| accompanying-material-legacy-other | 300$b   | Begleitmaterial oder Spiel-Materialdetails for very old records                     |
+| narrators                          | 709$a   | Sprecher                                                                            |
+| duration                           | 391$a   | Spieldauer                                                                          |
+| personel-text                      | 246$g   | Regie/Darsteller bei Hörfilm                                                        |
+| braille-grade                      | 392$a   | Schriftart Braille                                                                  |
+| double-spaced?                     | 392$g   | Weitzeiliger Druck                                                                  |
+| target-audience                    | 008(22) | target audience is extracted from control field 008 where the 22nd position is used |
+| braille-music-grade                | 393$a   | Schriftart Braille                                                                  |
+| producer-long                      | 260$b   | Produzent                                                                           |
+| producer                           | 260$9   | a number that determines Produzent Kürzel und Stadt                                 |
+| producer-place                     | 260$a   | Produzent Stadt                                                                     |
+| produced-date                      | 260$c   |                                                                                     |
+| produced-commercially?             | 260$d   | kommerziell?                                                                        |
+| series-title                       | 830$a   | u.a. Rucksackbuch                                                                   |
+| series-volume                      | 830$v   |                                                                                     |
+| format                             | 091$c   |                                                                                     |
+| genre                              | 099$b   | also Spiel-Systematikgruppe                                                         |
+| genre-code                         | 099$a   | used for movie genre i.e. Filmkategorie                                             |
+| genre-text                         | 099$f   | used to display the genre                                                           |
+| library-signature                  | 091$a   | Signaturen                                                                          |
+| product-number                     | 024$a   | MVL-Bestellnummer                                                                   |
+| price                              | 024$c   | Preis                                                                               |
+| price-on-request?                  | 024$d   | Preis auf Anfrage                                                                   |
+| game-description                   | 300$a   | Beschreibung von Spielen                                                            |
+| series-type                        | 492$a   | used to determine whether a book is of type Print&Braille                           |
