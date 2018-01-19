@@ -340,24 +340,12 @@
   (let [fmt (format-raw-to-format format)
         ;; print-and-braille books have a special series-type
         print-and-braille? (when (= series-type "printundbraille") true)
-        ;; tactile books are tagged as :ludo and their library signature
-        ;; starts with "TB"
-        taktilesbuch? (when (and (= fmt :ludo) library-signature
-                                 (re-find #"^TB " library-signature)) true)
-        ;; print-and-braille and braille books are treated the same way, as
-        ;; they are rendered exactly the same. However print-and-braille
-        ;; books need to be listed twice in the catalog _except_ if they
-        ;; are realy a :taktilesbuch. That's why we also mark those
-        ;; print-and-braille books with the really-a-taktilesbuch?
-        ;; attribute
-        really-a-taktilesbuch? (and print-and-braille? taktilesbuch?)
-        ;; tactile and print-and-braille books aren't properly tagged in
-        ;; the format field.
         fmt (cond
-              ;; treat print-and-braille books as braille books, as they
-              ;; are rendered exactly the same way.
-              print-and-braille? :braille
-              taktilesbuch? :taktilesbuch
+              ;; tactile books aren't properly tagged in the format
+              ;; field. They are tagged as :ludo and their library
+              ;; signature starts with "TB"
+              (and (= fmt :ludo) library-signature
+                   (re-find #"^TB " library-signature)) :taktilesbuch
               :else fmt)
         item (-> {}
                  (assoc-some
@@ -404,8 +392,7 @@
                       :double-spaced? double-spaced?
                       :volumes (parse-int volumes)
                       :accompanying-material (get-accompanying-material raw-item)
-                      :print-and-braille? print-and-braille?
-                      :really-a-taktilesbuch? really-a-taktilesbuch?)))
+                      :print-and-braille? print-and-braille?)))
       :grossdruck (-> item
                       (assoc-some
                        :volumes (parse-int volumes)))
@@ -441,7 +428,8 @@
                         (assoc-some
                          :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
                          :double-spaced? double-spaced?
-                         :accompanying-material (get-accompanying-material raw-item)))
+                         :accompanying-material (get-accompanying-material raw-item)
+                         :print-and-braille? print-and-braille?))
       ; default case that shouldn't really happen. When the MARC21
       ; entry contains a faulty format then just return the item with
       ; the faulty format. The validation will filter the item out.
@@ -660,18 +648,16 @@
 
 (defn duplicate-print-and-braille-items
   "Given a list of `items` return the list while duplicating the
-  `:print-and-braille?` items (but only the ones that aren't a
-  `:taktilesbuch` in reality). They are duplicated such that the
-  original is kept as is and the second item is like the original but
-  doesn't have the `:print-and-braille?` attribute. This will make
-  sure `:print-and-braille?` items are shown under both Braille and
+  `:braille` format items that have the `:print-and-braille?`
+  attribute. They are duplicated such that the original is kept as is
+  and the second item is like the original but doesn't have the
+  `:print-and-braille?` attribute. This will make sure
+  `:print-and-braille?` items are shown under both Braille and
   Print&Braille in the catalog"
   [items]
   (mapcat
    (fn [item]
-     (if (and (= (:format item) :braille)
-              (:print-and-braille? item)
-              (not (:really-a-taktilesbuch? item)))
+     (if (and (= (:format item) :braille) (:print-and-braille? item))
        [item (dissoc item :print-and-braille?)]
        [item]))
    items))

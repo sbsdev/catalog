@@ -286,7 +286,11 @@
 
 (defmulti entry-sexp
   "Return a hiccup style sexp for a given item."
-  (fn [{fmt :format} opts] fmt))
+  (fn [{fmt :format print-and-braille? :print-and-braille?} opts]
+    (cond
+      ;; render print-and-braille items the same way as a :braille item
+      print-and-braille? :braille
+      :else fmt)))
 
 (defmethod entry-sexp :hörbuch
   [{:keys [genre-text description duration narrators producer-brief

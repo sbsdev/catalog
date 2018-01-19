@@ -83,8 +83,7 @@
   :producer-brief ProducerBrief
   :rucksackbuch? s/Bool
   (s/optional-key :rucksackbuch-number) s/Int
-  (s/optional-key :print-and-braille?) s/Bool
-  (s/optional-key :really-a-taktilesbuch?) s/Bool})
+  (s/optional-key :print-and-braille?) s/Bool})
 
 (abstract-map/extend-schema
  Taktil CatalogItem [:taktilesbuch]
@@ -93,7 +92,8 @@
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
-  :producer-brief ProducerBrief})
+  :producer-brief ProducerBrief
+  (s/optional-key :print-and-braille?) s/Bool})
 
 (abstract-map/extend-schema
  Musiknoten CatalogItem [:musiknoten]

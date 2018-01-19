@@ -59,7 +59,13 @@
     (when (or source-publisher source-date) " - ")
     (wrap source-publisher "" (if source-date ", " "") false) (wrap (layout/year source-date)))))
 
-(defmulti entry-str (fn [{fmt :format}] fmt))
+(defmulti entry-str
+  "Return a rendered string for a given item."
+  (fn [{fmt :format print-and-braille? :print-and-braille?}]
+    (cond
+      ;; render print-and-braille items the same way as a :braille item
+      print-and-braille? :braille
+      :else fmt)))
 
 (defn- ausleihe
   [library-signature]
