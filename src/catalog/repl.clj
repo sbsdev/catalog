@@ -15,7 +15,9 @@
   [year issue out]
   (->
    (db/read-catalog year issue)
-   vubis/order-and-group
+   vubis/order
+   vubis/duplicate-print-and-braille-items
+   vubis/group
    (layout.fop/generate-document :all-formats year issue nil nil out)))
 
 (defn neu-in-grossdruck-fop
@@ -35,7 +37,9 @@
   [year issue]
   (->
    (db/read-catalog year issue)
-   vubis/order-and-group
+   vubis/order
+   vubis/duplicate-print-and-braille-items
+   vubis/group
    (layout.text/text {:year year :issue issue})))
 
 (defn custom-text
