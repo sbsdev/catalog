@@ -291,6 +291,12 @@
        (remove nil?)
        (string/join ", ")))))
 
+(defn get-double-spaced
+  "Determine whether the item is double-spaced. Return true if the
+  `field` starts with \"Weitzeilig\", false otherwise."
+  [field]
+  (boolean (and field (re-find #"^Weitzeilig" field))))
+
 (defn- construct-producer-brief [producer-long producer-place]
   "Return a producer-brief string based on `producer-long` and
   `producer-place`. Both of these can potentially be nil or blank."
@@ -380,16 +386,13 @@
       :braille (let [rucksackbuch-number (and series-title
                                               (re-find #"^Rucksackbuch" series-title)
                                               (parse-int series-volume))
-                     double-spaced? (boolean
-                                     (and double-spaced?
-                                          (re-find #"^Weitzeilig" double-spaced?)))
                      braille-grade (braille-grade-raw-to-braille-grade braille-grade)]
                  (-> item
                      (assoc-some
                       :rucksackbuch-number rucksackbuch-number
                       :rucksackbuch? (boolean rucksackbuch-number)
                       :braille-grade braille-grade
-                      :double-spaced? double-spaced?
+                      :double-spaced? (get-double-spaced double-spaced?)
                       :volumes (parse-int volumes)
                       :accompanying-material (get-accompanying-material raw-item)
                       :print-and-braille? print-and-braille?)))
@@ -427,7 +430,7 @@
       :taktilesbuch (-> item
                         (assoc-some
                          :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
-                         :double-spaced? double-spaced?
+                         :double-spaced? (get-double-spaced double-spaced?)
                          :accompanying-material (get-accompanying-material raw-item)
                          :print-and-braille? print-and-braille?))
       ; default case that shouldn't really happen. When the MARC21
