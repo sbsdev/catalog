@@ -345,7 +345,7 @@
          genre-code ""}}] ; an invalid genre-code
   (let [fmt (format-raw-to-format format)
         ;; print-and-braille books have a special series-type
-        print-and-braille? (when (= series-type "printundbraille") true)
+        print-and-braille? (when (some #{"printundbraille"} series-type) true)
         fmt (cond
               ;; tactile books aren't properly tagged in the format
               ;; field. They are tagged as :ludo and their library
@@ -777,7 +777,7 @@
     (for [record (xml-> root :record)]
       (->> (for [[key path] param-mapping
                  :let [val (cond
-                             (#{:narrators :subtitles} key) (get-multi-subfields record path)
+                             (#{:narrators :subtitles :series-type} key) (get-multi-subfields record path)
                              (#{:general-information} key) (get-controlfield record path)
                              :else (get-subfield record path))]
                  :when (some? val)]
