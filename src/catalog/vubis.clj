@@ -432,6 +432,7 @@
                          :braille-grade (braille-grade-raw-to-braille-grade braille-grade)
                          :double-spaced? (get-double-spaced double-spaced?)
                          :accompanying-material (get-accompanying-material raw-item)
+                         :volumes (parse-int volumes)
                          :print-and-braille? print-and-braille?))
       ; default case that shouldn't really happen. When the MARC21
       ; entry contains a faulty format then just return the item with
