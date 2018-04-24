@@ -352,6 +352,11 @@
               ;; signature starts with "TB"
               (and (= fmt :ludo) library-signature
                    (re-find #"^TB " library-signature)) :taktilesbuch
+              ;; tactile books that are only for sale do not have a
+              ;; signature that starts with "TB". However if they are
+              ;; print-and-braille? we also treat them as tactile
+              ;; books
+              (and (= fmt :ludo) print-and-braille?) :taktilesbuch
               :else fmt)
         item (-> {}
                  (assoc-some
