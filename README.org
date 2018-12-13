@@ -12,6 +12,8 @@ used for the production of Braille with a separate tool chain (such as
 [[https://github.com/sbsdev/pipeline-mod-sbs][pipeline-mod-sbs]] for example) while the other is imported into [[http://www.daisy.org/project/obi][Obi]] for
 audio production.
 
+[[https://versions.deps.co/sbsdev/catalog][https://versions.deps.co/sbsdev/catalog/status.svg]]
+
 ** Build and Installation
 Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
 
