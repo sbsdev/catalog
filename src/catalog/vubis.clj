@@ -146,6 +146,7 @@
    9   "EBS, Marburg"
    10  "CFB, Hamburg"
    11  "DKBB, Bonn"
+   12  "Hörbücherei der Stimme der Hoffnung"
    13  "SBS, Zürich"
    24  "DZB, Leipzig"
    25  "CAB, Landschlacht"
