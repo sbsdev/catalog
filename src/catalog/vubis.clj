@@ -151,6 +151,7 @@
    24  "DZB, Leipzig"
    25  "CAB, Landschlacht"
    26  "Reformierte Blindenpflege Zürich"
+   27  "HSL, Kreuzlingen"
    30  "VzFB, Hannover"
    31  "BBI, Wien"
    32  "Paderborn"
