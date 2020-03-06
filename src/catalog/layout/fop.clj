@@ -524,10 +524,62 @@
   {3 "143mm"
    4 "140mm"})
 
-(defn- coverpage-recto
-  "Return a hiccup style sexp for the recto (the front) of the
-  coverpage for given `title`, `year` and `issue`"
-  [title year issue]
+(def coverpage-colophon
+  [:fo:block {:break-before "page"}
+   [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
+    (block {:font-size "0"}
+           [:fo:external-graphic
+            {:src (io/resource "covers/hinweis-seite.svg")
+             :width "100%" :content-width "scale-to-fit"
+             :fox:alt-text "Seiten-Hintergrund"}])]
+   (block {:start-indent "5mm" :end-indent "5mm"
+           :color (color :lightgrey) :line-height "1.4"
+           :font-size "16pt" :font-family "Tiresias,Verdana"}
+    (block {:font-size "20pt" :space-after "1em" :role "H2" :letter-spacing "150%"
+            :font-family "Tiresias,Verdana"}
+           "Hinweis")
+    (block "Ausleihbar sind die Titel in diesem Verzeichnis")
+    (block {:space-after "1em"} "nur in der Schriftgrösse Tiresias 17 Punkt.")
+    (block "Sämtliche Bücher sind auch in der Tiresias-Schrift")
+    (block "17, 20 und 25 Punkt käuflich zu erwerben. Geben Sie")
+    (block "bitte bei einer Kauf-Bestellung den Autor und den")
+    (block "Titel des gewünschten Buchs sowie die Punktgrösse")
+    (block "mit an."))])
+
+(defn- coverpage-recto-background
+  "Return a hiccup style sexp for the recto background for given
+  `fill-color`. If `etikett?` is `true` emit an etikett (which is used
+  for the default cover recto background)."
+  [fill-color etikett?]
+  [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm" :left "0mm" :top "0mm" :background-color "transparent"}
+   [:fo:block {:font-size "0" :start-indent "0mm" :end-indent "0mm"}
+    [:fo:instream-foreign-object {:width "210mm" :height "297mm" :content-width "scale-to-fit"}
+     [:svg {:xmlns:svg "http://www.w3.org/2000/svg" :xmlns "http://www.w3.org/2000/svg"
+            :xmlns:xlink "http://www.w3.org/1999/xlink"
+            :id "cover-recto-dynamic" :version "1.1"
+            :width "210mm" :height "297mm" :viewBox "0 0 744.09497 1052.3625"}
+      [:g {:transform "matrix(1.25,0,0,-1.25,0,1052.3625)" :style "fill-opacity:1;fill-rule:nonzero;stroke:none"}
+       (when etikett?
+         [:g {:id "etikett"}
+          [:g {:transform "translate(166.8447,462.2588)" :visibility "visible"}
+           [:path
+            {:d "m 0,0 82.333,0 c 0,0 5,0.333 4.5,-5.333 -0.381,-4.32 -1.333,-22 -1.333,-22 -0.167,-3.5 0.167,-10.167 0.333,-12.167 0.167,-2 1.5,-4.333 0.334,-5 -1.167,-0.667 -86.834,0 -86.834,0 0,0 -5.214,-0.309 -5.75,3.333 -0.416,2.834 -0.25,12.667 -0.25,12.667 l 0,11.167 c 0,0 0.25,5.5 1.167,11.333 0.573,3.645 1.833,6 5.5,6"
+             :style fill-color}]
+           [:path
+            {:d "m 0,0 82.333,0 c 0,0 5,0.333 4.5,-5.333 -0.381,-4.32 -1.333,-22 -1.333,-22 -0.167,-3.5 0.167,-10.167 0.333,-12.167 0.167,-2 1.5,-4.333 0.334,-5 -1.167,-0.667 -86.834,0 -86.834,0 0,0 -5.214,-0.309 -5.75,3.333 -0.416,2.834 -0.25,12.667 -0.25,12.667 l 0,11.167 c 0,0 0.25,5.5 1.167,11.333 0.573,3.645 1.833,6 5.5,6 z"
+             :style "fill:none;stroke:#756662;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"}]]])
+       [:path {:d "m 0,0 70.866,0 0,841.89 L 0,841.89 0,0 Z" :style fill-color :id "balken"}]
+       [:g {:transform "translate(477.9451,365.0547)"}
+        [:path
+         {:d "m 0,0 c 40.874,0 74.008,33.135 74.008,74.008 0,40.874 -33.134,74.008 -74.008,74.008 -40.874,0 -74.008,-33.134 -74.008,-74.008 C -74.008,33.135 -40.874,0 0,0"
+          :style fill-color :id "kreis"}]]]]]]])
+
+(defn- coverpage-recto-internal
+  "Return a hiccup style sexp for the recto (the front) of the coverpage
+  for given `title`, `year`, `issue`, `svg`, `ettiket` and `colophon`.
+  The `svg` is expected to contain the right background. The `ettiket`
+  and `colophon` can be nil."
+  [title year issue svg ettiket colophon]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
                         :force-page-count "even"
@@ -537,40 +589,12 @@
       [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
        (block {:font-size "0"}
               [:fo:external-graphic
-               {:src (io/resource "covers/cover-recto.svg")
+               {:src (io/resource svg)
                 :width "100%" :content-width "scale-to-fit"
                 :fox:alt-text "Seiten-Hintergrund mit SBS Logo"}])]
-
-      [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm" :left "0mm" :top "0mm" :background-color "transparent"}
-       [:fo:block {:font-size "0" :start-indent "0mm" :end-indent "0mm"}
-        [:fo:instream-foreign-object {:width "210mm" :height "297mm" :content-width "scale-to-fit"}
-         [:svg {:xmlns:svg "http://www.w3.org/2000/svg" :xmlns "http://www.w3.org/2000/svg"
-                :xmlns:xlink "http://www.w3.org/1999/xlink"
-                :id "cover-recto-dynamic" :version "1.1"
-                :width "210mm" :height "297mm" :viewBox "0 0 744.09497 1052.3625"}
-          [:g {:transform "matrix(1.25,0,0,-1.25,0,1052.3625)" :style "fill-opacity:1;fill-rule:nonzero;stroke:none"}
-           [:g {:id "etikett"}
-            [:g {:transform "translate(166.8447,462.2588)" :visibility "visible"}
-             [:path
-              {:d "m 0,0 82.333,0 c 0,0 5,0.333 4.5,-5.333 -0.381,-4.32 -1.333,-22 -1.333,-22 -0.167,-3.5 0.167,-10.167 0.333,-12.167 0.167,-2 1.5,-4.333 0.334,-5 -1.167,-0.667 -86.834,0 -86.834,0 0,0 -5.214,-0.309 -5.75,3.333 -0.416,2.834 -0.25,12.667 -0.25,12.667 l 0,11.167 c 0,0 0.25,5.5 1.167,11.333 0.573,3.645 1.833,6 5.5,6"
-               :style fill-color}]
-             [:path
-              {:d "m 0,0 82.333,0 c 0,0 5,0.333 4.5,-5.333 -0.381,-4.32 -1.333,-22 -1.333,-22 -0.167,-3.5 0.167,-10.167 0.333,-12.167 0.167,-2 1.5,-4.333 0.334,-5 -1.167,-0.667 -86.834,0 -86.834,0 0,0 -5.214,-0.309 -5.75,3.333 -0.416,2.834 -0.25,12.667 -0.25,12.667 l 0,11.167 c 0,0 0.25,5.5 1.167,11.333 0.573,3.645 1.833,6 5.5,6 z"
-               :style "fill:none;stroke:#756662;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"}]]]
-           [:path {:d "m 0,0 70.866,0 0,841.89 L 0,841.89 0,0 Z" :style fill-color :id "balken"}]
-           [:g {:transform "translate(477.9451,365.0547)"}
-            [:path
-             {:d "m 0,0 c 40.874,0 74.008,33.135 74.008,74.008 0,40.874 -33.134,74.008 -74.008,74.008 -40.874,0 -74.008,-33.134 -74.008,-74.008 C -74.008,33.135 -40.874,0 0,0"
-              :style fill-color :id "kreis"}]]]]]]]]
+      (coverpage-recto-background fill-color (some? ettiket))]
      [:fo:flow {:flow-name"xsl-region-body"}
-      [:fo:wrapper {:role "artifact"}
-       [:fo:block-container {:absolute-position "fixed" :width "33mm" :height "15mm"
-                             :left "56mm" :top "135mm" :display-align "center"
-                             :background-color "transparent"}
-        (block {:font-size "42pt" :line-height "1"
-                :text-align "center" :color (color :white)
-                :role "H2"}
-               "neu")]]
+      ettiket
       (block {:start-indent "3mm" :end-indent "3mm"
               :font-size "90pt" :color (color :warmgrey) :line-height "0.9"
               :text-align "start" :hyphenate "false"
@@ -591,12 +615,39 @@
        (block {:font-size "120pt" :color (color :white)
                :text-align "center"
                :fox:alt-text (format "%s Ausgabe" (layout/ordinal issue))}
-              (str issue))]]]))
+              (str issue))]
+      colophon]]))
 
-(defn- coverpage-verso
-  "Return a hiccup style sexp for the verso (the back) of the
-  coverpage"
-  [issue]
+(defmulti coverpage-recto
+  "Return a hiccup style sexp for the recto (the front) of the
+  coverpage for given `title`, `year` and `issue`. Dispatch on the
+  format (`fmt`) of the requested catalog."
+  (fn [title year issue fmt] fmt))
+
+(defmethod coverpage-recto :grossdruck
+  [title year issue _]
+  (let [svg "covers/cover-recto-grossdruck.svg"]
+    ;; a large print recto page has no ettiket but it has a colophon
+    (coverpage-recto-internal title year issue svg nil coverpage-colophon)))
+
+(defmethod coverpage-recto :default
+  [title year issue _]
+  (let [svg "covers/cover-recto.svg"
+        ettiket [:fo:wrapper {:role "artifact"}
+                 [:fo:block-container {:absolute-position "fixed" :width "33mm" :height "15mm"
+                                       :left "56mm" :top "135mm" :display-align "center"
+                                       :background-color "transparent"}
+                  (block {:font-size "42pt" :line-height "1"
+                          :text-align "center" :color (color :white)
+                          :role "H2"}
+                         "neu")]]]
+    ;; a default recto page has an ettiket but no colophon
+    (coverpage-recto-internal title year issue svg ettiket nil)))
+
+(defn- coverpage-verso-internal
+  "Return a hiccup style sexp for the verso (the back) of the coverpage
+  for given `title`, `issue` and `body` of the requested catalog."
+  [title issue body]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-verso" :master-reference "cover-verso"
                         :force-page-count "no-force"
@@ -621,13 +672,8 @@
               :font-size "16pt" }
              (block {:font-size "20pt" :space-after "1em" :role "H2" :letter-spacing "150%" :font-family "StoneSansSemibold"}
                     "IMPRESSUM")
-             (block {:color (color :blue) :space-after"1em" :font-family "StoneSansSemibold"}
-                    (layout/translations :catalog-all))
-             (block {:space-after "1em"} "Für Kundinnen und Kunden der SBS sowie für Interessenten")
-             (block                      "Erscheint sechsmal jährlich und listet alle seit der letzten")
-             (block {:space-after "1em"} "Ausgabe neu in die SBS aufgenommenen Bücher auf")
-             (block                      "«Neu im Sortiment» kann im Jahresabonnement per Post")
-             (block {:space-after "1em"} "zu CHF / € 78.– oder per E-Mail gratis bezogen werden")
+             (block {:color (color :blue) :space-after"1em" :font-family "StoneSansSemibold"} title)
+             body
              (block {:font-family "StoneSansSemibold"
                      :color (color :blue)
                      :space-before "3em" :space-after "1em" :role "H2"}
@@ -654,6 +700,32 @@
              (block {:space-before "2em" :font-size "12pt"}
                     "© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"))]]))
 
+(defmulti coverpage-verso
+  "Return a hiccup style sexp for the verso (the back) of the coverpage
+  for given `title`, `issue` of the requested catalog. Dispatch on the
+  format (`fmt`) of the requested catalog."
+  (fn [title issue fmt] fmt))
+
+(defmethod coverpage-verso :grossdruck
+  [title issue _]
+  (coverpage-verso-internal
+   title issue
+   [:fo:block
+    (block {:space-after "1em"} "Für Kundinnen und Kunden der SBS")
+    (block                      "Erscheint kostenlos sechsmal jährlich in Schwarzschrift")
+    (block                      "und listet alle seit der letzten Ausgabe neu in die SBS")
+    (block                      "aufgenommenen Grossdruckbücher auf")]))
+
+(defmethod coverpage-verso :default
+  [title issue _]
+  (coverpage-verso-internal
+   title issue
+   [:fo:block
+    (block {:space-after "1em"} "Für Kundinnen und Kunden der SBS sowie für Interessenten")
+    (block                      "Erscheint sechsmal jährlich und listet alle seit der letzten")
+    (block {:space-after "1em"} "Ausgabe neu in die SBS aufgenommenen Bücher auf")
+    (block                      "«Neu im Sortiment» kann im Jahresabonnement per Post")
+    (block {:space-after "1em"} "zu CHF / € 78.– oder per E-Mail gratis bezogen werden")]))
 
 (defn- layout-master-set []
   [:fo:layout-master-set
@@ -683,7 +755,8 @@
    [:fo:page-sequence-master {:master-name "cover-recto"}
     [:fo:repeatable-page-master-alternatives
      [:fo:conditional-page-master-reference {:master-reference "blank" :blank-or-not-blank "blank"}]
-     [:fo:conditional-page-master-reference {:master-reference "cover-recto-main"}]]]
+     [:fo:conditional-page-master-reference {:master-reference "cover-recto-main" :page-position "first"}]
+     [:fo:conditional-page-master-reference {:master-reference "recto"}]]]
    [:fo:page-sequence-master {:master-name "cover-verso"}
     [:fo:repeatable-page-master-alternatives
      [:fo:conditional-page-master-reference {:master-reference "blank" :blank-or-not-blank "blank"}]
@@ -741,12 +814,13 @@
   (fn [items fmt year issue editorial recommendations options] fmt))
 
 (defmethod document-sexp :grossdruck
-  [items fmt _ _ editorial recommendations {:keys [description]}]
+  [items fmt year issue editorial recommendations {:keys [description]}]
   (let [title (layout/translations :catalog-grossdruck)]
     (binding [*stylesheet* large-print-stylesheet]
       [:fo:root (style :font (root-attrs))
        (layout-master-set)
        (declarations title (or description title))
+       (coverpage-recto title year issue fmt)
        [:fo:page-sequence {:master-reference "main"
                            :initial-page-number "1"
                            :force-page-count "end-on-even"
@@ -762,7 +836,8 @@
           [:fo:flow {:flow-name "xsl-region-body"}
            (toc subitems [fmt] 2 {:heading? true})
            (realize-lazy-seqs
-            (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]])))
+            (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]
+       (coverpage-verso title issue fmt)])))
 
 (defmethod document-sexp :hörbuch
   [items fmt year issue editorial recommendations {:keys [description]}]
@@ -939,12 +1014,12 @@
        (custom-document title description query customer items)))))
 
 (defmethod document-sexp :all-formats
-  [items _ year issue _ _ {:keys [description]}]
+  [items fmt year issue _ _ {:keys [description]}]
   (let [title (layout/translations :catalog-all)]
     [:fo:root (style :font (root-attrs))
      (layout-master-set)
      (declarations title (or description title))
-     (coverpage-recto title year issue)
+     (coverpage-recto title year issue fmt)
      [:fo:page-sequence {:master-reference "main"
                          :initial-page-number "1"
                          :force-page-count "end-on-even"
@@ -955,7 +1030,7 @@
       [:fo:flow {:flow-name "xsl-region-body"}
        (toc items [] 1 {:heading? true})
        (mapcat #(format-sexp (get items %) % 1 {}) (keys items))]]
-     (coverpage-verso issue)]))
+     (coverpage-verso title issue fmt)]))
 
 (defn document
   "Return the xsl-fo XML for a catalog document. To produce PDF pass
