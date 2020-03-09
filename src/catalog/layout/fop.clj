@@ -576,10 +576,10 @@
 
 (defn- coverpage-recto-internal
   "Return a hiccup style sexp for the recto (the front) of the coverpage
-  for given `title`, `year`, `issue`, `svg`, `ettiket` and `colophon`.
-  The `svg` is expected to contain the right background. The `ettiket`
+  for given `title`, `year`, `issue`, `svg`, `etikett` and `colophon`.
+  The `svg` is expected to contain the right background. The `etikett`
   and `colophon` can be nil."
-  [title year issue svg ettiket colophon]
+  [title year issue svg etikett colophon]
   (let [fill-color (format "fill:%s device-%s" (color-rgb issue) (color issue))]
     [:fo:page-sequence {:id "cover-recto" :master-reference "cover-recto"
                         :force-page-count "even"
@@ -592,9 +592,9 @@
                {:src (io/resource svg)
                 :width "100%" :content-width "scale-to-fit"
                 :fox:alt-text "Seiten-Hintergrund mit SBS Logo"}])]
-      (coverpage-recto-background fill-color (some? ettiket))]
+      (coverpage-recto-background fill-color (some? etikett))]
      [:fo:flow {:flow-name"xsl-region-body"}
-      ettiket
+      etikett
       (block {:start-indent "3mm" :end-indent "3mm"
               :font-size "90pt" :color (color :warmgrey) :line-height "0.9"
               :text-align "start" :hyphenate "false"
@@ -627,13 +627,13 @@
 (defmethod coverpage-recto :grossdruck
   [title year issue _]
   (let [svg "covers/cover-recto-grossdruck.svg"]
-    ;; a large print recto page has no ettiket but it has a colophon
+    ;; a large print recto page has no etikett but it has a colophon
     (coverpage-recto-internal title year issue svg nil coverpage-colophon)))
 
 (defmethod coverpage-recto :default
   [title year issue _]
   (let [svg "covers/cover-recto.svg"
-        ettiket [:fo:wrapper {:role "artifact"}
+        etikett [:fo:wrapper {:role "artifact"}
                  [:fo:block-container {:absolute-position "fixed" :width "33mm" :height "15mm"
                                        :left "56mm" :top "135mm" :display-align "center"
                                        :background-color "transparent"}
@@ -641,8 +641,8 @@
                           :text-align "center" :color (color :white)
                           :role "H2"}
                          "neu")]]]
-    ;; a default recto page has an ettiket but no colophon
-    (coverpage-recto-internal title year issue svg ettiket nil)))
+    ;; a default recto page has an etikett but no colophon
+    (coverpage-recto-internal title year issue svg etikett nil)))
 
 (defn- coverpage-verso-internal
   "Return a hiccup style sexp for the verso (the back) of the coverpage
