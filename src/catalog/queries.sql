@@ -57,3 +57,8 @@ VALUES (:year, :catalog_type, :items)
 ON DUPLICATE KEY UPDATE
 items = values(items);
 
+-- name: producer-mapping-raw
+-- Get the mapping of producer id and full_name.
+SELECT id, name
+FROM producer_mapping;
+

@@ -11,7 +11,8 @@
             [clojure.data.zip :as data-zip]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
             [clojure.java.io :as io]
-            [medley.core :refer [assoc-some]])
+            [medley.core :refer [assoc-some]]
+            [catalog.db :as db])
   (:import java.text.Collator
            java.util.Locale))
 
@@ -134,59 +135,9 @@
    "MN" :musiknoten
    "TB" :taktilesbuch})
 
-(def producer-raw-to-producer
+(def ^:private ^:dynamic *producer-raw-to-producer*
   "Mapping between producer-raw and producer"
-  {1   "Blista, Marburg"
-   2   "BBH, Berlin"
-   4   "NBH, Hamburg"
-   5   "BBH, München"
-   6   "WBH, Münster"
-   7   "Blindenhörbücherei des Saarlandes"
-   8   "SBH, Stuttgart"
-   9   "EBS, Marburg"
-   10  "CFB, Hamburg"
-   11  "DKBB, Bonn"
-   12  "Hörbücherei der Stimme der Hoffnung"
-   13  "SBS, Zürich"
-   24  "DZB, Leipzig"
-   25  "CAB, Landschlacht"
-   26  "Reformierte Blindenpflege Zürich"
-   27  "HSL, Kreuzlingen"
-   30  "VzFB, Hannover"
-   31  "BBI, Wien"
-   32  "Paderborn"
-   33  "Zollikofen"
-   34  "CBD, Wernigerode"
-   40  "BIT, München"
-   50  "BSVÖ, Wien"
-   103 "Planer-Regis, Berkenthin"
-   109 "ONCE, Madrid"
-   112 "Freunde blinder und sehbehinderter Kinder, Hamburg"
-   113 "The Princeton Braillists, Princeton"
-   115 "Nota, Kopenhagen"
-   117 "VA, Melbourne"
-   118 "SALB, Grahamstown"
-   119 "Visability, Victoria Park"
-   121 "Bartkowski, München"
-   123 "Braille-Kinderbücher, Düren"
-   124 "Berlin, Anderes Sehen"
-   128 "IKS, Kassel"
-   140 "Velen Integrationsspiele, Neuwied"
-   153 "Vogel, Hamburg"
-   154 "Alexander Reuss, Schwetzingen/Strassburg"
-   159 "Blindenunterrichtsanstalt, Frankfurt"
-   242 "SZB, St. Gallen"
-   248 "B. Lang, Freiburt im Üechtland"
-   250 "Blindenunterichtsanstalt, Ilzach"
-   305 "RNIB, London"
-   350 "Biblioteca Italiana per Ciechi, Monza"
-   401 "American Braille Press, Paris"
-   402 "American Foundation for Overseas Blind, Paris"
-   404 "Association pour nos Aveugles, Paris"
-   405 "AVH, Paris"
-   407 "Institut Nationale des Jounes Aveugles, Paris"
-   490 "Stamperia Nazionale Braille, Florenz"
-   508 "American Printing House for the Blind, Louisville"})
+  {})
 
 (def genre-code-to-genre
   "Mapping between genre-code and genre. Used for movies"
@@ -312,9 +263,9 @@
 
 (defn get-producer-brief
   "Get the producer-brief. If `producer` contains a valid numerical
-  value other than `0` then return the string from the lookup table in
-  [[producer-raw-to-producer]]. If `producer` contains `0` or is nil
-  then generate a brief from `producer-long` and `producer-place`."
+  value other than `0` then return the string from the lookup table
+  given in `*producer-raw-to-producer*`. If `producer` contains `0` or
+  is nil then generate a brief from `producer-long` and `producer-place`."
   [{:keys [producer producer-long producer-place]}]
   (let [producer-key (parse-int producer)
         producer-brief (construct-producer-brief producer-long producer-place)]
@@ -326,7 +277,7 @@
       (= producer-key 0) producer-brief
       ;; the producer has a valid key. Return the brief string from
       ;; the lookup map.
-      :else (producer-raw-to-producer producer-key))))
+      :else (*producer-raw-to-producer* producer-key))))
 
 (defn clean-raw-item
   "Return a proper production based on a raw item, e.g.
@@ -782,14 +733,14 @@
   "Read an export file from VUBIS and return a map with all the data"
   [file]
   (let [root (-> file io/file xml/parse zip/xml-zip)]
-    (for [record (xml-> root :record)]
-      (->> (for [[key path] param-mapping
-                 :let [val (cond
-                             (#{:narrators :subtitles :series-type} key) (get-multi-subfields record path)
-                             (#{:general-information} key) (get-controlfield record path)
-                             :else (get-subfield record path))]
-                 :when (some? val)]
-             [key val])
-           (into {})
-           (merge (get-personel-fields record))
-           clean-raw-item))))
+    (binding [*producer-raw-to-producer* (into {} (map (juxt :id :name) (db/producer-mapping-raw)))]
+      (for [record (xml-> root :record)]
+        (let [item (reduce (fn [m [key path]]
+                             (assoc-some m key
+                              (cond
+                                (#{:narrators :subtitles :series-type} key) (get-multi-subfields record path)
+                                (#{:general-information} key) (get-controlfield record path)
+                                :else (get-subfield record path))))
+                           {} param-mapping)
+              item (merge (get-personel-fields record) item)]
+          (clean-raw-item item))))))
