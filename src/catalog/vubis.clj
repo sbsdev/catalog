@@ -134,6 +134,14 @@
    "MN" :musiknoten
    "TB" :taktilesbuch})
 
+;; FIXME: The following data changes once in a while (probably once a
+;; year), so it would make sense to store it somewhere where the users
+;; could configure it without the need for a recompile. I changed it
+;; so that this data would be read from a database. However there is
+;; also the validation that depends on this data. The validation
+;; schema is built at compile time. TBH I'm not sure if the validation
+;; schema could be built at run time. So the change has been rolled
+;; back (see 9304cb01c31b6ed4b513bc7c404d8e5d463f606e).
 (def producer-raw-to-producer
   "Mapping between producer-raw and producer"
   {1   "Blista, Marburg"
