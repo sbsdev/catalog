@@ -9,6 +9,23 @@
              [text :as layout.text]]
             [schema.core :as s]))
 
+(defn neu-im-sortiment [year issue]
+  (let [temp-file (java.io.File/createTempFile (format "nis-%s-%s" year issue) ".pdf")]
+    (-> (db/read-catalog year issue)
+        vubis/order
+        vubis/duplicate-print-and-braille-items
+        vubis/group
+        (layout.fop/document :all-formats year issue nil nil)
+        (layout.fop/generate-pdf! temp-file))))
+
+(defn neu-in-grossdruck [year issue]
+  (let [temp-file (java.io.File/createTempFile (format "nig-%s-%s" year issue) ".pdf")
+        editorial (db/read-editorial year issue :grossdruck)]
+    (-> (db/read-catalog year issue)
+        vubis/order-and-group
+        (layout.fop/document :grossdruck year issue editorial nil)
+        (layout.fop/generate-pdf! temp-file))))
+
 (defn neu-im-sortiment-fop
   "Generate the xsl-fo XML for the *Neu im Sortiment* catalog in file
   `out` for given `year` and `issue`"
