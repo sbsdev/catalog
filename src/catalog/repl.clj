@@ -20,10 +20,11 @@
 
 (defn neu-in-grossdruck [year issue]
   (let [temp-file (java.io.File/createTempFile (format "nig-%s-%s" year issue) ".pdf")
-        editorial (db/read-editorial year issue :grossdruck)]
+        editorial (db/read-editorial year issue :grossdruck)
+        recommendation (db/read-recommendation year issue :grossdruck)]
     (-> (db/read-catalog year issue)
         vubis/order-and-group
-        (layout.fop/document :grossdruck year issue editorial nil)
+        (layout.fop/document :grossdruck year issue editorial recommendation)
         (layout.fop/generate-pdf! temp-file))))
 
 (defn neu-im-sortiment-fop
