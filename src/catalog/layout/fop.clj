@@ -524,7 +524,10 @@
   {3 "143mm"
    4 "140mm"})
 
-(def coverpage-colophon
+(defn- coverpage-colophon
+  "Return a hiccup style sexp for the recto coverpage colophon. Uses the
+  style information from the dynamic var [[*stylesheet*]]."
+  []
   [:fo:block {:break-before "page"}
    [:fo:block-container {:absolute-position "fixed" :width "210mm" :height "297mm"}
     (block {:font-size "0"}
@@ -532,12 +535,8 @@
             {:src (io/resource "covers/hinweis-seite.svg")
              :width "100%" :content-width "scale-to-fit"
              :fox:alt-text "Seiten-Hintergrund"}])]
-   (block {:start-indent "5mm" :end-indent "5mm"
-           :color (color :lightgrey) :line-height "1.4"
-           :font-size "16pt" :font-family "Tiresias,Verdana"}
-    (block {:font-size "20pt" :space-after "1em" :role "H2" :letter-spacing "150%"
-            :font-family "Tiresias,Verdana"}
-           "Hinweis")
+   (block (style :font {:color (color :lightgrey) :line-height "1.4" :font-weight "bold"})
+    (block (style :h2 {:letter-spacing "150%"}) "Hinweis")
     (block "Ausleihbar sind die Titel in diesem Verzeichnis")
     (block {:space-after "1em"} "nur in der Schriftgrösse Tiresias 17 Punkt.")
     (block "Sämtliche Bücher sind auch in der Tiresias-Schrift")
@@ -628,7 +627,7 @@
   [title year issue _]
   (let [svg "covers/cover-recto-grossdruck.svg"]
     ;; a large print recto page has no etikett but it has a colophon
-    (coverpage-recto-internal title year issue svg nil coverpage-colophon)))
+    (coverpage-recto-internal title year issue svg nil (coverpage-colophon))))
 
 (defmethod coverpage-recto :default
   [title year issue _]
