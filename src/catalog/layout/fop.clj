@@ -668,7 +668,10 @@
             [:path {:d "m 524.409,0 70.866,0 0,841.89 -70.866,0 0,-841.89 z" :style fill-color :id "balken-rechts"}]]]]]]]
       (block {:start-indent "5mm" :end-indent "5mm"
               :color (color :lightgrey) :line-height "1.4"
-              :font-size "16pt" }
+              :font-size "16pt"
+              ;; put some vertical stretch so that the text is always flush with the bottom
+              :space-before.optimum "10cm" :space-before.minimum "0cm"
+              :space-before.conditionality "retain" :keep-together.within-column "always"}
              (block {:font-size "20pt" :space-after "1em" :role "H2" :letter-spacing "150%" :font-family "StoneSansSemibold"}
                     "IMPRESSUM")
              (block {:color (color :blue) :space-after"1em" :font-family "StoneSansSemibold"} title)
@@ -731,12 +734,12 @@
    (simple-page-master {:master-name "cover-recto-main"
                         :margin-left "0mm" :margin-right "0mm" :margin-top "0mm" :margin-bottom "0mm"}
                        [:fo:region-body
-                        {:margin-left "30mm" :margin-right "5mm" :margin-top "178mm":margin-bottom "5mm"}]
+                        {:margin-left "30mm" :margin-right "5mm" :margin-top "178mm" :margin-bottom "5mm"}]
                        [:fo:region-start {:extent "25mm" :reference-orientation "90"}])
    (simple-page-master {:master-name "cover-verso-main"
                         :margin-left "0mm" :margin-right "0mm" :margin-top "0mm" :margin-bottom "0mm"}
                        [:fo:region-body
-                        {:margin-left "5mm" :margin-right "30mm" :margin-top "86mm" :margin-bottom "5mm"}]
+                        {:margin-left "5mm" :margin-right "30mm" :margin-top "86mm" :margin-bottom "8mm"}]
                        [:fo:region-end {:extent "25mm" :reference-orientation "90"}])
    (simple-page-master {:master-name "recto" :margin-left "28mm" :margin-right "22mm"})
    (simple-page-master {:master-name "verso"})
