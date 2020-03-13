@@ -21,13 +21,6 @@ Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[h
 lein immutant war
 #+END_SRC
 
-Since we depend on an unreleased version of [[https://xmlgraphics.apache.org/fop/][Apache FOP]] for the moment
-we have to build with ~LEIN_SNAPSHOTS_IN_RELEASE~ enabled:
-
-#+BEGIN_SRC shell
-LEIN_SNAPSHOTS_IN_RELEASE=yes lein immutant war
-#+END_SRC
-
 Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
 
 ** Documentation
@@ -84,6 +77,6 @@ Mostly you will need [[http://wildfly.org/][Wildfly]], and some fonts.
 
 ** License
 
-Copyright © 2015-2018 Swiss Library for the Blind, Visually Impaired and Print Disabled.
+Copyright © 2015-2020 Swiss Library for the Blind, Visually Impaired and Print Disabled.
 
 Distributed under the [[http://www.gnu.org/licenses/agpl-3.0.html][GNU Affero General Public License]]. See the file LICENSE.
