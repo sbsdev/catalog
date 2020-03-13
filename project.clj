@@ -25,7 +25,7 @@
                  [org.tobereplaced/nio.file "0.4.0"]]
   :git-version {}
   :plugins [[lein-immutant "2.1.0"]
-            [lein-codox "0.10.3"]
+            [lein-codox "0.10.7"]
             [org.clojars.cvillecsteele/lein-git-version "1.2.7"]]
   :codox {:project {:name "Kati"}
           :source-paths ["src"]
