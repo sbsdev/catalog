@@ -709,22 +709,22 @@
   [title issue _]
   (coverpage-verso-internal
    title issue
-   [:fo:block
+   (block
     (block {:space-after "1em"} "Für Kundinnen und Kunden der SBS")
     (block                      "Erscheint kostenlos sechsmal jährlich in Schwarzschrift")
     (block                      "und listet alle seit der letzten Ausgabe neu in die SBS")
-    (block                      "aufgenommenen Grossdruckbücher auf")]))
+    (block                      "aufgenommenen Grossdruckbücher auf"))))
 
 (defmethod coverpage-verso :default
   [title issue _]
   (coverpage-verso-internal
    title issue
-   [:fo:block
+   (block
     (block {:space-after "1em"} "Für Kundinnen und Kunden der SBS sowie für Interessenten")
     (block                      "Erscheint sechsmal jährlich und listet alle seit der letzten")
     (block {:space-after "1em"} "Ausgabe neu in die SBS aufgenommenen Bücher auf")
     (block                      "«Neu im Sortiment» kann im Jahresabonnement per Post")
-    (block {:space-after "1em"} "zu CHF / € 78.– oder per E-Mail gratis bezogen werden")]))
+    (block                      "zu CHF / € 78.– oder per E-Mail gratis bezogen werden"))))
 
 (defn- layout-master-set []
   [:fo:layout-master-set
