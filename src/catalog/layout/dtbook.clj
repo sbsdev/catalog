@@ -165,12 +165,14 @@
      [:p {:brl:class "ver"} "Verkauf: " price])])
 
 (defmethod entry-sexp :e-book
-  [{:keys [genre-text description library-signature] :as item}]
+  [{:keys [genre-text description library-signature
+           accompanying-material] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (genre-sexp genre-text)
    (description-sexp description)
-   (ausleihe-simple library-signature)])
+   (when library-signature
+     [:p {:brl:class "aus"} "Ausleihe: " library-signature (wrap accompanying-material ", ")])])
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text

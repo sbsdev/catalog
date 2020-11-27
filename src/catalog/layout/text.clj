@@ -170,12 +170,14 @@
      (str "Verkauf: " price))))
 
 (defmethod entry-str :e-book
-  [{:keys [genre-text description library-signature] :as item}]
+  [{:keys [genre-text description library-signature
+           accompanying-material] :as item}]
   (join
    (entry-heading-str item)
    (genre-str genre-text)
    (description-str description)
-   (ausleihe-simple library-signature)))
+   (when library-signature
+     (str "Ausleihe: " library-signature (wrap accompanying-material ", ")))))
 
 (defmethod entry-str :hörfilm
   [{:keys [personel-text movie_country genre-text

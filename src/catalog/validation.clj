@@ -120,7 +120,8 @@
   :producer-brief ProducerBrief
   :genre Genre
   :sub-genre SubGenre
-  :genre-text s/Str})
+  :genre-text s/Str
+  (s/optional-key :accompanying-material) s/Str})
 
 (abstract-map/extend-schema
  Hörfilm CatalogItem [:hörfilm]
