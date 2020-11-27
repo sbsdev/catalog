@@ -338,14 +338,17 @@
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " price))))
 
 (defmethod entry-sexp :e-book
-  [{:keys [genre-text description library-signature] :as item}
+  [{:keys [genre-text description library-signature
+           accompanying-material] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
-   (ausleihe library-signature)))
+   (when library-signature
+     (block {:keep-with-previous "always"}
+            (bold "Ausleihe:") " " library-signature (wrap accompanying-material ", ")))))
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text

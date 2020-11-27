@@ -36,6 +36,7 @@
    :accompanying-material [:datafield (attr= :tag "300") :subfield (attr= :code "e")] ; Begleitmaterial oder Spiel-Materialdetails
    :accompanying-material-legacy [:datafield (attr= :tag "392") :subfield (attr= :code "f")] ; Begleitmaterial oder Spiel-Materialdetails for old records
    :accompanying-material-legacy-other [:datafield (attr= :tag "300") :subfield (attr= :code "b")] ; Begleitmaterial oder Spiel-Materialdetails for very old records
+   :accompanying-material-images [:datafield (attr= :tag "300") :subfield (attr= :code "b")] ; Begleitmaterial für E-Books
    :narrators [:datafield (attr= :tag "709") :subfield (attr= :code "a")] ; Sprecher
    :duration [:datafield (attr= :tag "391") :subfield (attr= :code "a")] ; Spieldauer
    :personel-text [:datafield (attr= :tag "246") :subfield (attr= :code "g")] ; Regie/Darsteller bei Hörfilm
@@ -350,7 +351,8 @@
            game-description double-spaced?
            braille-grade
            directed-by actors personel-text
-           braille-music-grade ismn] :as raw-item
+           braille-music-grade ismn
+           accompanying-material-images] :as raw-item
     :or {genre "" ; an invalid genre
          genre-code ""}}] ; an invalid genre-code
   (let [fmt (format-raw-to-format format)
@@ -429,7 +431,9 @@
                  ;; some games are braillified
                  :braille-grade (braille-grade-raw-to-braille-grade braille-grade)))
 
-      :e-book item
+      :e-book (-> item
+                  (assoc-some
+                   :accompanying-material accompanying-material-images))
       :musiknoten (-> item
                       (assoc-some
                        ;; for musiknoten we want the source to correspond to the International Standard
