@@ -172,7 +172,7 @@
    (genre-sexp genre-text)
    (description-sexp description)
    (when library-signature
-     [:p {:brl:class "aus"} "Ausleihe: " library-signature (wrap accompanying-material ", ")])])
+     [:p {:brl:class "aus"} "Ausleihe: " library-signature (wrap accompanying-material ", " "" false)])])
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text

@@ -348,7 +348,7 @@
    (block (wrap description))
    (when library-signature
      (block {:keep-with-previous "always"}
-            (bold "Ausleihe:") " " library-signature (wrap accompanying-material ", ")))))
+            (bold "Ausleihe:") " " library-signature (wrap accompanying-material ", " "" false)))))
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text
