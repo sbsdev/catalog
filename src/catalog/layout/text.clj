@@ -76,7 +76,7 @@
 (defn- ausleihe-simple
   [library-signature]
   (when library-signature
-    (wrap library-signature "Ausleihe: ")))
+    (wrap library-signature "Ausleihe: " "" false)))
 
 (defn- verkauf
   [{:keys [product-number price price-on-request?]}]
@@ -177,7 +177,7 @@
    (genre-str genre-text)
    (description-str description)
    (when library-signature
-     (str "Ausleihe: " library-signature (wrap accompanying-material ", ")))))
+     (str "Ausleihe: " library-signature (wrap accompanying-material ", " "" false)))))
 
 (defmethod entry-str :hörfilm
   [{:keys [personel-text movie_country genre-text
