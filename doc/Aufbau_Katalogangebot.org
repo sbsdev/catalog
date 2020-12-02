@@ -301,12 +301,14 @@ Die Einträge der Braille-Musiknoten werden alphabetisch nach Komponist
 Im vorletzten Blatt (vor dem hinteren Deckblatt) auf der Innenseite
 kommt folgender Hinweis zum Einführungsrabatt bei Rucksackbüchern:
 
-„Einführungsrabatt“ (Titel)
+#+begin_example
+Einführungsrabatt (Titel)
 
-„Die in dieser Ausgabe vorgestellten Rucksackbücher können während
+Die in dieser Ausgabe vorgestellten Rucksackbücher können während
 zweier Monate mit einem Einführungsrabatt von 20% (ringgebunden ohne
 Deckel) bestellt werden. Danach gilt der in diesem Heft angegebene
-Buchhandelspreis (ringgebunden mit Deckel).“
+Buchhandelspreis (ringgebunden mit Deckel).
+#+end_example
 
 *** Abkürzungen
 
@@ -352,36 +354,36 @@ Index mit den Titeln der ersten Hierarchiestufe und der Seitennummer.
 
 Das Layout der einzelnen Bucheinträge sieht folgendermassen aus:
 
-[Nachname Autor] “,“ [Vorname Autor] “:“ [Titel] “.“ [Untertitel und
-restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“
-/Zeilenumbruch/
+#+begin_example
+[Nachname Autor] “,“ [Vorname Autor] “:“ [Titel] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
 
-“Genre:“ [Genrename] “.“ /Zeilenumbruch/
+“Genre:“ [Genrename] “.“ (Zeilenumbruch)
 
-[Abstract] “.“ /Zeilenumbruch/
+[Abstract] “.“ (Zeilenumbruch)
 
-[Produzent (Kürzel)] “,“ [Stadt] “, Rucksackbuch Nr.“ [Nummer des
-Rucksackbuchs] “.“ (Falls es kein Rucksackbuch ist, Punkt nach Stadt).
-/Zeilenumbruch/
+[Produzent (Kürzel)] “,“ [Stadt] “, Rucksackbuch Nr.“ [Nummer des Rucksackbuchs] “.“ (Falls es kein Rucksackbuch ist, Punkt nach Stadt). (Zeilenumbruch)
 
-“Ausleihe:“ “K,“ [Anzahl Bände] “Bd.,“ [Signatur] /Zeilenumbruch eingerückt/ \\
-	“V,“ [Anzahl Bände] “Bd.,“ „inkl. Schwarzschriftbeilage,“ [Signatur] /eingerückt/ \\
-	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur] /Zeilenumbruch / \\
-“Verkauf: CHF“ [Preisangabe] /Zeilenumbruch eingerückt/ \\
-	“K,“ [Anzahl Bände] “Bd.,“ [Signatur] /eingerückt/ \\
-	“V,“ [/Anzahl/ Bände] “Bd.,“ „inkl. Schwarzschriftbeilage,“ [Signatur]/eingerückt/ \\
+“Ausleihe:“ “K,“ [Anzahl Bände] “Bd.,“ [Signatur] (Zeilenumbruch eingerückt)
+	“V,“ [Anzahl Bände] “Bd.,“ „inkl. Schwarzschriftbeilage,“ [Signatur] (eingerückt)
+	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur] (Zeilenumbruch)
+“Verkauf: CHF“ [Preisangabe] (Zeilenumbruch eingerückt)
+	“K,“ [Anzahl Bände] “Bd.,“ [Signatur] (eingerückt)
+	“V,“ [Anzahl Bände] “Bd.,“ „inkl. Schwarzschriftbeilage,“ [Signatur] (eingerückt)
 	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur]
+#+end_example
 
 Bei taktilen Kinderbüchern und Braille-Musiknoten sind die Einträge bis
 zur Signatur gleich wie bei den Braillebüchern, aber ohne Genre. Die
 Signatur sieht hier folgendermassen aus:
 
-“Ausleihe:“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ \\
-	[Begleitmaterialien] “,“ [Signatur] /eingerückt/
-
-“Verkauf: CHF“ [Preisangabe] /Zeilenumbruch eingerückt/ \\
-	[Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ \\
+#+begin_example
+“Ausleihe:“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
 	[Begleitmaterialien] “,“ [Signatur]
+
+“Verkauf: CHF“ [Preisangabe] (Zeilenumbruch eingerückt)
+	[Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
+	[Begleitmaterialien] “,“ [Signatur]
+#+end_example
 
 /Zeichenerklärung/: Inhalte von Feldern sind in eckigen Klammern,
 Satzzeichen und fixe Begriffe sind in Anführungszeichen, Erklärungen in
@@ -438,14 +440,16 @@ folgende Elemente:
 
 Auf der Innenseite des Deckblatts steht in Tiresias folgender Hinweis:
 
+#+begin_example
 „Hinweis“ (Titel)
 
-„Ausleihbar sind die Titel in diesem Verzeichnis nur in der
+Ausleihbar sind die Titel in diesem Verzeichnis nur in der
 Schriftgrösse Tiresias 17 Punkt.
 
 Sämtliche Bücher sind auch in der Tiresias-Schrift 17, 20 und 25 Punkt
 käuflich zu erwerben. Geben Sie bitte bei einer Kauf-Bestellung den
-Autor und den Titel des gewünschten Buchs sowie die Punktgrösse mit an.“
+Autor und den Titel des gewünschten Buchs sowie die Punktgrösse mit an.
+#+end_example
 
 *** Inhaltsverzeichnis
 
