@@ -35,11 +35,11 @@ gibt, werden die Einträge alphabetisch nach Titel sortiert.
 
 __Beispiel:__
 
-*F*ollett, Ken: ...\\
-*F*orschen und Denken.\\
-*G*rass, Günter: ...\\
-*G*rosis Märchen.\\
-*H*orvath, Ödon von: ...
+Follett, Ken: ...\\
+Forschen und Denken.\\
+Grass, Günter: ...\\
+Grosis Märchen.\\
+Horvath, Ödon von: ...
 
 * Neu als Hörbuch
 
@@ -695,7 +695,7 @@ Die einzelnen Bucheinträge sehen folgendermassen aus:
 5. Abstract
 6. „Ausleihe“: Signatur
 
-**** „Neue Hörfilme“*
+**** „Neue Hörfilme“
 
 Die Filme werden -- ohne Inhaltsverzeichnis -- alphabetisch nach Titel
 geordnet, da es nur wenige Titel pro Ausgabe hat.
@@ -711,7 +711,7 @@ Die einzelnen Filmeinträge sehen folgendermassen aus:
 7. Produzent
 8. „Ausleihe“: Signatur
 
-**** „Neue Spiele“*
+**** „Neue Spiele“
 
 Die Spiele werden -- ebenfalls ohne Inhaltsverzeichnis -- alphabetisch
 nach Titel geordnet.
