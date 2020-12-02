@@ -1,0 +1,1292 @@
+#+options: toc:t H:4
+#+title: SBS-Katalogangebot ab 1.1.2016
+#+date: <2020-12-02 Mi>
+#+language: de
+
+* Allgemeines zum Katalogangebot
+
+Ab 2016 besteht das Katalogangebot der SBS aus vier physischen, drei
+digitalen und einem Katalog nach Mass. Ein Katalog (Neu im Sortiment)
+wird physisch und digital zugleich angeboten, weshalb das neue Angebot
+insgesamt sechs „standardisierte“ Kataloge umfasst. Evtl. soll zu einem
+späteren Zeitpunkt ein zusätzlicher Katalog zu den taktilen
+Kinderbüchern erstellt werden.
+
+** Genres-Struktur
+
+Die Titel werden in den Katalogen nach unserer Genre-Struktur
+aufgelistet. Die oberste Ebene bilden die vier Literaturtypen; die
+zweitoberste Ebene bilden die rund 25 „Genregruppen“, z.B. „Action und
+Thriller“ oder „Beziehungsromane“; in der untersten Ebene befinden sich
+die weit über 100 Genres, wie z.B. „Abenteuer“ oder „Arztromane“.
+
+Literaturtypen werden in folgender Reihenfolge aufgelistet:
+Belletristik, Sachbücher, Kinder- und Jugendbücher, Bücher in
+Fremdsprachen. Innerhalb der einzelnen Literaturtypen werden die
+Genregruppen alphabetisch aufgelistet, mit Ausnahme der Kinder- und
+Jugendbücher, wo folgende Reihenfolge gilt: Kinderbücher (ab 6),
+Kinderbücher (ab 10), Jugendbücher (ab 14), Kinder- und
+Jugendsachbücher. Innerhalb der Genregruppen werden die Genres
+alphabetisch aufgelistet.
+
+** Reihenfolge der Titeleinträge
+
+Innerhalb der jeweiligen Kapitel werden die Titeleinträge alphabetisch
+nach Nachnamen des Autors geordnet. Wenn es keinen Eintrag zum Autor
+gibt, werden die Einträge alphabetisch nach Titel sortiert.
+
+__Beispiel:__
+
+*F*ollett, Ken: ...\\
+*F*orschen und Denken.\\
+*G*rass, Günter: ...\\
+*G*rosis Märchen.\\
+*H*orvath, Ödon von: ...
+
+* Neu als Hörbuch
+
+** Katalogtyp
+
+Zweimonatlicher Katalognachtrag aller neuen Hörbücher mit
+Inhaltsverzeichnis, Editorial (Infos der SBS, nur falls es solche Infos
+hat) und Buchtipps („Inspirationsteil“ über Bücher, Autoren usw.), im
+Audio-Format.
+
+** Zielgruppe
+
+Nicht digitale Hörbuchnutzer (rund 53% der aktiv auswählenden HB-Nutzer,
+also ca. 560 Personen)
+
+** Gliederung
+
+1. Titel
+2. Zu diesem Katalog
+3. Struktur dieser Ausgabe
+4. Inhaltsverzeichnis
+5. Editorial
+6. Neue Hörbücher (/Bucheinträge/)
+7. Buchtipps
+8. Impressum
+9. Ende („Ende von Neu als Hörbuch Nr. X, 201X“)
+
+Der Katalog wird aufgesprochen. Die Struktur des Aufgesprochenen richtet
+sich nach den „Ansagen für Zeitschriften“, die für Hörzeitschriften,
+Abstimmungsunterlagen etc. gelten. Deshalb unterscheidet sich die
+Gliederung von Neu als Hörbuch von den anderen physischen Katalogen in
+den obigen Strukturpunkten 2, 3 und 9. Da einige Kunden die
+Navigationsfunktion nicht nutzen (können) und den Katalog daher von
+vorne nach hinten hören, kommen die Buchtipps nach (und nicht vor) den
+Bucheinträgen. Die einzelnen Kapitel werden bis zur 3. Strukturebene
+nummeriert.
+
+Kati produziert die obigen Punkte 4. bis 7.; die Ansage mit den
+restlichen Punkten wird nach Ansagen-Schema vom Hörbuchstudio erstellt.
+
+** Inhalt
+
+*** Titel
+
+„Neu als Hörbuch Nr. X, 201X“, gemäss Ansagen-Schema.
+
+*** Zu diesem Katalog
+
+Dieser Ansagen-Teil teilt sich in „Produktion“ und „Es lesen“ gemäss
+Ansagen-Schema.
+
+*** Struktur dieser Ausgabe
+
+Hier werden die Ebenen angegeben und es wird gesagt, dass keine
+Seitenzahlen angegeben werden (gemäss Ansagen-Schema).
+
+*** Inhaltsverzeichnis
+
+Es ist bis zur 3. Ebene nummeriert und wird ohne Seitenangaben gelesen.
+
+*** Editorial
+
+Das Editorial beinhaltet die SBS-Neuigkeiten (nur falls vorhanden) und
+einen Überblick mit rotem Faden zu den Buchtipps. Das Editorial beginnt
+mit „Liebe Leserin, lieber Leser“ und endet mit einem jeweils passenden
+Satz, wie „Wir wünschen Ihnen eine anregende Lektüre“ und „Ihre SBS“.
+
+*** Neue Hörbücher
+
+Die Bucheinträge werden nach Literaturtyp / Genregruppe / alphabetisch
+nach Autor (falls keine Angaben zum Autor: nach Titel) geordnet.
+
+Die einzelnen Bucheinträge werden folgendermassen vorgelesen:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract (=Annotation)
+6. Spieldauer in Minuten
+7. „gelesen von:“ Sprecher (falls es mehrere sind: mit „u.a.“)
+8. Produzent (Kürzel der übertragenden Organisation), Stadt. Falls es
+   sich um ein kommerzielles Hörbuch handelt, zusätzlich: „Hörbuch aus
+   dem Handel“
+9. Signaturen (zuerst Ausleihe, dann Verkauf mit Preisangabe in Franken)
+
+*** Buchtipps
+
+Der Teil „Buchtipps“ enthält 5 Buchbesprechungen. Wenn es thematisch
+sinnvoll / notwendig ist, kann die Anzahl besprochener Bücher von 4 bis
+maximal 8 variieren, aber in der Regel sollten 5 Bücher besprochen
+werden. Die einzelnen Bücher, die einen Bezug zu den Neuheiten haben,
+werden folgendermassen vorgestellt:
+
+- Kommentar / Würdigung zum Buch: ca. 8 Minuten
+- Audiobeispiele / Zusammenschnitt von Hörproben: ca. 6-8 Minuten
+
+Als letztes Unterkapitel der Buchtipps, nach den 5 Büchern, kommt als 6.
+Unterkapitel die „Liste der vorgestellten Bücher“, in der
+Quellenangaben, Signaturen etc. aufgesprochen werden.
+
+*** Impressum
+
+Das Impressum umfasst, wie bei den anderen Katalogen, Adresse, Telefon,
+Fax, E-Mail (Nutzerservice) und Internetadresse.
+
+*** Ende
+
+„Ende von Neu als Hörbuch Nr. X, 201X“, gemäss Ansagen-Schema.
+
+* Neu in Braille
+
+** Katalogtyp
+
+Zweimonatlicher Katalognachtrag aller neuen Blindenschriftbücher, inkl.
+taktile Kinderbücher und Braille-Musiknoten, mit Inhaltsverzeichnis,
+Editorial und Buchtipps, in Kurzschrift. Die Rucksackbücher und
+SJW-Hefte sind unter „Kinder- und Jugendbücher“ aufgeführt.
+
+** Zielgruppe
+
+Nicht digitale Punktschriftnutzer (rund 67% der aktiv auswählenden
+PS-Nutzer, also ca. 200 Personen)
+
+** Gliederung
+
+1.  Deckblatt
+2.  Inhaltsverzeichnis
+3.  Editorial
+4.  Buchtipps
+5.  Neue Braillebücher
+# FIXME: is this still needed? Has this been replaced by P&R
+6.  Neue taktile Kinderbücher
+7.  Neue Braille-Musiknoten
+8.  Einführungsrabatt
+9.  Abkürzungen
+10. Impressum
+
+Die Gliederung unterscheidet sich von den anderen Katalogen nur durch
+die Braille-spezifischen Informationen (Punkt 8. und 9.)
+
+** Inhalt
+
+*** Deckblatt
+
+Das Deckblatt enthält auf der Vorderseite folgende Elemente in
+Blindenschrift
+
+- Titel: „Neu in Braille“
+- Heftnummer: „1“ bis „6“
+- Monat und Jahr: z.B. „Februar 2016“
+- „SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte“
+- Symbol in Punktschrift
+
+Das Deckblatt enthält auf der Vorderseite folgende Elemente in
+Schwarzschrift (vom Grafiker gestaltet, wie die restlichen papierigen
+Kataloge):
+
+- Titel: „Neu in Braille“
+- Heftnummer: „1“ bis „6“
+- Monat und Jahr: z.B. „Februar 2016“
+- Logo SBS
+
+*** Inhaltsverzeichnis
+
+Das Inhaltsverzeichnis sieht folgendermassen aus:
+
+- Editorial
+- Buchtipps, jeweils unterteilt in:
+  - Titel
+  - Weitere Bücher von/zu...
+  - Leseprobe (ev.)
+- Neue Braillebücher
+  - Belletristik
+  - Sachbücher
+  - Kinder- und Jugendbücher
+    - Kinderbücher (ab 6)
+    - Kinderbücher (ab 10)
+    - Jugendbücher (ab 14)
+    - Kinder- und Jugendsachbücher
+  - Bücher in Fremdsprachen
+- Neue taktile Kinderbücher
+- Neue Braille-Musiknoten
+- Einführungsrabatt
+- Abkürzungen
+- Impressum
+
+*** Editorial
+
+Das Editorial enthält Neuigkeiten aus der SBS und erscheint nur, wenn es
+etwas Neues gibt. Das Editorial beginnt mit „Liebe Leserin, lieber
+Leser“ und endet mit „Ihre SBS“.
+
+*** Buchtipps
+
+Unter der Rubrik mit dem Titel „Buchtipps“ werden mindestens zwei neue
+Bücher vorgestellt: eines für Erwachsene und eines für Kinder. Jeder
+Buchtipp ist rund 4 bis 6 Brailleseiten lang und kann auf weitere
+Braille- oder Hörbücher des Autors oder zum Thema (mit Signaturen)
+verweisen. In seltenen Fällen, wenn es Platz hat, kann ein drittes Buch
+vorgestellt werden. Der Buchtipp für Kinder enthält auch eine Leseprobe.
+
+*** Neue Braillebücher
+
+Die Bucheinträge werden nach Literaturtyp / alphabetisch nach Autor
+(wenn nicht vorhanden: nach Titel) geordnet. Die Kinder- und
+Jugendbücher werden zusätzlich nach Genregruppe (d. h. altersbezogen)
+geordnet.
+
+Die einzelnen Bucheinträge sehen folgendermassen aus:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. Produzent (Kürzel), Stadt. Falls es sich um ein Rucksackbuch handelt,
+   zusätzlich: „Rucksackbuch“ und Nummer
+7. Schriftart, Bandangabe, inkl. Schwarzschriftbeilage (nur falls
+   vorhanden), Signaturen (zuerst Ausleihe, dann allenfalls Verkauf,
+   gefolgt von Preisangabe in Franken)
+
+*** Neue taktile Kinderbücher
+
+Die einzelnen Bucheinträge werden alphabetisch nach Autor (Titel)
+geordnet und enthalten folgende Angaben:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Abstract
+5. Produzent (Kürzel), Stadt
+6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
+   Signaturen
+
+*** Neue Braille-Musiknoten
+
+Die Einträge der Braille-Musiknoten werden alphabetisch nach Komponist
+(Titel) geordnet und enthalten folgende Angaben:
+
+1. Komponist: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere
+   sind; ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Abstract
+5. Produzent (Kürzel), Stadt
+6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
+   Signaturen
+
+*** Einführungsrabatt
+
+Im vorletzten Blatt (vor dem hinteren Deckblatt) auf der Innenseite
+kommt folgender Hinweis zum Einführungsrabatt bei Rucksackbüchern:
+
+„Einführungsrabatt“ (Titel)
+
+„Die in dieser Ausgabe vorgestellten Rucksackbücher können während
+zweier Monate mit einem Einführungsrabatt von 20% (ringgebunden ohne
+Deckel) bestellt werden. Danach gilt der in diesem Heft angegebene
+Buchhandelspreis (ringgebunden mit Deckel).“
+
+*** Abkürzungen
+
+Auf derselben Seite wie der Einführungsrabatt werden die im Katalog
+verwendeten Abkürzungen aufgeführt.
+
+„Abkürzungen“ (Titel) \\
+„Bd. = Band, Bände \\
+K = Kurzschrift \\
+V = Vollschrift \\
+wtz = weitzeilige Vollschrift“
+
+*** Impressum
+
+Im vorletzten Blatt auf der Aussenseite steht der folgende Text:
+
+#+begin_example
+„Impressum“ (Titel)
+Neu in Braille
+Für Kundinnen und Kunden der SBS
+Erscheint kostenlos sechsmal jährlich in Blindenkurzschrift und listet
+alle seit der letzten Ausgabe neu in die SBS aufgenommenen Braillebücher auf
+
+Herausgeber:
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+Grubenstrasse 12
+CH-8045 Zürich
+Fon +41 43 333 32 32
+Fax +41 43 333 32 33
+www.sbs.ch
+
+Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch
+Verkauf Institutionen: medienverlag@sbs.ch
+#+end_example
+
+** Seitenlayout
+
+Die Seiten sind -- mit Ausnahme der Kinderbuch-Leseprobe -- in
+Kurzschrift geschrieben und haben auf der rechten Seite unten einen
+Index mit den Titeln der ersten Hierarchiestufe und der Seitennummer.
+
+** Layout der einzelnen Titeleinträge
+
+Das Layout der einzelnen Bucheinträge sieht folgendermassen aus:
+
+[Nachname Autor] “,“ [Vorname Autor] “:“ [Titel] “.“ [Untertitel und
+restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“
+/Zeilenumbruch/
+
+“Genre:“ [Genrename] “.“ /Zeilenumbruch/
+
+[Abstract] “.“ /Zeilenumbruch/
+
+[Produzent (Kürzel)] “,“ [Stadt] “, Rucksackbuch Nr.“ [Nummer des
+Rucksackbuchs] “.“ (Falls es kein Rucksackbuch ist, Punkt nach Stadt).
+/Zeilenumbruch/
+
+“Ausleihe:“ “K,“ [Anzahl Bände] “Bd.,“ [Signatur] /Zeilenumbruch eingerückt/ \\
+	“V,“ [Anzahl Bände] “Bd.,“ „inkl. Schwarzschriftbeilage,“ [Signatur] /eingerückt/ \\
+	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur] /Zeilenumbruch / \\
+“Verkauf: CHF“ [Preisangabe] /Zeilenumbruch eingerückt/ \\
+	“K,“ [Anzahl Bände] “Bd.,“ [Signatur] /eingerückt/ \\
+	“V,“ [/Anzahl/ Bände] “Bd.,“ „inkl. Schwarzschriftbeilage,“ [Signatur]/eingerückt/ \\
+	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur]
+
+Bei taktilen Kinderbüchern und Braille-Musiknoten sind die Einträge bis
+zur Signatur gleich wie bei den Braillebüchern, aber ohne Genre. Die
+Signatur sieht hier folgendermassen aus:
+
+“Ausleihe:“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ \\
+	[Begleitmaterialien] “,“ [Signatur] /eingerückt/
+
+“Verkauf: CHF“ [Preisangabe] /Zeilenumbruch eingerückt/ \\
+	[Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ \\
+	[Begleitmaterialien] “,“ [Signatur]
+
+/Zeichenerklärung/: Inhalte von Feldern sind in eckigen Klammern,
+Satzzeichen und fixe Begriffe sind in Anführungszeichen, Erklärungen in
+runden Klammern.
+
+/Bemerkung 1/: Wenn es mehrere Autoren gibt, wird nur der erste, ohne
+„u.a.“ aufgeführt.
+
+/Bemerkung 2/: Wenn ein Titel oder Untertitel mit einem Frage- oder
+Ausrufezeichen aufhört, soll der Punkt nach dem Titel nicht erscheinen.
+Sinngemäss gilt das für alle Felder, deren Inhalt mit einem Punkt endet.
+
+/Bemerkung 3/: Wenn der gleiche Titel gleichzeitig in mehreren
+Schriftarten erscheint, wird der Katalogeintrag vom Autor bis vor der
+Signatur nur einmal aufgeführt. Die verschiedenen Signaturen werden
+danach zusammen aufgelistet: pro vorhandene Schriftart eine Signatur.
+
+* Neu in Grossdruck
+
+** Katalogtyp
+
+Zweimonatlicher Katalognachtrag aller neuen Grossdruckbücher, mit
+Inhaltsverzeichnis, Editorial und Magazinteil (teilweise identisch wie
+bei „Neu in Blindenschrift“), in Tiresias 17 (Schwarzschrift).
+
+** Zielgruppe
+
+Nicht digitale Grossdrucknutzer (rund 79% der aktiv auswählenden
+GD-Nutzer, also ca. 150 Personen)
+
+** Gliederung
+
+1. Deckblatt
+2. Hinweis
+3. Inhaltsverzeichnis
+4. Editorial
+5. Buchtipp
+6. Bucheinträge
+7. Impressum
+
+** Inhalt
+
+*** Deckblatt
+
+Das Deckblatt ist vom Grafiker gestaltet und enthält auf der Vorderseite
+folgende Elemente:
+
+- Titel: „Neu in Grossdruck“
+- Heftnummer: „1“ bis „6“
+- Monat und Jahr: z.B. „Februar 2016“
+- Logo
+
+*** Hinweis
+
+Auf der Innenseite des Deckblatts steht in Tiresias folgender Hinweis:
+
+„Hinweis“ (Titel)
+
+„Ausleihbar sind die Titel in diesem Verzeichnis nur in der
+Schriftgrösse Tiresias 17 Punkt.
+
+Sämtliche Bücher sind auch in der Tiresias-Schrift 17, 20 und 25 Punkt
+käuflich zu erwerben. Geben Sie bitte bei einer Kauf-Bestellung den
+Autor und den Titel des gewünschten Buchs sowie die Punktgrösse mit an.“
+
+*** Inhaltsverzeichnis
+
+Das Inhaltsverzeichnis sieht folgendermassen aus:
+
+- Editorial
+- Buchtipp
+- Belletristik
+- Sachbücher
+- Kinder- und Jugendbücher
+  - Kinderbücher (ab 6)
+  - Kinderbücher (ab 10)
+  - Jugendbücher (ab 14)
+  - Kinder- und Jugendsachbücher
+- Bücher in Fremdsprachen
+
+Das Impressum wird im Inhaltsverzeichnis nicht aufgeführt.
+
+*** Editorial
+
+Das „Editorial“, welches Neuigkeiten aus der SBS enthält, erscheint nur,
+wenn es etwas Neues gibt. In der Regel ist das Editorial gleich wie
+jenes in „Neu in Braille“. Falls die Informationen formatspezifisch
+sind, weicht der Text entsprechend ab.
+
+Das Editorial beginnt mit „Liebe Leserin, lieber Leser“ und endet mit
+„Ihre SBS“.
+
+*** Buchtipp
+
+Unter der Rubrik mit dem Titel „Buchtipp“ wird ein neues Buch
+vorgestellt. Der Buchtipp ist rund 4 bis 6 Grossdruckseiten lang und
+kann auf weitere Grossdruck- oder Hörbücher des Autors oder zum Thema
+(mit Signaturen) verweisen. Der Buchtipp kann auch der gleiche sein wie
+im „Neu in Braille“.
+
+*** Bucheinträge
+
+Die Bucheinträge werden -- ohne speziellen Titel (also ohne „Neue
+Grossdruckbücher“) -- nach Literaturtyp / alphabetisch nach Autor
+(Titel) geordnet. Die Kinder- und Jugendbücher werden zusätzlich nach
+Genregruppe (d.h. altersbezogen) geordnet.
+
+Die einzelnen Bucheinträge sehen folgendermassen aus:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. Signatur: „Ausleihe“: Bandangabe und Signatur, „Verkauf“: Preis
+
+*** Impressum
+
+Das Impressum ist vom Grafiker gestaltet und erscheint auf dem hinteren
+Deckblatt (Aussenseite) mit folgendem Text:
+
+#+begin_example
+Impressum (Titel)
+Neu in Grossdruck (Titel 2. Ordnung)
+Für Kundinnen und Kunden der SBS
+Erscheint kostenlos sechsmal jährlich in Schwarzschrift und listet alle
+seit der letzten Ausgabe neu in die SBS aufgenommenen Grossdruckbücher auf
+
+Herausgeber (Titel 2. Ordnung)
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+Grubenstrasse 12
+CH-8045 Zürich
+Fon +41 43 333 32 32
+Fax +41 43 333 32 33
+www.sbs.ch
+
+Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch
+Verkauf Institutionen: medienverlag@sbs.ch
+
+© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte“
+#+end_example
+
+** Seitenlayout
+
+Die Standardschrift ist Tiresias 17. Die Seitenränder sind auf beiden
+Seiten gleich gross, der Text ist linksbündig und wird nicht getrennt.
+Bei den Titeleinträgen werden „Einzeiler“ vermieden, d.h. der
+Seitenumbruch erfolgt frühestens nach zwei Zeilen und spätestens vor
+„Ausleihe“.
+
+Die Grösse der Titel und ihre Abstände richten sich nach der
+Hierarchiestruktur. Bei Titeln, die nicht auf eine neue Seite beginnen,
+ist der Abstand vor dem Titel sichtbar grösser als jener unter dem
+Titel.
+
+Die Seiten haben eine Kopfzeile (fett), die durch einen dünnen Strich
+getrennt wird. Oberhalb des Striches hat es am äusseren Rand der Seiten
+(bei geraden Seiten links und bei ungeraden Seiten rechts) die
+Seitenzahl, am inneren Rand die Angabe des jeweiligen Literaturtyps.
+Deckblatt und Inhaltsverzeichnis haben keine Kopfzeile.
+
+Das Inhaltsverzeichnis ist immer auf Seite 1, das Editorial fängt auf
+Seite 3 an. Neue Literaturtypen fangen immer auf einer neuen Seite an.
+Im Inhaltsverzeichnis sind die Seitenzahlen durch Pünktchen
+gekennzeichnet und rechtsbündig.
+
+** Layout der einzelnen Titeleinträge
+
+Das Layout der einzelnen Einträge sieht folgendermassen aus:
+
+#+begin_example
+[Nachname Autor (fett)] “,“ [Vorname Autor (fett)] “:“ [Titel (fett)] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag]
+“,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
+
+“Genre:“ [Genrename] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur] “,“ [Anzahl Bände] “Bd.“ (Falls keine Bandangabe: kein Komma nach Signatur) (Zeilenumbruch)
+
+“Verkauf:“ (fett) “CHF“ [Preisangabe]
+#+end_example
+
+/Zeichenerklärung/: Inhalte von Feldern sind in eckigen Klammern,
+Satzzeichen und fixe Begriffe sind in Anführungszeichen, Erklärungen in
+runden Klammern.
+
+/Bemerkung 1/: Wenn es mehrere Autoren gibt, wird nur der erste, ohne
+„u.a.“ aufgeführt.
+
+/Bemerkung 2/: Wenn ein Titel oder Untertitel mit einem Frage- oder
+Ausrufezeichen aufhört, soll der Punkt nach dem Titel nicht erscheinen.
+Sinngemäss gilt das für alle Felder, deren Inhalt mit einem Punkt enden.
+
+/Bemerkung 3/: Möglicherweise kann der Haupttitel nicht vom Untertitel
+und den restlichen Einträgen im Titelbereich getrennt werden. In diesem
+Fall soll der ganze Titelbereich fett sein.
+
+__Beispiel:__
+
+*Plogstedt, Sibylle: Nein heisst nein!* DGB-Ratgeber gegen sexuelle
+Belästigung am Arbeitsplatz. -- Piper, 1992. \\
+Genre: Gesellschaft, Politik, Wirtschaft, Recht. \\
+Informiert gut verständlich über den Tatbestand der sexuellen
+Belästigung am Arbeitsplatz, seine juristische Behandlung, Probleme der
+Beweisführung, psychosomatische Folgen von Belästigungen, betriebliche
+Massnahmen zur Verhinderung von Übergriffen, Fragen der Zuständigkeit
+u.a.m. Der Anhang mit Empfehlungen einer "Kommission der Europäischen
+Gemeinschaften zum Schutz der Würde von Frauen und Männern am
+Arbeitsplatz" belegt erste Erfolge der Bemühungen von zum Thema
+engagierten Frauen. \\
+*Ausleihe:* GD 1234, 2 Bd. \\
+*Verkauf:* CHF 25.00
+
+* Neu im Sortiment
+
+** Katalogtyp
+
+Zweimonatlicher Katalognachtrag in Schwarzschrift (Verdana 11) mit
+sämtlichen Neuerscheinungen als Hör-, Blindenschrift-, Grossdruckbücher,
+E-Books, Musik, Spiele und Hörfilme. Mit Inhaltsverzeichnis, ohne
+Editorial oder Magazinteil. Der Katalog kann auch von Nicht-Kunden
+abonniert werden und ist kostenpflichtig.
+
+** Zielgruppe
+
+Nicht-digitale Helfer von Nutzer aller Formate (Grösse schwer
+einzuschätzen)
+
+** Gliederung
+
+1. Deckblatt
+2. Inhaltsverzeichnis grob
+3. Einzelne Formate: Titeleinträge (mit eigenem Inhaltsverzeichnis)
+4. Impressum
+
+** Inhalt
+
+*** Deckblatt
+
+Das Deckblatt ist vom Grafiker gestaltet und enthält auf der Vorderseite
+folgende Elemente:
+
+- Titel: „Neu im Sortiment“
+- Heftnummer: „1“ bis „6“
+- Monat und Jahr: z.B. „Februar 2016“
+- Logo
+
+*** Inhaltsverzeichnisse
+
+Das Inhaltsverzeichnis ist gesplittet. Zunächst gibt es ein grobes
+Inhaltsverzeichnis, das nur nach Formaten unterscheidet, danach werden
+in den einzelnen Formaten wieder formatspezifische Inhaltsverzeichnisse
+erstellt. Zusammen ergeben sie folgende Inhaltverzeichnis-Struktur:
+
+- Inhaltsverzeichnis (grob, nach Formaten)
+- Neue Hörbücher
+- Belletristik (unterteilt nach Genregruppen)
+- Sachbücher (unterteilt nach Genregruppen)
+- Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+- Bücher in Fremdsprachen (unterteilt nach Genregruppen)
+- Neue Braillebücher
+- Belletristik
+- Sachbücher
+- Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+- Bücher in Fremdsprachen
+- Taktile Kinderbücher
+- Braille-Musiknoten
+- Neue Grossdruckbücher
+  - Belletristik
+  - Sachbücher
+  - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+  - Bücher in Fremdsprachen
+- Neue E-Books
+  - Belletristik
+  - Sachbücher
+  - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+  - Bücher in Fremdsprachen
+- Neue Hörfilme
+- Neue Spiele
+
+*** Einzelne Formate: Titeleinträge
+
+Die Titeleinträge sind nach Formaten geordnet. Die Gliederung innerhalb
+der Formate Hörbuch, Braille und Grossdruck ist grundsätzlich wie jene
+der physischen Kataloge der jeweiligen Formate.
+
+Die Einträge der restlichen Formate sehen folgendermassen aus:
+
+**** „Neue E-Books“
+
+Das Inhaltsverzeichnis sieht identisch wie jenes der Grossdruckbücher
+aus. Die Titel werden nach Literaturtyp / alphabetisch nach Autor
+(Titel) geordnet. Die Kinder- und Jugendbücher werden zusätzlich nach
+Genregruppe (d.h. altersbezogen) geordnet.
+
+Die einzelnen Bucheinträge sehen folgendermassen aus:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. „Ausleihe“: Signatur
+
+**** „Neue Hörfilme“*
+
+Die Filme werden -- ohne Inhaltsverzeichnis -- alphabetisch nach Titel
+geordnet, da es nur wenige Titel pro Ausgabe hat.
+
+Die einzelnen Filmeinträge sehen folgendermassen aus:
+
+1. Titel, Untertitel
+2. „Regie:“ Name Regisseur
+3. „Schauspieler:“ Namen der Hauptdarstellern
+4. Land, Erscheinungsjahr (des Originalfilms)
+5. Filmkategorie (Spielfilm, Dokumentarfilm, Mundartfilm)
+6. Abstract
+7. Produzent
+8. „Ausleihe“: Signatur
+
+**** „Neue Spiele“*
+
+Die Spiele werden -- ebenfalls ohne Inhaltsverzeichnis -- alphabetisch
+nach Titel geordnet.
+
+Die einzelnen Spieleinträge sehen folgendermassen aus:
+
+1. Titel, Untertitel
+2. Systematikgruppe
+3. Abstract
+4. Materialdetails
+5. „Ausleihe“: Signatur
+
+*** Impressum
+
+Das Impressum ist vom Grafiker gestaltet und erscheint auf dem hinteren
+Deckblatt (Aussenseite) mit folgendem Text:
+
+#+begin_example
+Impressum (Titel)
+
+Neu im Sortiment (Titel 2. Ordnung)
+Für Kundinnen und Kunden der SBS sowie für Interessenten
+Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu
+in die SBS aufgenommenen Bücher nach
+„Neu im Sortiment“ kann im Jahresabonnement per Post zu CHF / € 78.--
+oder per E-Mail gratis bezogen werden
+
+Herausgeber (Titel 2. Ordnung)
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+Grubenstrasse 12
+CH-8045 Zürich
+Fon +41 43 333 32 32
+Fax +41 43 333 32 33
+www.sbs.ch
+
+Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch
+Verkauf Institutionen: medienverlag@sbs.ch
+
+© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte“
+#+end_example
+
+** Seitenlayout
+
+Die Standardschrift ist Verdana 11. Die Seitenränder sind auf beiden
+Seiten gleich gross, der Text ist linksbündig und wird nicht getrennt.
+Bei den Titeleinträgen werden „Einzeiler“ vermieden, d.h. der
+Seitenumbruch erfolgt frühestens nach/spätestens vor zwei Zeilen.
+
+Die Grösse der Titel und ihre Abstände richten sich nach der
+Hierarchiestruktur. Bei Titeln, die nicht auf eine neue Seite beginnen,
+ist der Abstand vor dem Titel sichtbar grösser als jener unter dem
+Titel.
+
+Die Seiten haben eine Kopfzeile (fett), die durch einen dünnen Strich
+getrennt wird. Oberhalb des Striches hat es am äusseren Rand der Seiten
+(bei geraden Seiten links und bei ungeraden Seiten rechts) die
+Seitenzahl, am inneren Rand die zweite Ebene des formatspezifischen
+Inhaltsverzeichnisses (bei Hörbüchern die Genregruppen; bei
+Grossdruckbüchern und E-Books die Literaturtypen, bei Braillebüchern die
+Literaturtypen, „Taktile Kinderbücher“ oder „Braille-Musiknoten“). Bei
+Hörfilmen und Spielen, die nur wenige Neuheiten aufweisen und daher
+nicht weiter unterteilt sind, erscheint der Haupttitel, also „Neue
+Hörfilme“ oder „Neue Spiele“. Das grobe Inhaltsverzeichnis hat keine
+Kopfzeile.
+
+Das grobe Inhaltsverzeichnis ist immer auf Seite 1, die neuen Hörbücher
+fangen (mit dem formatspezifischen Inhaltsverzeichnis) immer auf Seite 3
+an. Neue Formate fangen immer auf einer neuen Seite an. In den
+Inhaltsverzeichnissen sind die Seitenzahlen durch Pünktchen
+gekennzeichnet und rechtsbündig.
+
+** Layout der einzelnen Titeleinträge
+
+Bei den folgenden Angaben gelten die gleichen Bemerkungen wie bei Neu in
+Braille und Neu in Grossdruck (im jeweiligen „Layout-Kapitel“).
+
+*** Hörbuch-Einträge
+
+#+begin_example
+[Nachname Autor (fett)] “,“ [Vorname Autor (fett)] “:“ [Titel (fett)] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
+
+“Genre:“ [Genrename] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Spieldauer] “Min., gelesen von:“ [Vorname Nachname Sprecher (in dieser Reihenfolge)] „u.a.“ (nur falls es mehrere Sprecher sind) “.“ (Zeilenumbruch)
+
+[Produzent (Kürzel)] “,“ [Stadt] “,“ “Hörbuch aus dem Handel“ (nur falls kommerzielles Hörbuch) „.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur] (Zeilenumbruch)
+
+“Verkauf:“ (fett) [Signatur] “, CHF“ [Preisangabe]
+#+end_example
+
+__Beispiel:__
+
+*Werfel, Franz: Die vierzig Tage der Musa Dagh.* -- Der Hörverlag, 2015. \\
+Genre: Hörspiel. \\
+Nach seiner Rückkehr in die armenische Heimat wird Gabriel Bagradian mit
+der Verfolgung seines Volkes konfrontiert und beschließt gemeinsam mit
+5000 seiner Landsleute, sich auf dem Berg Moses bewaffnet zu
+verteidigen. \\
+201 Min., gelesen von Sebastian Blomberg u.a. \\
+SBS, Zürich, Hörbuch aus dem Handel. \\
+*Ausleihe:* DS 31131 \\
+*Verkauf*: DY 12345, CHF 25.20
+
+*** Braille-Einträge
+
+**** Braillebücher
+
+Bis zur Signatur ist der Eintrag identisch wie in Neu in Braille, die
+Hervorhebungen in fett sind identisch wie beim Hörbucheintrag, nämlich:
+
+#+begin_example
+[Nachname Autor (fett)] “,“ [Vorname Autor (fett)] “:“ [Titel (fett)] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
+
+“Genre:“ [Genrename] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Produzent (Kürzel)] “,“ [Stadt] “, Rucksackbuch Nr.“ [Nummer des Rucksackbuchs] “.“ (Falls es kein Rucksackbuch ist, Punkt nach Stadt). (Zeilenumbruch)
+
+“Ausleihe:“ (fett) “Kurzschrift,“ [Anzahl Bände] “Bd.,“ [Signatur] “. Vollschrift,“ [Anzahl Bände] “Bd.,“ “inkl. Schwarzschriftbeilage,“ (nur falls es eine Beilage hat) [Signatur] “. Weitzeilige Vollschrift,“ [Anzahl Bände] “Bd.,“ [Signatur] (Zeilenumbruch)
+
+“Verkauf:“ (fett) “CHF“ [Preisangabe] “.“ “Kurzschrift,“ [Anzahl Bände] “Bd.,“ [Signatur] “. Vollschrift,“ [Anzahl Bände] “Bd.,“ “inkl. Schwarzschriftbeilage,“ (nur falls es eine Beilage hat) [Signatur] “. Weitzeilige Vollschrift,“ [Anzahl Bände] “Bd.,“ [Signatur]
+#+end_example
+
+__Beispiel:__
+
+*Krause, Ute: Minus Drei wünscht sich ein Haustier.* -- cbj, München. \\
+Genre: Tiere. \\
+Der kleine Dinosaurier Minus wünscht sich sehnlichst ein Haustier! Doch
+seine Eltern glauben nicht, dass er sich schon allein um ein Haustier
+kümmern kann. "Ich werde es euch beweisen!", ruft Minus trotzig und hat
+auch schon einen Plan: Er bietet persönliche Haustierbetreuung an. Als
+am nächsten Tag tatsächlich Kundschaft vor der Tür steht, muss Minus
+dann doch erst mal schlucken. Ab 6 Jahren. \\
+SBS, Zürich, Rucksackbuch Nr. 347. \\
+*Ausleihe:* Vollschrift, 1 Bd., BK 4148 \\
+*Verkauf:* CHF 15.90. Kurzschrift, 1 Bd., PS13846. Vollschrift, 1 Bd.,
+PS 13847. Weitzeilige Vollschrift, PS 13848
+
+**** Taktile Kinderbücher und Braille-Musiknoten
+
+Bis zur Signatur sind die Einträge wie bei den Braillebüchern, aber ohne
+Genre. Signatur:
+
+#+begin_example
+“Ausleihe:“ (fett) [Schriftart und Bemerkungen] “,“ [Anzahl Bände] “Bd.,“ [Begleitmaterialien] “,“ [Signatur] (Zeilenumbruch)
+
+“Verkauf:“ (fett) “CHF“ [Preisangabe] “.“ [Signatur]
+#+end_example
+
+__Beispiel:__
+
+*Beck, Karin Jana: Siya Bonga.* 62 Kraftlieder und einfache Volkslieder
+aus aller Welt. -- Battweiler-Traumzeit, 2007. \\
+Doppel-CD mit Kraftliedern und spirituellen Chants aus allen
+Kontinenten, sowie einfachen Volksliedern -- vorwiegend aus Europa. Alle
+Lieder lassen sich in kurzer Zeit mit singfreudigen Frauen, Männern,
+Jugendlichen und Kindern singen. Im Buch befinden sich Texte, Akkorde
+und Hintergrundinfos zu den Liedern, auf die Begleit-CD alle
+Einzelstimmen. \\
+SBS, Zürich. \\
+*Ausleihe:* Vollschrift, 2 Bd., + 3 Audio-CDs, BM 3681 \\
+*Verkauf*: CHF 57.00. PS 10230
+
+*** Print & Braille-Einträge
+
+Das Layout der einzelnen Einträge sieht folgendermassen aus:
+
+#+begin_example
+[Nachname Autor (fett)] “,“ [Vorname Autor (fett)] “:“ [Titel(fett)] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
+
+“Genre:“ [Genrename] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Produzent (Kürzel)] “,“ [Stadt] “, Rucksackbuch Nr.“ [Nummer des Rucksackbuchs] “.“ (Falls es kein Rucksackbuch ist, Punkt nach Stadt). (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Schriftart und Bemerkungen] “,“ [Anzahl Bände] “Bd.,“ [Begleitmaterialien] “,“ [Signatur] (Zeilenumbruch)
+
+“Verkauf:“ (fett) “CHF“ [Preisangabe] “.“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ [Begleitmaterialien] “,“ [Signatur]
+#+end_example
+
+*** Grossdruck-Einträge
+
+Die Katalogeinträge sind gleich aufgebaut wie in Neu in Grossdruck.
+
+*** E-Book-Einträge
+
+Bis zur Signatur sind die Einträge identisch wie beim Grossdruck. Nur
+die Signatur unterscheidet sich: keine Bände und kein Verkauf. Zudem
+wird angezeigt, ob ein E-Book Bilder enthält:
+
+#+begin_example
+“Ausleihe:“ (fett) [Signatur] “, mit Bildern“ (falls vorhanden)
+#+end_example
+
+*** Hörfilm-Einträge
+
+Das Layout der einzelnen Einträge sieht folgendermassen aus:
+
+#+begin_example
+[Titel (fett)] “.“ [Untertitel] “.“ (Zeilenumbruch)
+
+“Regie:“ [Vorname Nachname Regisseur] “. Schauspieler:“ [Vornamen Nachnamen Hauptdarsteller] “.“ (Zeilenumbruch)
+
+[Land (Originalfilm)] “,“ [Erscheinungsjahr (Originalfilm)] “.“ (Zeilenumbruch)
+
+[Filmkategorie] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Produzent (der Audiodeskription)] “.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur]
+#+end_example
+
+__Beispiel:__
+
+*Good Bye, Lenin.* \\
+Regie: Wolfgang Becker. Schauspieler: Daniel Brühl, Katrin Sass. \\
+Deutschland, 2002. \\
+Spielfilm. \\
+Kurz vor dem Fall der Mauer fällt die Mutter des 21jährigen Alex, eine
+selbstbewusste Bürgerin der DDR, nach einem Herzinfarkt ins Koma - und
+verschläft den Siegeszug des Kapitalismus. Als sie nach acht Monaten die
+Augen wieder aufschlägt, erwacht sie in einem neuen Land. Doch ihr
+schwaches Herz ist zu angeschlagen, als dass sie die Aufregung
+überstehen könnte. Alex ist keine Atempause gegönnt. Um seine Mutter zu
+retten, muss er nun auf 79 Quadratmetern Plattenbau die DDR wieder
+auferstehen lassen. \\
+Warner Home Video. \\
+*Ausleihe:* VI 22
+
+*** Spiel-Einträge
+
+Das Layout der einzelnen Einträge sieht folgendermassen aus:
+
+#+begin_example
+[Titel (fett)] “.“ [Untertitel] “.“ (Zeilenumbruch)
+
+[Systematikgruppe] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Materialdetails] “.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur]
+#+end_example
+
+__Beispiel:__
+
+*Schoko Hexe.* Das Kartenspiel für Schleckmäuler. \\
+Kartenspiele. \\
+Knusper, knusper, knäuschen, wer will da an mein leckeres Schokorezept?
+Je mehr Zutaten aufgedeckt werden, um so besser. Doch aufgepasst, taucht
+eine Hexe auf, ist alles verloren. Aber nur wer etwas wagt, gewinnt
+dieses Kartenspiel. Für 2-6 Personen ab 5 Jahren. \\
+1 Kiste 18x11 cm, 40 Zutatenkarten, 20 Hexenkarten + Spielanleitung in Vollschrift, Schwarzschrift. \\
+*Ausleihe:* LUD 331
+
+* Neu im Sortiment (digital)
+
+** Katalogtyp
+
+Obiges Schwarzschriftdokument in zugänglichem PDF-Format mit Links zur
+Online-Bibliothek zu jedem Buch (beim Klicken gelangt man zur
+Detailansicht des Buches). Dieser Katalog kann von der Website
+heruntergeladen werden, direkt eingesehen oder per E-Mail abonniert
+werden (gratis).
+
+** Zielgruppen
+
+Digitale Nutzer (rund 44% der aktiv auswählenden Nutzer, also 580
+Personen), digitale Helfer (Grösse schwer einzuschätzen); daneben:
+potentielle Spender (nur herunterladen, kein E-Mail-Versand)
+
+** Gliederung, Inhalt und Layout
+
+Wie obiges Schwarzschriftdokument
+
+* Hörfilme in der SBS
+
+** Katalogtyp
+
+PDF-Katalog mit sämtlichen Hörfilmtiteln und gleichem Aufbau wie „Neu im
+Sortiment“. Der Katalog wird jährlich im Januar erneuert, hat ein
+Inhaltsverzeichnis, aber kein Editorial. Er kann von der Website
+heruntergeladen werden.
+
+** Zielgruppen
+
+Digitale Nutzer mit besonderem Interesse und ihre Helfer; daneben:
+potentielle Spender
+
+** Gliederung
+
+1. Deckblatt
+2. Impressum
+3. Inhaltsverzeichnis
+4. Titeleinträge
+
+** Inhalt
+
+*** Deckblatt
+
+Das Deckblatt ist nicht grafisch gestaltet und enthält folgende
+Elemente:
+
+- Titel: „Hörfilme in der SBS, Filme mit Audiodeskription,
+  Gesamtkatalog, Stand 1.1.201X“
+- Logo SBS
+
+*** Impressum
+
+Das Impressum ist auf der Innenseite des Deckblatts:
+
+#+begin_example
+Herausgeber:
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+Grubenstrasse 12
+CH-8045 Zürich
+Fon +41 43 333 32 32
+Fax +41 43 333 32 33
+www.sbs.ch
+nutzerservice@sbs.ch
+
+© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+#+end_example
+
+*** Inhaltsverzeichnis
+
+Das Inhaltsverzeichnis ist nach den (drei) Filmkategorien, ohne weitere
+Unterteilungen, in folgender Reihenfolge gegliedert:
+
+- Spielfilme
+- Mundartfilme
+- Dokumentarfilme
+
+*** Titeleinträge
+
+Die Filmeinträge sind nach Filmkategorien / alphabetisch nach Titel
+gegliedert.
+
+Die einzelnen Titeleinträge sind wie im „Neu im Sortiment“, aber ohne
+Feld „Filmkategorie“ und sehen folgendermassen aus:
+
+1. Titel, Untertitel
+2. „Regie:“ Name Regisseur
+3. „Schauspieler:“ Namen der Hauptdarstellern
+4. Land, Erscheinungsjahr (des Originalfilms)
+5. Abstract
+6. Produzent
+7. „Ausleihe“: Signatur
+
+** Layout
+
+Das Seitenlayout ist identisch wie jenes von „Neu im Sortiment“ (gleiche
+Schrift, gleiche Kopfzeile, Titelgestaltung, Links zur Online-Bibliothek
+etc.). Die Kopfzeile beginnt ab Seite 2 ohne Seite 4 (RB abklären
+warum?). Das Inhaltsverzeichnis ist immer auf Seite 3, die Spielfilme
+fangen immer auf Seite 5 an (RB aklären warum?). Jede neue Filmkategorie
+fängt auf einer neuen Seite an.
+
+Das Layout der Hörfilmeinträge sieht folgendermassen aus:
+
+#+begin_example
+[Titel (fett)] “.“ [Untertitel] “.“ (Zeilenumbruch)
+
+“Regie:“ [Vorname Nachname Regisseur] “. Schauspieler:“ [Vornamen Nachnamen Hauptdarsteller] “.“ (Zeilenumbruch)
+
+[Land (Originalfilm)] “,“ [Erscheinungsjahr (Originalfilm)] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Produzent (der Audiodeskription)] “.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur]
+#+end_example
+
+* Spiele in der SBS
+
+** Katalogtyp
+
+PDF-Katalog mit sämtlichen Spielen und gleichem Aufbau wie „Neu im
+Sortiment“. Der Katalog wird jährlich im Januar erneuert, hat ein
+Inhaltsverzeichnis, aber kein Editorial. Er kann von der Website
+heruntergeladen werden.
+
+** Zielgruppen
+
+Digitale Nutzer mit besonderem Interesse und ihre Helfer; daneben:
+potentielle Spender
+
+** Gliederung
+
+1. Deckblatt
+2. Impressum
+3. Inhaltsverzeichnis
+4. Titeleinträge
+
+** Inhalt
+
+*** Deckblatt
+
+Das Deckblatt ist nicht grafisch gestaltet und enthält folgende
+Elemente:
+
+- Titel: „Spiele in der SBS, Gesamtkatalog, Stand 1.1.201X“
+- Logo SBS
+
+*** Impressum
+
+Das Impressum ist auf der Innenseite des Deckblatts:
+
+#+begin_example
+Herausgeber:
+SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+Grubenstrasse 12
+CH-8045 Zürich
+Fon +41 43 333 32 32
+Fax +41 43 333 32 33
+www.sbs.ch
+nutzerservice@sbs.ch
+
+© SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
+#+end_example
+
+*** Inhaltsverzeichnis
+
+Das Inhaltsverzeichnis ist nach den Spieltypen (Systematikgruppen), ohne
+weitere Unterteilungen, gegliedert. RB abklären: Die Reihenfolge der
+Spieltypen ist zufällig??
+
+*** Titeleinträge
+
+Die Spiele sind nach Spieltypen / alphabetisch nach Titel geordnet. Die
+einzelnen Spieleinträge sind wie im „Neu im Sortiment“ gegliedert, aber
+ohne Feld „Systematikgruppe“, dafür mit dem Originalverlag.
+
+1. Titel, Untertitel
+2. Verlag (Originalproduzent)
+3. Abstract
+4. Materialdetails
+5. „Ausleihe“: Signatur
+
+** Layout
+
+Das Seitenlayout ist identisch wie jenes von „Neu im Sortiment“ (gleiche
+Schrift, gleiche Kopfzeile, Titelgestaltung, Links zur Online-Bibliothek
+etc.). Die Kopfzeile beginnt ab Seite 2 ohne Seite 4 (RB abklären
+warum?). Das Inhaltsverzeichnis ist immer auf Seite 3, die „Lernspiele“
+(erster Spieltyp) fangen immer auf Seite 5 an (RB abklären warum?).
+Jeder neue Spieltyp fängt auf einer neuen Seite an.
+
+Das Layout der Spieleinträge sieht folgendermassen aus:
+
+#+begin_example
+[Titel (fett)] “.“ [Untertitel] “.“ (Zeilenumbruch)
+
+[Verlag (Originalproduzent)] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Materialdetails] “.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur]
+#+end_example
+
+__Beispiel:__
+
+*Schoko Hexe.* Das Kartenspiel für Schleckmäuler. \\
+Ravensburger Spielverlag. \\
+Knusper, knusper, knäuschen, wer will da an mein leckeres Schokorezept?
+Je mehr Zutaten aufgedeckt werden, um so besser. Doch aufgepasst, taucht
+eine Hexe auf, ist alles verloren. Aber nur wer etwas wagt, gewinnt
+dieses Kartenspiel. Für 2-6 Personen ab 5 Jahren. \\
+1 Kiste 18x11 cm, 40 Zutatenkarten, 20 Hexenkarten + Spielanleitung in Vollschrift, Schwarzschrift. \\
+*Ausleihe:* LUD 331
+
+* Taktile Kinderbücher der SBS
+
+** Katalogtyp
+
+Dieser Katalog wird nicht mehr produziert. Er wurde durch den Katalog
+Print & Braille ersetzt.
+
+* Print & Braille-Bücher in der SBS
+
+** Katalogtyp
+
+PDF-Katalog mit sämtlichen Print & Braille-Büchern und gleichem Aufbau
+wie „Neu im Sortiment“. Der Katalog wird jährlich im Januar erneuert,
+hat ein Inhaltsverzeichnis, aber kein Editorial. Er kann von der
+Website heruntergeladen werden.
+
+** Zielgruppen
+
+** Gliederung und Inhalt
+
+Das Inhaltsverzeichnis ist folgendermassen gegliedert:
+
+- Kinderbücher ab 3
+- Kinderbücher ab 6
+- Kinderbücher ab 10
+- Jugendbücher ab 14
+- Bücher für Erwachsene
+
+Die Genregruppe «Sachbuch», die es aktuell bei Kinder- und Jugendbuch
+gibt, weisen wir im Katalog der «Print & Braille»-Titel nicht extra aus.
+
+Die Einträge sind also wie folgt strukturiert:
+
+Die Bucheinträge werden innerhalb der oben angegebenen Genregruppen
+alphabetisch nach Autor (wo nicht vorhanden: nach Titel) geordnet.
+
+Die einzelnen Bucheinträge sehen folgendermassen aus:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre (Altersangabe)
+5. Abstract
+6. Produzent (Kürzel), Stadt. Falls es sich um ein Rucksackbuch handelt,
+   zusätzlich: „Rucksackbuch“ und Nummer
+7.Ausleihe (z.B.: Originalbuch in Schwarzschrift plus Text und
+   Bildbeschreibungen in Braille.), Schriftart, Bandangabe, Signaturen
+   (zuerst Ausleihe, dann allenfalls Verkauf, gefolgt von Preisangabe
+   in Franken)
+
+** Layout
+
+Das Layout für die Einträge im Gesamtkatalog (PDF) orientiert sich an
+dem unter 5.6.3 aufgeführten Layout für die Titeleinträge im Katalog
+«Neu im Sortiment».
+
+Beispiel für Katalogeintrag:
+
+*Grimm, Sandra: Ich bin das kleine Pony.* Meine erste
+Vorlesegeschichte. - Ravensburger Buchverlag, 2014. \\
+Genre: Bilderbücher (ab 3). \\
+Das kleine Pony möchte am liebsten den ganzen Tag springen und toben.
+Bei seinem Ausflug auf die Koppel trifft es zahlreiche andere Tiere. Die
+Hühner haben ein wenig Angst vor ihm, doch mit dem Kaninchen macht
+Wettlaufen grossen Spass. Nach all der Aufregung freut es sich wieder
+auf seine Mama. \\
+SBS, Zürich. \\
+*Ausleihe:* Vollschrift, 2 Bd., Text, Bildbeschreibungen und Legende für
+die im beiliegenden Bilderbuch markierten Bildausschnitte, BG 27548 \\
+*Verkauf:* CHF 33.80. Kurzschrift, 2 Bd., Text, Bildbeschreibungen und
+Legende für die im beiliegenden Bilderbuch markierten Bildausschnitte,
+PS15042. Vollschrift, 2 Bd., Text, Bildbeschreibungen und Legende für
+die im beiliegenden Bilderbuch markierten Bildausschnitte, PS15043
+
+*  Katalog nach Mass
+
+** Katalogtyp
+
+Titelliste mit individuellen thematischen Abfragen, die das gesamte
+Sortiment (nicht nur Neuheiten) umfassen. Wird schnell erstellt und
+geliefert, mit qualitativen Abstrichen, die durch eine möglichst
+vollständige Automatisierung möglichst gering gehalten werden. Die
+Kataloge werden per E-Mail oder auf Papier gratis zugestellt, wobei bei
+der Papierversion der Begleitbrief eine Spendenaufforderung enthält.
+
+** Zielgruppen
+
+Neue Kunden und Helfer, die sich einen Überblick über das Sortiment zu
+bestimmten Themen verschaffen möchten (Potential: 350 Personen pro
+Jahr), vorhandene Kunden, die sich in ein Gebiet vertiefen möchten
+(Potential 100 Personen pro Jahr)
+
+** Gliederung und Layout
+
+Müssen noch bestimmt werden.
