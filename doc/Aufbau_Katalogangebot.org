@@ -153,6 +153,9 @@ Fax, E-Mail (Nutzerservice) und Internetadresse.
 „Ende von Neu als Hörbuch Nr. X, 201X“, gemäss Ansagen-Schema.
 
 * Neu in Braille
+  :PROPERTIES:
+  :CUSTOM_ID: neu-in-braille
+  :END:
 
 ** Katalogtyp
 
@@ -391,7 +394,7 @@ danach zusammen aufgelistet: pro vorhandene Schriftart eine Signatur.
 
 Zweimonatlicher Katalognachtrag aller neuen Grossdruckbücher, mit
 Inhaltsverzeichnis, Editorial und Magazinteil (teilweise identisch wie
-bei „Neu in Blindenschrift“), in Tiresias 17 (Schwarzschrift).
+bei [[#neu-in-braille][Neu in Braille]]), in Tiresias 17 (Schwarzschrift).
 
 ** Zielgruppe
 
@@ -865,6 +868,9 @@ SBS, Zürich. \\
 *Verkauf*: CHF 57.00. PS 10230
 
 *** Print & Braille-Einträge
+    :PROPERTIES:
+    :CUSTOM_ID: print-braille-einträge
+    :END:
 
 Das Layout der einzelnen Einträge sieht folgendermassen aus:
 
@@ -1180,6 +1186,9 @@ dieses Kartenspiel. Für 2-6 Personen ab 5 Jahren. \\
 *Ausleihe:* LUD 331
 
 * Print & Braille-Bücher in der SBS
+  :PROPERTIES:
+  :CUSTOM_ID: print-braille-bücher
+  :END:
 
 ** Katalogtyp
 
@@ -1227,8 +1236,8 @@ Die einzelnen Bucheinträge sehen folgendermassen aus:
 ** Layout
 
 Das Layout für die Einträge im Gesamtkatalog (PDF) orientiert sich an
-dem unter 5.6.3 aufgeführten Layout für die Titeleinträge im Katalog
-«Neu im Sortiment».
+dem unter [[#print-braille-einträge][Print & Braille-Einträge]] aufgeführten Layout für die
+Titeleinträge im Katalog «Neu im Sortiment».
 
 Beispiel für Katalogeintrag:
 
@@ -1253,7 +1262,7 @@ die im beiliegenden Bilderbuch markierten Bildausschnitte, PS15043
 ** Katalogtyp
 
 Dieser Katalog wird nicht mehr produziert. Er wurde durch den Katalog
-Print & Braille ersetzt.
+[[#print-braille-bücher][Print & Braille]] ersetzt.
 
 ** Gliederung und Inhalt
 
