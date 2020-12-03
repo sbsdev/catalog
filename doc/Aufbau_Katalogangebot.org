@@ -319,11 +319,14 @@ Buchhandelspreis (ringgebunden mit Deckel).
 Auf derselben Seite wie der Einführungsrabatt werden die im Katalog
 verwendeten Abkürzungen aufgeführt.
 
-„Abkürzungen“ (Titel) \\
-„Bd. = Band, Bände \\
-K = Kurzschrift \\
-V = Vollschrift \\
-wtz = weitzeilige Vollschrift“
+#+begin_example
+„Abkürzungen“ (Titel)
+
+Bd. = Band, Bände
+K = Kurzschrift
+V = Vollschrift
+wtz = weitzeilige Vollschrift
+#+end_example
 
 *** Impressum
 
