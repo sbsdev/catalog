@@ -360,19 +360,6 @@ Das Layout der einzelnen Bucheinträge sieht folgendermassen aus:
 	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur]
 #+end_example
 
-Bei Braille-Musiknoten sind die Einträge bis zur Signatur gleich wie
-bei den Braillebüchern, aber ohne Genre. Die Signatur sieht hier
-folgendermassen aus:
-
-#+begin_example
-“Ausleihe:“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
-	[Begleitmaterialien] “,“ [Signatur]
-
-“Verkauf: CHF“ [Preisangabe] (Zeilenumbruch eingerückt)
-	[Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
-	[Begleitmaterialien] “,“ [Signatur]
-#+end_example
-
 /Zeichenerklärung/: Inhalte von Feldern sind in eckigen Klammern,
 Satzzeichen und fixe Begriffe sind in Anführungszeichen, Erklärungen in
 runden Klammern.
@@ -388,6 +375,19 @@ Sinngemäss gilt das für alle Felder, deren Inhalt mit einem Punkt endet.
 Schriftarten erscheint, wird der Katalogeintrag vom Autor bis vor der
 Signatur nur einmal aufgeführt. Die verschiedenen Signaturen werden
 danach zusammen aufgelistet: pro vorhandene Schriftart eine Signatur.
+
+Bei Braille-Musiknoten sind die Einträge bis zur Signatur gleich wie
+bei den Braillebüchern, aber ohne Genre. Die Signatur sieht hier
+folgendermassen aus:
+
+#+begin_example
+“Ausleihe:“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
+	[Begleitmaterialien] “,“ [Signatur]
+
+“Verkauf: CHF“ [Preisangabe] (Zeilenumbruch eingerückt)
+	[Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
+	[Begleitmaterialien] “,“ [Signatur]
+#+end_example
 
 * Neu in Grossdruck
 
