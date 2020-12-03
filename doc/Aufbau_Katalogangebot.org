@@ -750,6 +750,7 @@ Deckblatt (Aussenseite) mit folgendem Text:
 Impressum (Titel)
 
 Neu im Sortiment (Titel 2. Ordnung)
+
 Für Kundinnen und Kunden der SBS sowie für Interessenten
 Erscheint sechsmal jährlich und weist alle seit der letzten Ausgabe neu
 in die SBS aufgenommenen Bücher nach
@@ -757,6 +758,7 @@ in die SBS aufgenommenen Bücher nach
 oder per E-Mail gratis bezogen werden
 
 Herausgeber (Titel 2. Ordnung)
+
 SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
 Grubenstrasse 12
 CH-8045 Zürich
