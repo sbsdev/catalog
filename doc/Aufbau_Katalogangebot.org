@@ -2,6 +2,7 @@
 #+title: SBS-Katalogangebot ab 1.1.2016
 #+date: <2020-12-02 Mi>
 #+language: de
+#+LANG: de-CH
 
 * Allgemeines zum Katalogangebot
 
