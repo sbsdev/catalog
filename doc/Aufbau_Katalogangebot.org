@@ -156,10 +156,11 @@ Fax, E-Mail (Nutzerservice) und Internetadresse.
 
 ** Katalogtyp
 
-Zweimonatlicher Katalognachtrag aller neuen Blindenschriftbücher, inkl.
-taktile Kinderbücher und Braille-Musiknoten, mit Inhaltsverzeichnis,
-Editorial und Buchtipps, in Kurzschrift. Die Rucksackbücher und
-SJW-Hefte sind unter „Kinder- und Jugendbücher“ aufgeführt.
+Zweimonatlicher Katalognachtrag aller neuen Blindenschriftbücher,
+inkl. Print & Braille Büchern und Braille-Musiknoten, mit
+Inhaltsverzeichnis, Editorial und Buchtipps, in Kurzschrift. Die
+Rucksackbücher und SJW-Hefte sind unter „Kinder- und Jugendbücher“
+aufgeführt.
 
 ** Zielgruppe
 
@@ -168,20 +169,18 @@ PS-Nutzer, also ca. 200 Personen)
 
 ** Gliederung
 
-1.  Deckblatt
-2.  Inhaltsverzeichnis
-3.  Editorial
-4.  Buchtipps
-5.  Neue Braillebücher
-# FIXME: is this still needed? Has this been replaced by P&R
-6.  Neue taktile Kinderbücher
-7.  Neue Braille-Musiknoten
-8.  Einführungsrabatt
-9.  Abkürzungen
-10. Impressum
+1. Deckblatt
+2. Inhaltsverzeichnis
+3. Editorial
+4. Buchtipps
+5. Neue Braillebücher
+6. Neue Braille-Musiknoten
+7. Einführungsrabatt
+8. Abkürzungen
+9. Impressum
 
 Die Gliederung unterscheidet sich von den anderen Katalogen nur durch
-die Braille-spezifischen Informationen (Punkt 8. und 9.)
+die Braille-spezifischen Informationen (Punkt 7. und 8.)
 
 ** Inhalt
 
@@ -222,8 +221,8 @@ Das Inhaltsverzeichnis sieht folgendermassen aus:
     - Kinderbücher (ab 10)
     - Jugendbücher (ab 14)
     - Kinder- und Jugendsachbücher
+  - Print & Braille Bücher
   - Bücher in Fremdsprachen
-- Neue taktile Kinderbücher
 - Neue Braille-Musiknoten
 - Einführungsrabatt
 - Abkürzungen
@@ -265,21 +264,6 @@ Die einzelnen Bucheinträge sehen folgendermassen aus:
 7. Schriftart, Bandangabe, inkl. Schwarzschriftbeilage (nur falls
    vorhanden), Signaturen (zuerst Ausleihe, dann allenfalls Verkauf,
    gefolgt von Preisangabe in Franken)
-
-*** Neue taktile Kinderbücher
-
-Die einzelnen Bucheinträge werden alphabetisch nach Autor (Titel)
-geordnet und enthalten folgende Angaben:
-
-1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
-   ohne „u.a.“)
-2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
-   verschiedenen Orten innerhalb des Titelbereichs sein)
-3. Verlag, Erscheinungsjahr
-4. Abstract
-5. Produzent (Kürzel), Stadt
-6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
-   Signaturen
 
 *** Neue Braille-Musiknoten
 
@@ -372,9 +356,9 @@ Das Layout der einzelnen Bucheinträge sieht folgendermassen aus:
 	“wtz,“ [Anzahl Bände] “Bd.,“ [Signatur]
 #+end_example
 
-Bei taktilen Kinderbüchern und Braille-Musiknoten sind die Einträge bis
-zur Signatur gleich wie bei den Braillebüchern, aber ohne Genre. Die
-Signatur sieht hier folgendermassen aus:
+Bei Braille-Musiknoten sind die Einträge bis zur Signatur gleich wie
+bei den Braillebüchern, aber ohne Genre. Die Signatur sieht hier
+folgendermassen aus:
 
 #+begin_example
 “Ausleihe:“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ (Zeilenumbruch eingerückt)
@@ -653,8 +637,8 @@ erstellt. Zusammen ergeben sie folgende Inhaltverzeichnis-Struktur:
 - Belletristik
 - Sachbücher
 - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+- Print & Braille Bücher
 - Bücher in Fremdsprachen
-- Taktile Kinderbücher
 - Braille-Musiknoten
 - Neue Grossdruckbücher
   - Belletristik
@@ -771,7 +755,7 @@ getrennt wird. Oberhalb des Striches hat es am äusseren Rand der Seiten
 Seitenzahl, am inneren Rand die zweite Ebene des formatspezifischen
 Inhaltsverzeichnisses (bei Hörbüchern die Genregruppen; bei
 Grossdruckbüchern und E-Books die Literaturtypen, bei Braillebüchern die
-Literaturtypen, „Taktile Kinderbücher“ oder „Braille-Musiknoten“). Bei
+Literaturtypen, „Print & Braille Bücher“ oder „Braille-Musiknoten“). Bei
 Hörfilmen und Spielen, die nur wenige Neuheiten aufweisen und daher
 nicht weiter unterteilt sind, erscheint der Haupttitel, also „Neue
 Hörfilme“ oder „Neue Spiele“. Das grobe Inhaltsverzeichnis hat keine
@@ -855,7 +839,7 @@ SBS, Zürich, Rucksackbuch Nr. 347. \\
 *Verkauf:* CHF 15.90. Kurzschrift, 1 Bd., PS13846. Vollschrift, 1 Bd.,
 PS 13847. Weitzeilige Vollschrift, PS 13848
 
-**** Taktile Kinderbücher und Braille-Musiknoten
+**** Braille-Musiknoten
 
 Bis zur Signatur sind die Einträge wie bei den Braillebüchern, aber ohne
 Genre. Signatur:
@@ -1195,13 +1179,6 @@ dieses Kartenspiel. Für 2-6 Personen ab 5 Jahren. \\
 1 Kiste 18x11 cm, 40 Zutatenkarten, 20 Hexenkarten + Spielanleitung in Vollschrift, Schwarzschrift. \\
 *Ausleihe:* LUD 331
 
-* Taktile Kinderbücher der SBS
-
-** Katalogtyp
-
-Dieser Katalog wird nicht mehr produziert. Er wurde durch den Katalog
-Print & Braille ersetzt.
-
 * Print & Braille-Bücher in der SBS
 
 ** Katalogtyp
@@ -1270,6 +1247,29 @@ die im beiliegenden Bilderbuch markierten Bildausschnitte, BG 27548 \\
 Legende für die im beiliegenden Bilderbuch markierten Bildausschnitte,
 PS15042. Vollschrift, 2 Bd., Text, Bildbeschreibungen und Legende für
 die im beiliegenden Bilderbuch markierten Bildausschnitte, PS15043
+
+* Taktile Kinderbücher der SBS
+
+** Katalogtyp
+
+Dieser Katalog wird nicht mehr produziert. Er wurde durch den Katalog
+Print & Braille ersetzt.
+
+** Gliederung und Inhalt
+
+Die einzelnen Bucheinträge werden alphabetisch nach Autor (Titel)
+geordnet und enthalten folgende Angaben:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Abstract
+5. Produzent (Kürzel), Stadt
+6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
+   Signaturen
+
 
 *  Katalog nach Mass
 
