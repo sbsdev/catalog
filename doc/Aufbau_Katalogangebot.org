@@ -1213,7 +1213,7 @@ Das Inhaltsverzeichnis ist folgendermassen gegliedert:
 Die Genregruppe «Sachbuch», die es aktuell bei Kinder- und Jugendbuch
 gibt, weisen wir im Katalog der «Print & Braille»-Titel nicht extra aus.
 
-Die Einträge sind also wie folgt strukturiert:
+Die Einträge sind wie folgt strukturiert:
 
 Die Bucheinträge werden innerhalb der oben angegebenen Genregruppen
 alphabetisch nach Autor (wo nicht vorhanden: nach Titel) geordnet.
@@ -1279,7 +1279,6 @@ geordnet und enthalten folgende Angaben:
 5. Produzent (Kürzel), Stadt
 6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
    Signaturen
-
 
 *  Katalog nach Mass
 
