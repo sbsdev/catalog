@@ -269,6 +269,22 @@ Die einzelnen Bucheinträge sehen folgendermassen aus:
    vorhanden), Signaturen (zuerst Ausleihe, dann allenfalls Verkauf,
    gefolgt von Preisangabe in Franken)
 
+*** Print & Braille-Bücher
+
+Die „Print & Braille“-Titel werden direkt nach den Kinder- und
+Jugendbüchern und vor den Braille-Musiknoten angezeigt.
+
+In diese neue Kategorie sollen nicht nur die Titel mit TB-Signaturen,
+sondern alle Titel, welche die Print&Braille-Eigenschaft haben (Feld
+492).
+
+Alle Titel mit einer BK/BG-Signatur und der Print&Braille-Eigenschaft
+tauchen somit in den Neuheiten-Katalogen *doppelt* auf: einmal regulär
+in die bestehenden Unterkategorien eingeordnet als Braille-Buch,
+einmal in der entsprechenden Altersgruppe in der neuen Unterkategorie
+„Print & Braille“. Die Bücher mit TB-Signaturen werden auch weiterhin
+nur einmal aufgeführt – in der neue Unterkategorie „Print & Braille“.
+
 *** Neue Braille-Musiknoten
 
 Die Einträge der Braille-Musiknoten werden alphabetisch nach Komponist
@@ -375,6 +391,19 @@ Sinngemäss gilt das für alle Felder, deren Inhalt mit einem Punkt endet.
 Schriftarten erscheint, wird der Katalogeintrag vom Autor bis vor der
 Signatur nur einmal aufgeführt. Die verschiedenen Signaturen werden
 danach zusammen aufgelistet: pro vorhandene Schriftart eine Signatur.
+
+Bei Print & Braille Büchern sieht das Layout der einzelnen
+Bucheinträge sieht folgendermassen aus:
+
+#+begin_example
+[Nachname Autor]  “,“  [Vorname Autor]  “:“  [Titel]  “.“  [Untertitel und restlicher Titelbereich]  “. –„  [Verlag]  “,“  [Erscheinungsjahr]  “.“  (Zeilenumbruch)
+“Genre:“  [Genrename]  “.“  (Zeilenumbruch)
+[Abstract]  “.“  (Zeilenumbruch)
+[Produzent (Kürzel)]  “,“  [Stadt]  “, Rucksackbuch Nr.“  [Nummer des Rucksackbuchs]  “.“  (Falls es kein Rucksackbuch ist, Punkt nach Stadt). (Zeilenumbruch)
+“Ausleihe:“ [Schriftart und Bemerkungen]  “,“  [Anzahl Bände]  „Bd.,“  [Begleitmaterialien]  “,“  [Signatur] (eingerückt)
+“Verkauf: CHF“  [Preisangabe] (Zeilenumbruch eingerückt)
+[Schriftart und Bemerkungen]  “,“  [Anzahl Bände]  „Bd.,“  [Begleitmaterialien]  “,“  [Signatur]
+#+end_example
 
 Bei Braille-Musiknoten sind die Einträge bis zur Signatur gleich wie
 bei den Braillebüchern, aber ohne Genre. Die Signatur sieht hier
