@@ -662,17 +662,17 @@ erstellt. Zusammen ergeben sie folgende Inhaltverzeichnis-Struktur:
 
 - Inhaltsverzeichnis (grob, nach Formaten)
 - Neue Hörbücher
-- Belletristik (unterteilt nach Genregruppen)
-- Sachbücher (unterteilt nach Genregruppen)
-- Kinder- und Jugendbücher (unterteilt nach Genregruppen)
-- Bücher in Fremdsprachen (unterteilt nach Genregruppen)
+  - Belletristik (unterteilt nach Genregruppen)
+  - Sachbücher (unterteilt nach Genregruppen)
+  - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+  - Bücher in Fremdsprachen (unterteilt nach Genregruppen)
 - Neue Braillebücher
-- Belletristik
-- Sachbücher
-- Kinder- und Jugendbücher (unterteilt nach Genregruppen)
-- Print & Braille Bücher
-- Bücher in Fremdsprachen
-- Braille-Musiknoten
+  - Belletristik
+  - Sachbücher
+  - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+  - Print & Braille Bücher
+  - Bücher in Fremdsprachen
+  - Braille-Musiknoten
 - Neue Grossdruckbücher
   - Belletristik
   - Sachbücher
