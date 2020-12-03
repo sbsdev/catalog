@@ -1,6 +1,6 @@
 #+options: toc:t H:4
 #+title: SBS-Katalogangebot ab 1.1.2016
-#+date: <2020-12-02 Mi>
+#+date: <2020-12-03 Do>
 #+language: de
 #+LANG: de-CH
 
