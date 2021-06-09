@@ -1,7 +1,6 @@
 (ns catalog.web.layout
   "Define the basic page structure and layout"
   (:require [catalog.issue :as issue]
-            [cemerick.friend :as friend]
             [hiccup.page :refer [html5 include-css include-js]]))
 
 (defn glyphicon
@@ -25,17 +24,6 @@
   [:div.btn-group
    (for [button buttons] button)])
 
-(defn loginbar
-  "Display a login link or information about the currently logged in user if user is non-nil"
-  [identity]
-  (let [user (friend/current-authentication identity)]
-    [:ul.nav.navbar-nav.navbar-right
-     (if user
-       (list
-        [:li [:a [:b (format "%s %s" (:first_name user) (:last_name user))]]]
-        (menu-item "/logout" (glyphicon "log-out")))
-       (menu-item "/login" (glyphicon "log-in")))]))
-
 (defn- dropdown-menu [title items]
   [:li.dropdown
    [:a.dropdown-toggle
@@ -46,7 +34,7 @@
 
 (defn navbar
   "Display the navbar"
-  [identity year issue]
+  [year issue]
   [:div.navbar.navbar-default {:role "navigation"}
    [:div.container-fluid
     [:div.navbar-header
@@ -79,7 +67,7 @@
 
 (defn common
   "Display a page using the bootstrap css"
-  [identity year issue & body]
+  [year issue & body]
   (html5
     [:head
      [:title "Catalog"]
@@ -87,7 +75,7 @@
      (include-css "/css/bootstrap-markdown.min.css")]
     [:body
      [:div.container
-      (navbar identity year issue)
+      (navbar year issue)
       body]
      (include-js "/js/jquery-1.12.0.min.js")
      (include-js "/js/bootstrap.min.js")

@@ -12,7 +12,6 @@
              [obi :as layout.obi]
              [text :as layout.text]]
             [catalog.web.layout :as layout]
-            [cemerick.friend :as friend]
             [clj-time
              [core :as time.core]
              [format :as time.format]]
@@ -50,40 +49,36 @@
          [year issue] (issue/issue-for date)]
      (response/redirect (format "/%s/%s" year issue))))
   ([request year issue]
-   (let [identity (friend/identity request)]
-     (layout/common
-      identity
-      year issue
-      [:div.row
-       [:div.col-md-6
-        (download-well (translations :catalog-all) year issue "neu-im-sortiment.pdf")]
-       [:div.col-md-6
-        (download-well (translations :catalog-grossdruck) year issue "neu-in-grossdruck.pdf")]]
-      [:div.row
-       [:div.col-md-6
-        (download-well (translations :catalog-braille) year issue "neu-in-braille.xml")]
-       [:div.col-md-6
-        [:div.well
-         [:h2 (translations :catalog-hörbuch)]
-         (download-button (download-url year issue "neu-als-hörbuch.pdf"))
-         (download-button (download-url year issue "neu-als-hörbuch.ncc") "NCC")]]]))))
+   (layout/common
+    year issue
+    [:div.row
+     [:div.col-md-6
+      (download-well (translations :catalog-all) year issue "neu-im-sortiment.pdf")]
+     [:div.col-md-6
+      (download-well (translations :catalog-grossdruck) year issue "neu-in-grossdruck.pdf")]]
+    [:div.row
+     [:div.col-md-6
+      (download-well (translations :catalog-braille) year issue "neu-in-braille.xml")]
+     [:div.col-md-6
+      [:div.well
+       [:h2 (translations :catalog-hörbuch)]
+       (download-button (download-url year issue "neu-als-hörbuch.pdf"))
+       (download-button (download-url year issue "neu-als-hörbuch.ncc") "NCC")]]])))
 
 (defn full-catalogs
   [request year issue]
-  (let [identity (friend/identity request)]
-    (layout/common
-     identity
-     year issue
-     [:div.row
-      [:div.col-md-6
-       (download-well (translations :catalog-hörfilm) year nil "hörfilme-in-der-sbs.pdf")]
-      [:div.col-md-6
-       (download-well (translations :catalog-ludo) year nil "spiele-in-der-sbs.pdf")]]
-     [:div.row
-      [:div.col-md-6
-       (download-well (translations :catalog-print-and-braille) year nil "print-und-braille-bücher-in-der-sbs.pdf")]
-      [:div.col-md-6
-       (download-well (translations :catalog-taktilesbuch) year nil "taktile-kinderbücher-der-sbs.pdf")]])))
+  (layout/common
+   year issue
+   [:div.row
+    [:div.col-md-6
+     (download-well (translations :catalog-hörfilm) year nil "hörfilme-in-der-sbs.pdf")]
+    [:div.col-md-6
+     (download-well (translations :catalog-ludo) year nil "spiele-in-der-sbs.pdf")]]
+   [:div.row
+    [:div.col-md-6
+     (download-well (translations :catalog-print-and-braille) year nil "print-und-braille-bücher-in-der-sbs.pdf")]
+    [:div.col-md-6
+     (download-well (translations :catalog-taktilesbuch) year nil "taktile-kinderbücher-der-sbs.pdf")]]))
 
 (defn- clean-string
   "Clean a string so that it can be used to generate a file name"
@@ -261,15 +256,13 @@
     (form/submit-button {:class "btn btn-default"} "Upload"))])
 
 (defn upload-form [request year issue & [errors]]
-  (let [identity (friend/identity request)]
-    (layout/common
-     identity
-     year issue
-     [:div.row
-      [:div.col-md-12
-       (upload-well (format "Upload %s" (translations :catalog-all))
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :all-formats))
-                    errors)]])))
+  (layout/common
+   year issue
+   [:div.row
+    [:div.col-md-12
+     (upload-well (format "Upload %s" (translations :catalog-all))
+                  (format "/%s/%s/%s/upload-confirm" year issue (name :all-formats))
+                  errors)]]))
 
 (defn- error-table
   [problems]
@@ -294,28 +287,26 @@
 
 
 (defn upload-full-form [request year issue & [errors]]
-  (let [identity (friend/identity request)]
-    (layout/common
-     identity
-     year issue
-     [:div.row
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Hörfilm"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
-                    (:hörfilm errors))]
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Spiele"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
-                    (:ludo errors))]]
-     [:div.row
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Print & Braille"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :print-and-braille))
-                    (:print-and-braille errors))]
-      [:div.col-md-6
-       (upload-well "Upload Gesamtkatalog Taktile Bücher"
-                    (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
-                    (:taktilesbuch errors))]])))
+  (layout/common
+   year issue
+   [:div.row
+    [:div.col-md-6
+     (upload-well "Upload Gesamtkatalog Hörfilm"
+                  (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
+                  (:hörfilm errors))]
+    [:div.col-md-6
+     (upload-well "Upload Gesamtkatalog Spiele"
+                  (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
+                  (:ludo errors))]]
+   [:div.row
+    [:div.col-md-6
+     (upload-well "Upload Gesamtkatalog Print & Braille"
+                  (format "/%s/%s/%s/upload-confirm" year issue (name :print-and-braille))
+                  (:print-and-braille errors))]
+    [:div.col-md-6
+     (upload-well "Upload Gesamtkatalog Taktile Bücher"
+                  (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
+                  (:taktilesbuch errors))]]))
 
 (defn upload [request year issue fmt items]
   (case fmt
@@ -335,21 +326,19 @@
             checker (s/checker validation/CatalogItem)
             problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
         (if (seq problems)
-          (let [identity (friend/identity request)]
-            (layout/common
-             identity
-             year issue
-             [:h1 "Confirm Upload"]
-             (error-table problems)
-             (form/form-to
-              {:enctype "multipart/form-data"}
-              [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
-              (anti-forgery-field)
-              (form/hidden-field "items" (prn-str items))
-              (layout/button (format "/%s/%s/%s"
-                                     year issue
-                                     (if (= fmt :all-formats) "upload" "upload-full")) "Cancel")
-              (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
+          (layout/common
+           year issue
+           [:h1 "Confirm Upload"]
+           (error-table problems)
+           (form/form-to
+            {:enctype "multipart/form-data"}
+            [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
+            (anti-forgery-field)
+            (form/hidden-field "items" (prn-str items))
+            (layout/button (format "/%s/%s/%s"
+                                   year issue
+                                   (if (= fmt :all-formats) "upload" "upload-full")) "Cancel")
+            (form/submit-button {:class "btn btn-default"} "Upload Anyway")))
           ;; if there are no problems just upload the file.
           (upload request year issue fmt
                    ;; Repackage the items as edn as the api of the upload function expects
@@ -361,11 +350,9 @@
         (upload-full-form request year issue {fmt ["No file selected"]})))))
 
 (defn editorial-form [request fmt year issue]
-  (let [identity (friend/identity request)
-        editorial (db/read-editorial year issue fmt)
+  (let [editorial (db/read-editorial year issue fmt)
         recommendation (db/read-recommendation year issue fmt)]
     (layout/common
-     identity
      year issue
      [:h1 (format "Editorial und Buchtipps für %s" (string/capitalize fmt))]
      (form/form-to
@@ -419,25 +406,23 @@
     selected)])
 
 (defn custom-form [request year issue & [errors]]
-  (let [identity (friend/identity request)]
-    (layout/common
-     identity
-     year issue
-     [:div.well
-      [:h2 "Katalog nach Mass"]
-      (when (seq errors)
-        [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
-      (form/form-to
-       {:enctype "multipart/form-data"}
-       [:post (format "/%s/%s/custom-confirm" year issue)]
-       (anti-forgery-field)
-       [:div.form-group
-        (form/label "file" "File:")
-        (form/file-upload {:required "required"} "file")]
-       (query-field nil)
-       (customer-field nil)
-       (format-field :pdf)
-       (form/submit-button {:class "btn btn-default"} "Submit"))])))
+  (layout/common
+   year issue
+   [:div.well
+    [:h2 "Katalog nach Mass"]
+    (when (seq errors)
+      [:p [:ul.alert.alert-danger (for [e errors] [:li e])]])
+    (form/form-to
+     {:enctype "multipart/form-data"}
+     [:post (format "/%s/%s/custom-confirm" year issue)]
+     (anti-forgery-field)
+     [:div.form-group
+      (form/label "file" "File:")
+      (form/file-upload {:required "required"} "file")]
+     (query-field nil)
+     (customer-field nil)
+     (format-field :pdf)
+     (form/submit-button {:class "btn btn-default"} "Submit"))]))
 
 (defmulti custom (fn [_ _ _ _ _ fmt _] fmt))
 
@@ -484,22 +469,20 @@
             checker (s/checker validation/CatalogItem)
             problems (keep #(when-let [error (checker %)] [error %]) items-collated)]
         (if (seq problems)
-          (let [identity (friend/identity request)]
-            (layout/common
-             identity
-             year issue
-             [:h1 "Confirm Katalog nach Mass"]
-             (error-table problems)
-             (form/form-to
-              {:enctype "multipart/form-data"}
-              [:post (format "/%s/%s/custom" year issue)]
-              (anti-forgery-field)
-              (form/hidden-field "items" (prn-str items))
-              (form/hidden-field "query" query)
-              (form/hidden-field "customer" customer)
-              (form/hidden-field "fmt" fmt)
-              (layout/button (format "/%s/%s/custom" year issue) "Cancel")
-              (form/submit-button {:class "btn btn-default"} "Upload Anyway"))))
+          (layout/common
+           year issue
+           [:h1 "Confirm Katalog nach Mass"]
+           (error-table problems)
+           (form/form-to
+            {:enctype "multipart/form-data"}
+            [:post (format "/%s/%s/custom" year issue)]
+            (anti-forgery-field)
+            (form/hidden-field "items" (prn-str items))
+            (form/hidden-field "query" query)
+            (form/hidden-field "customer" customer)
+            (form/hidden-field "fmt" fmt)
+            (layout/button (format "/%s/%s/custom" year issue) "Cancel")
+            (form/submit-button {:class "btn btn-default"} "Upload Anyway")))
           ;; if there are no problems just produce a response with a
           ;; custom catalog.
           (custom request year issue query customer fmt

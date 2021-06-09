@@ -16,7 +16,6 @@
                  [ring/ring-defaults "0.3.1"]
                  [ring/ring-core "1.6.3"]
                  [ring/ring-devel "1.6.3"]
-                 [com.cemerick/friend "0.2.3"]
                  [compojure "1.6.0"]
                  [endophile "0.2.1"]
                  [org.clojure/java.jdbc "0.6.1"]
