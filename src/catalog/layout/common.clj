@@ -10,12 +10,16 @@
   (:import java.util.Locale))
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
-(def genres [:belletristik :sachbücher :kinder-und-jugendbücher :bücher-in-fremdsprachen])
-(def movie-genres [:spielfilm :mundartfilm :dokumentarfilm])
-(def game-genres [:lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
-                  :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
-                  :bücher-über-spiel])
-(def braille-genres (conj genres :print-and-braille :taktilesbuch :musiknoten))
+(def genres [:belletristik :sachbücher :kinder-und-jugendbücher
+             :print-and-braille :bücher-in-fremdsprachen
+             ;; Braille
+             :taktilesbuch :musiknoten
+             ;; Movies
+             :spielfilm :mundartfilm :dokumentarfilm
+             ;; Games
+             :lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
+             :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
+             :bücher-über-spiel])
 (def subgenres [;; Belletristik
                 :action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :historische-romane :hörspiele :krimis

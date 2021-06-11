@@ -637,9 +637,8 @@
   (apply hash-map
          (interleave
           (concat [:editorial :recommendation]
-                  layout/formats layout/braille-genres
-                  layout/game-genres
-                  layout/movie-genres layout/subgenres
+                  layout/formats layout/genres
+                  layout/subgenres
                   [:recommendations])
           (iterate inc 0))))
 
