@@ -10,6 +10,8 @@
                  [clj-time "0.14.2"]
                  [comb "0.1.0" :exclusions [org.clojure/clojure]]
                  [org.clojure/data.xml "0.1.0-beta2"]
+                 ;; NOTE: xalan is excluded as it causes problems with loading the png image
+                 ;; inside the svg cover
                  [org.apache.xmlgraphics/fop "2.4" :exclusions [xalan commons-io commons-logging]]
                  [hiccup "1.0.5"]
                  [org.immutant/web "2.1.9"]
