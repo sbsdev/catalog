@@ -693,10 +693,7 @@
               [:fo:table-body {:start-indent "0mm" :end-indent "0mm"}
                [:fo:table-row
                 [:fo:table-cell [:fo:block "Fon"]]
-                [:fo:table-cell [:fo:block "+41 43 333 32 32"]]]
-               [:fo:table-row
-                [:fo:table-cell [:fo:block "Fax"]]
-                [:fo:table-cell [:fo:block "+41 43 333 32 33"]]]]]
+                [:fo:table-cell [:fo:block "+41 43 333 32 32"]]]]]
              [:fo:block
               (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website")]
              (block {:space-before "1em"} "Abonnement, Ausleihe und Verkauf: "
@@ -891,7 +888,6 @@
      (block "Grubenstrasse 12")
      (block "CH-8045 Zürich")
      (block "Fon +41 43 333 32 32")
-     (block "Fax +41 43 333 32 33")
      (block (external-link "http://www.sbs.ch" "www.sbs.ch" "Link zur SBS Website"))
      (block (external-link "mailto:nutzerservice@sbs.ch" "nutzerservice@sbs.ch" "Email des SBS Nutzerservice"))
      (block {:space-before "5mm" :keep-with-previous.within-column "always"} (format "© %s" creator))]))

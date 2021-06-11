@@ -235,7 +235,6 @@
       "Grubenstrasse 12"
       "CH-8045 Zürich"
       "Fon +41 43 333 32 32"
-      "Fax +41 43 333 32 33"
       "www.sbs.ch"
       "nutzerservice@sbs.ch"
       (format "© %s" creator)])))
