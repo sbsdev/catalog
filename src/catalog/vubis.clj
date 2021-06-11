@@ -633,7 +633,10 @@
     print-and-braille? [:print-and-braille target-audience]
     :else (get-update-keys item)))
 
-(def ^:private sort-order
+(def sort-order
+  "A hashmap that defines the sort order for a given key. Typically
+  formats, genres and subgenres are defined in here as keys with the
+  value being the order in which they are to be sorted."
   (apply hash-map
          (interleave
           (concat [:editorial :recommendation]

@@ -10,16 +10,19 @@
   (:import java.util.Locale))
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
-(def genres [:belletristik :sachbücher :kinder-und-jugendbücher
-             :print-and-braille :bücher-in-fremdsprachen
-             ;; Braille
-             :taktilesbuch :musiknoten
-             ;; Movies
-             :spielfilm :mundartfilm :dokumentarfilm
-             ;; Games
-             :lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
-             :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
-             :bücher-über-spiel])
+(def genres
+  "All possible genres of an item. Note that the order matters as it is
+  used to sort the items, see [[catalog.vubis/sort-order]]."
+  [:belletristik :sachbücher :kinder-und-jugendbücher
+   :print-and-braille :bücher-in-fremdsprachen
+   ;; Braille
+   :taktilesbuch :musiknoten
+   ;; Movies
+   :spielfilm :mundartfilm :dokumentarfilm
+   ;; Games
+   :lernspiel :solitairspiel :denkspiel :geschicklichkeitsspiel
+   :kartenspiel :legespiel :rollenspiel :würfelspiel :ratespiel
+   :bücher-über-spiel])
 (def subgenres [;; Belletristik
                 :action-und-thriller :beziehungsromane :fantasy-science-fiction
                 :gesellschaftsromane :historische-romane :hörspiele :krimis
