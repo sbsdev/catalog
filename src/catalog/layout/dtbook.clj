@@ -176,12 +176,13 @@
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text
-           description producer library-signature] :as item}]
+           description producer library-signature target-audience] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    [:p {:brl:class "personel"} (wrap personel-text)]
    [:p {:brl:class "country"} (wrap movie_country)]
-   (genre-sexp genre-text)
+   (let [age-limit (get layout/target-audience-to-age-limit target-audience "(ab 18)")]
+     (genre-sexp (str genre-text " " age-limit)))
    (description-sexp description)
    (producer-sexp producer)
    (ausleihe-simple library-signature)])

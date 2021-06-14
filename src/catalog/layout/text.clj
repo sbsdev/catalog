@@ -181,12 +181,13 @@
 
 (defmethod entry-str :hörfilm
   [{:keys [personel-text movie_country genre-text
-           description producer library-signature] :as item}]
+           description producer library-signature target-audience] :as item}]
   (join
    (entry-heading-str item)
    (wrap personel-text)
    (wrap movie_country)
-   (genre-str genre-text)
+   (let [age-limit (get layout/target-audience-to-age-limit target-audience "(ab 18)")]
+     (genre-str (str genre-text " " age-limit)))
    (description-str description)
    (producer-str producer)
    (ausleihe-simple library-signature)))

@@ -352,14 +352,15 @@
 
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text
-           description producer library-signature] :as item}
+           description producer library-signature target-audience] :as item}
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
    (entry-heading-sexp item)
    (block (wrap personel-text))
    (block (wrap movie_country))
    (when show-genre?
-     (block (wrap genre-text)))
+     (let [age-limit (get layout/target-audience-to-age-limit target-audience "(ab 18)")]
+       (block (wrap (str genre-text " " age-limit)))))
    (block (wrap description))
    (block (wrap producer))
    (ausleihe library-signature)))

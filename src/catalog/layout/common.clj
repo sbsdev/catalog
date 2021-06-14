@@ -129,6 +129,13 @@
                              :recommendations "Buchtipps"
                              :price-on-request "auf Anfrage"})
 
+(def target-audience-to-age-limit
+  {:kinderbücher-ab-3 "(ab 3)"
+   :kinderbücher-ab-6 "(ab 6)"
+   :kinderbücher-ab-10 "(ab 10)"
+   :kinderbücher-ab-14 "(ab 14)"
+   :bücher-für-erwachsene "(ab 18)"})
+
 (def ordinal
   {1 "Erste"
    2 "Zweite"
