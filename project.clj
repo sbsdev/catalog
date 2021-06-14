@@ -1,4 +1,4 @@
-(defproject catalog "0.1.0-SNAPSHOT"
+(defproject catalog "0.27.0-SNAPSHOT"
   :description "A webapp to generate catalogs of the new items in the library"
   :url "https://github.com/sbsdev/catalog"
   :license {:name "GNU Affero General Public License"
@@ -24,10 +24,19 @@
                  [mysql/mysql-connector-java "6.0.5"]
                  [yesql "0.5.3"]
                  [org.tobereplaced/nio.file "0.4.0"]]
-  :git-version {}
   :plugins [[lein-immutant "2.1.0"]
-            [lein-codox "0.10.7"]
-            [org.clojars.cvillecsteele/lein-git-version "1.2.7"]]
+            [lein-codox "0.10.7"]]
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  #_["deploy"]
+                  #_["uberjar"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
+
   :codox {:project {:name "Kati"}
           :source-paths ["src"]
           :source-uri "https://github.com/sbsdev/catalog/blob/v{version}/{filepath}#L{line}"
