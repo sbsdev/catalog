@@ -98,9 +98,7 @@
   [:p {:brl:class "gen"} (wrap genre-text "Genre: ")])
 
 (defmethod entry-sexp :braille
-  [{:keys [creator title subtitles name-of-part source-publisher
-           source-date genre-text description producer-brief
-           rucksackbuch? rucksackbuch-number
+  [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
            library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
@@ -113,9 +111,7 @@
    (verkauf item)])
 
 (defmethod entry-sexp :musiknoten
-  [{:keys [creator title subtitles name-of-part source-publisher
-           source-date genre-text description producer-brief
-           library-signature] :as item}]
+  [{:keys [description producer-brief library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (description-sexp description)
@@ -124,9 +120,7 @@
    (verkauf item)])
 
 (defmethod entry-sexp :taktilesbuch
-  [{:keys [creator title subtitles name-of-part source-publisher
-           source-date genre-text description producer-brief
-           library-signature] :as item}]
+  [{:keys [description producer-brief library-signature] :as item}]
   [:div {:brl:class "ps"}
    (entry-heading-sexp item)
    (description-sexp description)

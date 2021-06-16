@@ -117,9 +117,7 @@
    (verkauf item)))
 
 (defmethod entry-str :musiknoten
-  [{:keys [creator title subtitles name-of-part source-publisher
-           source-date genre-text description producer-brief
-           library-signature] :as item}]
+  [{:keys [description producer-brief library-signature] :as item}]
   (join
    (entry-heading-str item)
    (description-str description)
@@ -128,9 +126,7 @@
    (verkauf item)))
 
 (defmethod entry-str :taktilesbuch
-  [{:keys [creator title subtitles name-of-part source-publisher
-           source-date genre-text description producer-brief
-           library-signature] :as item}]
+  [{:keys [description producer-brief library-signature] :as item}]
   (join
    (entry-heading-str item)
    (description-str description)

@@ -141,10 +141,6 @@
    5 "Fünfte"
    6 "Sechste"})
 
-(defn volume-number [date]
-  (let [month (time/as date :month-of-year)]
-    (quot (inc month) 2)))
-
 (defn format-date [year issue]
   (let [formatter (-> (time/formatter "MMMM yyyy")
                       (.withLocale Locale/GERMAN))]
