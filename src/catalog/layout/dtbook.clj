@@ -3,15 +3,12 @@
   XML](http://www.daisy.org/z3986/2005/Z3986-2005.html) to be
   converted to Braille later in the tool chain"
   (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
-            [clj-time
-             [core :as time.core]
-             [format :as time.format]]
-            [clojure
-             [set :as set]
-             [string :as string]
-             [walk :as walk]]
             [clojure.data.xml :as xml]
-            [endophile.core :as endophile]))
+            [clojure.set :as set]
+            [clojure.string :as string]
+            [clojure.walk :as walk]
+            [endophile.core :as endophile]
+            [java-time :as time]))
 
 (def translations (merge layout/translations
                          {[:kurzschrift false] "K"
@@ -225,7 +222,7 @@
          {:dc:Title title
           :dc:Creator creator
           :dc:Publisher creator
-          :dc:Date (time.format/unparse (time.format/formatters :date) date)
+          :dc:Date (time/format :iso-local-date date)
           :dc:Format "ANSI/NISO Z39.86-2005"
           :dc:Language language}]
      [:meta {:name (name k) :content v}])])
@@ -253,7 +250,7 @@
   [items {:keys [year issue editorial recommendation]}]
   (let [title (translations :catalog-braille)
         creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-        date (time.core/now)
+        date (time/local-date)
         language "de"]
     [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
               :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"
@@ -289,7 +286,7 @@
   [items {:keys [query customer]}]
   (let [title (translations :catalog-custom)
         creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-        date (time.core/now)
+        date (time/local-date)
         language "de"]
     [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
               :xmlns:brl "http://www.daisy.org/z3986/2009/braille/"

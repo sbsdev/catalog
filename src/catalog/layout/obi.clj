@@ -4,11 +4,8 @@
   used to narrate the book in [Obi](http://www.daisy.org/project/obi)
   later in the tool chain."
   (:require [catalog.layout.common :as layout]
-            [clj-time
-             [coerce :as time.coerce]
-             [core :as time.core]
-             [format :as time.format]]
-            [clojure.data.xml :as xml]))
+            [clojure.data.xml :as xml]
+            [java-time :as time]))
 
 (defn- heading-keyword [level]
   (keyword (str "h" level)))
@@ -54,7 +51,7 @@
   [items year issue editorial recommendations &
                 {:keys [creator date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
-                      date (time.coerce/to-date (time.core/today))
+                      date (time/local-date)
                       language "de"}}]
   (let [title (format "%s Nr.%s/%s"
                       (layout/translations :catalog-hörbuch)
@@ -76,7 +73,7 @@
              :dc:Subject ""
              :dc:Description ""
              :dc:Publisher creator
-             :dc:Date (time.format/unparse (time.format/formatters :date) (time.coerce/from-date date))
+             :dc:Date (time/format :iso-local-date date)
              :dc:Format "ANSI/NISO Z39.86-2005"
              :dc:Language language}]
         [:meta {:name (name k) :content v}])]

@@ -1,14 +1,11 @@
 (ns catalog.layout.text
   "Render catalog items as plain text"
   (:require [catalog.layout.common :as layout :refer [empty-or-blank? wrap]]
-            [clj-time
-             [core :as time.core]
-             [format :as time.format]]
-            [clojure
-             [set :as set]
-             [string :as string]
-             [walk :as walk]]
-            [endophile.core :as endophile]))
+            [clojure.set :as set]
+            [clojure.string :as string]
+            [clojure.walk :as walk]
+            [endophile.core :as endophile]
+            [java-time :as time]))
 
 (def ^:private dos-newline "\r\n")
 (def ^:private double-newline (str dos-newline dos-newline))
@@ -255,16 +252,13 @@
        (impressum)]
       (map #(level-str (get items %) [%] path-to-numbers) (keys items))))))
 
-(def ^:private date-formatter (time.format/formatter "dd.MM.YYYY"))
-
 (defmethod document-str :custom
   [items {:keys [query customer]}]
   (let [title (layout/translations :catalog-custom)
-        date (time.core/now)
         path-to-numbers (layout/path-to-number items)]
     (string/join double-newline
      [title
-      (format "Stand %s" (time.format/unparse date-formatter date))
+      (format "Stand %s" (time/format "dd.MM.YYYY" (time/local-date)))
       query
       (format "für %s" customer)
       (impressum)

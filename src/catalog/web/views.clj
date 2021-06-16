@@ -12,15 +12,13 @@
              [obi :as layout.obi]
              [text :as layout.text]]
             [catalog.web.layout :as layout]
-            [clj-time
-             [core :as time.core]
-             [format :as time.format]]
             [clojure
              [edn :as edn]
              [string :as string]]
             [hiccup
              [core :refer [h]]
              [form :as form]]
+            [java-time :as time]
             [org.tobereplaced.nio.file :as nio.file]
             [ring.util
              [anti-forgery :refer [anti-forgery-field]]
@@ -45,7 +43,7 @@
 
 (defn home
   ([request]
-   (let [date (time.core/today)
+   (let [date (time/local-date)
          [year issue] (issue/issue-for date)]
      (response/redirect (format "/%s/%s" year issue))))
   ([request year issue]
@@ -88,17 +86,14 @@
    (string/replace #"\s" "-")
    (string/replace #"&" "und")))
 
-;; FIXME: we should probably use time zone that is defined in the
-;; browser of the user. For simplicity sake we just hard code it here.
-(def ^:private local-time-zone-id "Europe/Zurich")
-
 (defn- local-time
   "Return a string representing the local time that can be used for
   file names."
   []
-  (let [time-zone (time.core/time-zone-for-id local-time-zone-id)
-        formatter (time.format/formatter "yyyy-MM-dd-kk-mm-ss" time-zone)]
-    (time.format/unparse formatter (time.core/now))))
+  ;; FIXME: we should probably use time zone that is defined in the
+  ;; browser of the user. For simplicity sake we just use the local
+  ;; date-time here.
+  (time/format "yyyy-MM-dd-kk-mm-ss" (time/local-date-time)))
 
 (defn- file-name
   "Return a file-name for a given key `k` a value `v` (usually the

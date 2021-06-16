@@ -1,16 +1,13 @@
 (ns catalog.vubis
   "Import XML files from the library system"
   (:require [catalog.layout.common :as layout]
-            [clj-time
-             [coerce :as time.coerce]
-             [format :as time.format]]
-            [clojure
-             [string :as string]
-             [xml :as xml]
-             [zip :as zip]]
             [clojure.data.zip :as data-zip]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
             [clojure.java.io :as io]
+            [clojure.string :as string]
+            [clojure.xml :as xml]
+            [clojure.zip :as zip]
+            [java-time :as time]
             [medley.core :refer [assoc-some]])
   (:import java.text.Collator
            java.util.Locale))
@@ -252,7 +249,11 @@
   parsed."
   [s]
   (when-let [year (and s (re-find #"\d{4}" s))]
-    (time.coerce/to-date (time.format/parse (time.format/formatters :year) year))))
+    ;; we return a legacy date here so that time literals work and
+    ;; stay compatible with what e already have in the database
+    (time/java-date
+     (time/with-zone
+       (time/zoned-date-time (Integer/parseInt year)) "UTC"))))
 
 (defn- replace-less-than-sign [s]
   (some-> s (string/replace #"<|>" {"<" "(" ">" ")"})))

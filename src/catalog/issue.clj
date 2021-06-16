@@ -1,13 +1,13 @@
 (ns catalog.issue
   "Functionality to calculate next and previous issues and getting the
   issue for a given date"
-  (:require [clj-time.core :as time.core]))
+  (:require [java-time :as time]))
 
 (defn issue-for
   "Return a vector of year and issue for given `date`"
   [date]
-  (let [year (time.core/year date)
-        issue (quot (inc (time.core/month date)) 2)]
+  (let [[year month] (time/as date :year :month-of-year)
+        issue (quot (inc month) 2)]
     [year issue]))
 
 (defn next-issue

@@ -5,9 +5,9 @@
             :url "https://www.gnu.org/licenses/agpl.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/data.zip "0.1.2"]
+                 [clojure.java-time "0.3.2"]
                  [medley "1.0.0"]
                  [prismatic/schema "1.1.7"]
-                 [clj-time "0.14.2"]
                  [comb "0.1.0" :exclusions [org.clojure/clojure]]
                  [org.clojure/data.xml "0.1.0-beta2"]
                  ;; NOTE: xalan is excluded as it causes problems with loading the png image

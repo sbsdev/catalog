@@ -1,16 +1,13 @@
 (ns catalog.layout.fop
   "Functionality to render a tree of catalog items as accessible PDF"
   (:require [catalog.layout.common :as layout]
-            [clj-time
-             [core :as time.core]
-             [format :as time.format]]
-            [clojure
-             [set :as set]
-             [string :as string]
-             [walk :as walk]]
             [clojure.data.xml :as xml]
             [clojure.java.io :as io]
-            [endophile.core :as endophile])
+            [clojure.set :as set]
+            [clojure.string :as string]
+            [clojure.walk :as walk]
+            [endophile.core :as endophile]
+            [java-time :as time])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -907,8 +904,7 @@
    (block {:space-after "50mm"} )
    (block (style :h1 {:break-before "auto" :space-after "5pt"}) title)
    (block {:space-after "5pt"}
-          (format "Stand %s"
-                  (time.format/unparse (time.format/formatter "dd.MM.YYYY") (time.core/now))))
+          (format "Stand %s" (time/format "dd.MM.YYYY" (time/local-date))))
    (block {:space-before "5mm" :space-after "5mm"} query)
    (block (format "für %s" customer))
    (logo)

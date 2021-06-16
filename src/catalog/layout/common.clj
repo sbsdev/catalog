@@ -1,12 +1,9 @@
 (ns catalog.layout.common
   "Layout functionality that is common across all output formats. Such
   as translation strings, formatting of dates or braille signatures."
-  (:require [clj-time
-             [coerce :as time.coerce]
-             [core :as time.core]
-             [format :as time.format]]
-            [clojure.string :as string]
-            [endophile.core :as endophile])
+  (:require [clojure.string :as string]
+            [endophile.core :as endophile]
+            [java-time :as time])
   (:import java.util.Locale))
 
 (def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
@@ -145,17 +142,17 @@
    6 "Sechste"})
 
 (defn volume-number [date]
-  (let [month (time.core/month (time.coerce/from-date date))]
+  (let [month (time/as date :month-of-year)]
     (quot (inc month) 2)))
 
 (defn format-date [year issue]
-  (time.format/unparse
-   (time.format/with-locale (time.format/formatter "MMMM yyyy") Locale/GERMAN)
-   (time.core/date-midnight year (* issue 2))))
+  (let [formatter (-> (time/formatter "MMMM yyyy")
+                      (.withLocale Locale/GERMAN))]
+    (time/format formatter (time/local-date year (* issue 2)))))
 
 (defn year [date]
   (when date
-    (time.core/year (time.coerce/from-date date))))
+    (time/as date :year)))
 
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in
