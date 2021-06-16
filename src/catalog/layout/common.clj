@@ -146,9 +146,12 @@
                       (.withLocale Locale/GERMAN))]
     (time/format formatter (time/local-date year (* issue 2)))))
 
-(defn year [date]
+(defn year
+  "Grab the year out of `date` which can be a `time/local-date` or for
+  legacy reasons also a `java.util.Date`"
+  [date]
   (when date
-    (time/as date :year)))
+    (time/as (time/local-date date (time/zone-id "UTC")) :year)))
 
 (defn periodify
   "Add a period to the end of `s` if it is not nil and doesn't end in
