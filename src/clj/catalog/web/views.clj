@@ -1,28 +1,23 @@
 (ns catalog.web.views
   "Views for web application"
-  (:require [catalog
-             [db :as db]
-             [issue :as issue]
-             [validation :as validation]
-             [vubis :as vubis]]
-            [catalog.layout
-             [common :refer [translations]]
-             [dtbook :as layout.dtbook]
-             [fop :as layout.fop]
-             [obi :as layout.obi]
-             [text :as layout.text]]
+  (:require [catalog.db.core :as db]
+            [catalog.issue :as issue]
+            [catalog.layout.common :refer [translations]]
+            [catalog.layout.dtbook :as layout.dtbook]
+            [catalog.layout.fop :as layout.fop]
+            [catalog.layout.obi :as layout.obi]
+            [catalog.layout.text :as layout.text]
+            [catalog.validation :as validation]
+            [catalog.vubis :as vubis]
             [catalog.web.layout :as layout]
-            [clojure
-             [edn :as edn]
-             [string :as string]]
-            [hiccup
-             [core :refer [h]]
-             [form :as form]]
+            [clojure.edn :as edn]
+            [clojure.string :as string]
+            [hiccup.core :refer [h]]
+            [hiccup.form :as form]
             [java-time :as time]
             [org.tobereplaced.nio.file :as nio.file]
-            [ring.util
-             [anti-forgery :refer [anti-forgery-field]]
-             [response :as response]]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [ring.util.response :as response]
             [schema.core :as s]))
 
 (defn- download-button
@@ -42,11 +37,11 @@
    (download-button (download-url year issue file-name))])
 
 (defn home
-  ([request]
+  ([]
    (let [date (time/local-date)
          [year issue] (issue/issue-for date)]
      (response/redirect (format "/%s/%s" year issue))))
-  ([request year issue]
+  ([year issue]
    (layout/common
     year issue
     [:div.row
@@ -69,14 +64,14 @@
    year issue
    [:div.row
     [:div.col-md-6
-     (download-well (translations :catalog-hörfilm) year nil "hörfilme-in-der-sbs.pdf")]
+     (download-well (translations :catalog-hörfilm) year "full" "hörfilme-in-der-sbs.pdf")]
     [:div.col-md-6
-     (download-well (translations :catalog-ludo) year nil "spiele-in-der-sbs.pdf")]]
+     (download-well (translations :catalog-ludo) year "full" "spiele-in-der-sbs.pdf")]]
    [:div.row
     [:div.col-md-6
-     (download-well (translations :catalog-print-and-braille) year nil "print-und-braille-bücher-in-der-sbs.pdf")]
+     (download-well (translations :catalog-print-and-braille) year "full" "print-und-braille-bücher-in-der-sbs.pdf")]
     [:div.col-md-6
-     (download-well (translations :catalog-taktilesbuch) year nil "taktile-kinderbücher-der-sbs.pdf")]]))
+     (download-well (translations :catalog-taktilesbuch) year "full" "taktile-kinderbücher-der-sbs.pdf")]]))
 
 (defn- clean-string
   "Clean a string so that it can be used to generate a file name"

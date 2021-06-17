@@ -1,13 +1,23 @@
-(ns catalog.db
+(ns catalog.db.core
   "Persistence for catalog items"
-  (:require [clojure.edn :as edn]
-            [yesql.core :refer [defqueries]]))
+  (:require
+    [next.jdbc.date-time]
+    [next.jdbc.result-set]
+    [clojure.edn :as edn]
+    [clojure.tools.logging :as log]
+    [conman.core :as conman]
+    [catalog.config :refer [env]]
+    [mount.core :refer [defstate]]))
 
-(def ^:private db {:name "java:jboss/datasources/catalog"})
+(defstate ^:dynamic *db*
+  :start (if-let [jdbc-url (env :database-url)]
+           (conman/connect! {:jdbc-url jdbc-url})
+           (do
+             (log/warn "database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
+             *db*))
+  :stop (conman/disconnect! *db*))
 
-#_(def ^:private db "jdbc:mysql://localhost:3306/catalog?user=catalog&serverTimezone=UTC")
-
-(defqueries "catalog/queries.sql" {:connection db})
+(conman/bind-connection *db* "sql/queries.sql")
 
 (defn read-catalog
   "Return a coll of items for given `year` and `issue`"
@@ -62,4 +72,21 @@
   "Persist `items` for a full catalog with given `year`, `issue` and `catalog_type`"
   (-> {:year year :catalog_type catalog_type :items (prn-str items)}
       save-full-catalog-internal!))
+
+(extend-protocol next.jdbc.result-set/ReadableColumn
+  java.sql.Timestamp
+  (read-column-by-label [^java.sql.Timestamp v _]
+    (.toLocalDateTime v))
+  (read-column-by-index [^java.sql.Timestamp v _2 _3]
+    (.toLocalDateTime v))
+  java.sql.Date
+  (read-column-by-label [^java.sql.Date v _]
+    (.toLocalDate v))
+  (read-column-by-index [^java.sql.Date v _2 _3]
+    (.toLocalDate v))
+  java.sql.Time
+  (read-column-by-label [^java.sql.Time v _]
+    (.toLocalTime v))
+  (read-column-by-index [^java.sql.Time v _2 _3]
+    (.toLocalTime v)))
 

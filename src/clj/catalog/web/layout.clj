@@ -1,7 +1,8 @@
 (ns catalog.web.layout
   "Define the basic page structure and layout"
   (:require [catalog.issue :as issue]
-            [hiccup.page :refer [html5 include-css include-js]]))
+            [hiccup.page :refer [html5 include-css include-js]]
+            [ring.util.http-response :as response]))
 
 (defn glyphicon
   ([class]
@@ -68,17 +69,20 @@
 (defn common
   "Display a page using the bootstrap css"
   [year issue & body]
-  (html5
-    [:head
-     [:title "Catalog"]
-     (include-css "/css/bootstrap.min.css")
-     (include-css "/css/bootstrap-markdown.min.css")]
-    [:body
-     [:div.container
-      (navbar year issue)
-      body]
-     (include-js "/js/jquery-1.12.0.min.js")
-     (include-js "/js/bootstrap.min.js")
-     (include-js "/js/markdown.min.js")
-     (include-js "/js/bootstrap-markdown.js")]))
+  (response/content-type
+   (response/ok
+    (html5
+     [:head
+      [:title "Catalog"]
+      (include-css "/css/bootstrap.min.css")
+      (include-css "/css/bootstrap-markdown.min.css")]
+     [:body
+      [:div.container
+       (navbar year issue)
+       body]
+      (include-js "/js/jquery-1.12.0.min.js")
+      (include-js "/js/bootstrap.min.js")
+      (include-js "/js/markdown.min.js")
+      (include-js "/js/bootstrap-markdown.js")]))
+   "text/html; charset=utf-8"))
 

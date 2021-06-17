@@ -15,13 +15,19 @@ audio production.
 [[https://versions.deps.co/sbsdev/catalog][https://versions.deps.co/sbsdev/catalog/status.svg]]
 
 ** Build and Installation
-Build with [[https://github.com/technomancy/leiningen][Leiningen]] using the [[https://github.com/immutant/lein-immutant][lein immutant plugin]].
+
+Kati is based on Luminus version "4.10". You can build it with
+[[https://github.com/technomancy/leiningen][Leiningen]]:
 
 #+BEGIN_SRC shell
-lein immutant war
+lein uberjar
 #+END_SRC
 
-Deploy the resulting war file in [[http://wildfly.org/][Wildfly]].
+The resulting jar can be run as follows:
+
+#+BEGIN_SRC shell
+java -Dconf=dev-config.edn -jar catalog.jar
+#+END_SRC
 
 ** Documentation
 
