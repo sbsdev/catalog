@@ -1,12 +1,14 @@
 (ns catalog.layout.fop
   "Functionality to render a tree of catalog items as accessible PDF"
   (:require [catalog.layout.common :as layout]
+            [catalog.metrics :as metrics]
             [clojure.data.xml :as xml]
             [clojure.java.io :as io]
             [clojure.set :as set]
             [clojure.string :as string]
             [clojure.walk :as walk]
             [endophile.core :as endophile]
+            [iapetos.collector.fn :as prometheus]
             [java-time :as time])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
@@ -1089,3 +1091,5 @@
             saxresult (SAXResult. (.getDefaultHandler fop))]
         ;; Start XSLT transformation and FOP processing
         (.transform transformer source saxresult)))))
+
+(prometheus/instrument! metrics/registry #'generate-pdf!)

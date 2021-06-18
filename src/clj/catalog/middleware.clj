@@ -1,16 +1,15 @@
 (ns catalog.middleware
-  (:require
-    [catalog.env :refer [defaults]]
-    [clojure.tools.logging :as log]
-    [catalog.layout :refer [error-page]]
-    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-    [catalog.middleware.formats :as formats]
-    [muuntaja.middleware :refer [wrap-format wrap-params]]
-    [catalog.config :refer [env]]
-    [ring.middleware.flash :refer [wrap-flash]]
-    [ring.adapter.undertow.middleware.session :refer [wrap-session]]
-    [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
-  )
+  (:require [catalog.env :refer [defaults]]
+            [catalog.layout :refer [error-page]]
+            [catalog.metrics :as metrics]
+            [catalog.middleware.formats :as formats]
+            [clojure.tools.logging :as log]
+            [iapetos.collector.ring :as prometheus]
+            [muuntaja.middleware :refer [wrap-format wrap-params]]
+            [ring.adapter.undertow.middleware.session :refer [wrap-session]]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+            [ring.middleware.flash :refer [wrap-flash]]))
 
 (defn wrap-internal-error [handler]
   (fn [req]
@@ -46,4 +45,6 @@
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)
             (dissoc :session)))
+      (prometheus/wrap-metrics
+       metrics/registry {:path "/metrics"})
       wrap-internal-error))
