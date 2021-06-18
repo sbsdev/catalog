@@ -11,6 +11,7 @@
 
 (s/def ::year (s/and pos-int? #(<= 1900 % 2100)))
 (s/def ::issue (s/and pos-int? #{1 2 3 4 5 6}))
+(s/def ::format (s/and string? #{"grossdruck" "braille" "hörbuch"}))
 
 (def hörbuch-encoded (url-encode "hörbuch"))
 
@@ -58,19 +59,10 @@
                        (views/neu-als-hörbuch-ncc year issue))}}]
 
     ;; Editorials
-    ["/editorial"
-     ["/grossdruck"
-      {:get {:parameters {:path {:year ::year :issue ::issue}}
-             :handler (fn [{{{:keys [year issue]} :path} :parameters :as r}]
-                        (views/editorial-form r :grossdruck year issue))}}]
-     ["/braille"
-      {:get {:parameters {:path {:year ::year :issue ::issue}}
-             :handler (fn [{{{:keys [year issue]} :path} :parameters :as r}]
-                        (views/editorial-form r :braille year issue))}}]
-     [(format "/%s" hörbuch-encoded)
-      {:get {:parameters {:path {:year ::year :issue ::issue}}
-             :handler (fn [{{{:keys [year issue]} :path} :parameters :as r}]
-                        (views/editorial-form r :hörbuch year issue))}}]]
+    ["/editorial/:fmt"
+      {:get {:parameters {:path {:year ::year :issue ::issue :fmt ::format}}
+             :handler (fn [{{{:keys [year issue fmt]} :path} :parameters :as r}]
+                        (views/editorial-form r fmt year issue))}}]
     
     ;; Upload catalog data
     ["/upload"
