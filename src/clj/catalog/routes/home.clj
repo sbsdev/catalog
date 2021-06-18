@@ -5,6 +5,7 @@
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
             [reitit.coercion.spec :as spec-coercion]
+            [reitit.ring.middleware.multipart :as multipart]
             [reitit.ring.coercion :as coercion]
             [ring.util.codec :refer [url-encode]]))
 
@@ -20,7 +21,8 @@
    ["/" {:get {:handler (fn [_] (views/home))}}]
    ["/:year/:issue"
     {:coercion spec-coercion/coercion
-     :middleware [coercion/coerce-request-middleware]}
+     :middleware [coercion/coerce-request-middleware
+                  multipart/multipart-middleware]}
     
     ["" {:get {:parameters {:path {:year ::year :issue ::issue}}
                :handler (fn [{{{:keys [year issue]} :path} :parameters}]
@@ -81,16 +83,16 @@
                        (views/upload-full-form r year issue))}}]
 
     ["/:fmt/upload-confirm"
-     {:post {:parameters {:path {:year ::year :issue ::issue}
-                          :query {:fmt keyword? :file any?}}
-             :handler (fn [{{{:keys [year issue]} :path
-                             {:keys [fmt file]} :query} :parameters :as r}]
+     {:post {:parameters {:path {:year ::year :issue ::issue :fmt keyword?}
+                          :multipart {:file any?}}
+             :handler (fn [{{{:keys [year issue fmt]} :path
+                             {:keys [file]} :multipart} :parameters :as r}]
                         (views/upload-confirm r year issue fmt file))}}]
     ["/:fmt/upload"
-     {:post {:parameters {:path {:year ::year :issue ::issue}
-                          :query {:fmt keyword? :items any?}}
-             :handler (fn [{{{:keys [year issue]} :path
-                             {:keys [fmt items]} :query} :parameters :as r}]
+     {:post {:parameters {:path {:year ::year :issue ::issue :fmt keyword?}
+                          :multipart {:items any?}}
+             :handler (fn [{{{:keys [year issue fmt]} :path
+                             {:keys [items]} :multipart} :parameters :as r}]
                         (views/upload r year issue fmt items))}}]
     
     ;; Full catalogs
@@ -105,22 +107,22 @@
             :handler (fn [{{{:keys [year issue]} :path} :parameters :as r}]
                        (views/custom-form r year issue))}
       :post {:parameters {:path {:year ::year :issue ::issue}
-                          :query {:query string?
-                                  :customer string?
-                                  :fmt keyword?
-                                  :items any?}}
+                          :multipart {:query string?
+                                      :customer string?
+                                      :fmt keyword?
+                                      :items any?}}
              :handler (fn [{{{:keys [year issue]} :path
-                             {:keys [query customer fmt items]} :query} :parameters :as r}]
-                       (views/custom r year issue query customer fmt items))}}]
+                             {:keys [query customer fmt items]} :multipart} :parameters :as r}]
+                        (views/custom r year issue query customer fmt items))}}]
     ["/custom-confirm"
-     {:get {:parameters {:path {:year ::year :issue ::issue}
-                         :query {:query string?
-                                 :customer string?
-                                 :fmt keyword?
-                                 :file any?}}
-            :handler (fn [{{{:keys [year issue]} :path
-                            {:keys [query customer fmt file]} :query} :parameters :as r}]
-                       (views/custom-confirm r year issue query customer fmt file))}}]
+     {:post {:parameters {:path {:year ::year :issue ::issue}
+                          :multipart {:query string?
+                                      :customer string?
+                                      :fmt keyword?
+                                      :file any?}}
+             :handler (fn [{{{:keys [year issue]} :path
+                             {:keys [query customer fmt file]} :multipart} :parameters :as r}]
+                        (views/custom-confirm r year issue query customer fmt file))}}]
     
     ]
    ["/:year/full"
