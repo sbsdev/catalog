@@ -60,9 +60,15 @@
 
     ;; Editorials
     ["/editorial/:fmt"
-      {:get {:parameters {:path {:year ::year :issue ::issue :fmt ::format}}
-             :handler (fn [{{{:keys [year issue fmt]} :path} :parameters :as r}]
-                        (views/editorial-form r fmt year issue))}}]
+     {:name ::editorial
+      :get {:parameters {:path {:year ::year :issue ::issue :fmt ::format}}
+            :handler (fn [{{{:keys [year issue fmt]} :path} :parameters :as r}]
+                       (views/editorial-form r fmt year issue))}
+      :post {:parameters {:path {:year ::year :issue ::issue :fmt ::format}
+                          :form {:editorial string? :recommended string?}}
+             :handler (fn [{{{:keys [year issue fmt]} :path
+                             {:keys [editorial recommended]} :form} :parameters :as r}]
+                       (views/editorial r fmt year issue editorial recommended))}}]
     
     ;; Upload catalog data
     ["/upload"
