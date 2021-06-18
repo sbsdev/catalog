@@ -8,12 +8,6 @@
             [reitit.ring.coercion :as coercion]
             [ring.util.codec :refer [url-encode]]))
 
-(defn home-page [request]
-  (layout/render request "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
-
-(defn about-page [request]
-  (layout/render request "about.html"))
-
 (s/def ::year (s/and pos-int? #(<= 1900 % 2100)))
 (s/def ::issue (s/and pos-int? #{1 2 3 4 5 6}))
 
