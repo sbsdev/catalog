@@ -37,7 +37,7 @@
                  [org.webjars.npm/material-icons "0.7.0"]
                  [org.webjars/webjars-locator "0.41"]
                  [org.webjars/webjars-locator-jboss-vfs "0.1.0"]
-                 [prismatic/schema "1.1.7"]
+                 [prismatic/schema "1.1.12"]
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.9.3"]
                  [ring/ring-defaults "0.3.2"]
