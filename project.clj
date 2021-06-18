@@ -12,7 +12,6 @@
                  [cprop "0.1.17"]
                  [expound "0.8.9"]
                  [endophile "0.2.1"]
-                 [funcool/struct "1.4.0"]
                  [hiccup "1.0.5"]
                  [json-html "0.4.7"]
                  [luminus-migrations "0.7.1"]
