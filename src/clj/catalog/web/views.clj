@@ -251,7 +251,7 @@
    [:div.row
     [:div.col-md-12
      (upload-well (format "Upload %s" (translations :catalog-all))
-                  (format "/%s/%s/%s/upload-confirm" year issue (name :all-formats))
+                  (format "/%s/%s/upload-confirm/%s" year issue (name :all-formats))
                   errors)]]))
 
 (defn- error-table
@@ -282,20 +282,20 @@
    [:div.row
     [:div.col-md-6
      (upload-well "Upload Gesamtkatalog Hörfilm"
-                  (format "/%s/%s/%s/upload-confirm" year issue (name :hörfilm))
+                  (format "/%s/%s/upload-confirm/%s" year issue (name :hörfilm))
                   (:hörfilm errors))]
     [:div.col-md-6
      (upload-well "Upload Gesamtkatalog Spiele"
-                  (format "/%s/%s/%s/upload-confirm" year issue (name :ludo))
+                  (format "/%s/%s/upload-confirm/%s" year issue (name :ludo))
                   (:ludo errors))]]
    [:div.row
     [:div.col-md-6
      (upload-well "Upload Gesamtkatalog Print & Braille"
-                  (format "/%s/%s/%s/upload-confirm" year issue (name :print-and-braille))
+                  (format "/%s/%s/upload-confirm/%s" year issue (name :print-and-braille))
                   (:print-and-braille errors))]
     [:div.col-md-6
      (upload-well "Upload Gesamtkatalog Taktile Bücher"
-                  (format "/%s/%s/%s/upload-confirm" year issue (name :taktilesbuch))
+                  (format "/%s/%s/upload-confirm/%s" year issue (name :taktilesbuch))
                   (:taktilesbuch errors))]]))
 
 (defn upload [request year issue fmt items]
@@ -322,7 +322,7 @@
            (error-table problems)
            (form/form-to
             {:enctype "multipart/form-data"}
-            [:post (format "/%s/%s/%s/upload" year issue (name fmt))]
+            [:post (format "/%s/%s/upload/%s" year issue (name fmt))]
             (anti-forgery-field)
             (form/hidden-field "items" (prn-str items))
             (layout/button (format "/%s/%s/%s"

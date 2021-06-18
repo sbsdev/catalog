@@ -74,13 +74,13 @@
             :handler (fn [{{{:keys [year issue]} :path} :parameters :as r}]
                        (views/upload-full-form r year issue))}}]
 
-    ["/:fmt/upload-confirm"
+    ["/upload-confirm/:fmt"
      {:post {:parameters {:path {:year ::year :issue ::issue :fmt keyword?}
                           :multipart {:file any?}}
              :handler (fn [{{{:keys [year issue fmt]} :path
                              {:keys [file]} :multipart} :parameters :as r}]
                         (views/upload-confirm r year issue fmt file))}}]
-    ["/:fmt/upload"
+    ["/upload/:fmt"
      {:post {:parameters {:path {:year ::year :issue ::issue :fmt keyword?}
                           :multipart {:items any?}}
              :handler (fn [{{{:keys [year issue fmt]} :path
