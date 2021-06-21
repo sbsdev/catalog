@@ -10,6 +10,12 @@
                  [clj-time "0.14.2"]
                  [comb "0.1.0" :exclusions [org.clojure/clojure]]
                  [org.clojure/data.xml "0.1.0-beta2"]
+                 ;; FIXME: Including xercesImpl is a classic cut'n'paste from a SO answer:
+                 ;; https://stackoverflow.com/q/31386864, where they claim that the problems
+                 ;; with the imagepreloader for svg (and the missing svgs) are going away if
+                 ;; you include xercesImpl. I have no idea why this worked before and
+                 ;; doesn't now, but it seems to do the trick.
+                 [xerces/xercesImpl "2.11.0"]
                  ;; NOTE: xalan is excluded as it causes problems with loading the png image
                  ;; inside the svg cover
                  [org.apache.xmlgraphics/fop "2.4" :exclusions [xalan commons-io]]
