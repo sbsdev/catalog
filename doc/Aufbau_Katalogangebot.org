@@ -948,7 +948,7 @@ Das Layout der einzelnen Einträge sieht folgendermassen aus:
 
 [Land (Originalfilm)] “,“ [Erscheinungsjahr (Originalfilm)] “.“ (Zeilenumbruch)
 
-[Filmkategorie] “.“ (Zeilenumbruch)
+[Filmkategorie] “ “ [Altersangabe] “.“ (Zeilenumbruch)
 
 [Abstract] “.“ (Zeilenumbruch)
 
@@ -957,12 +957,16 @@ Das Layout der einzelnen Einträge sieht folgendermassen aus:
 “Ausleihe:“ (fett) [Signatur]
 #+end_example
 
+Die Alterangabe ist entweder "(ab 3)", "(ab 6)", "(ab 10)", "(ab 14)"
+oder "(ab 18)". Falls die Altersangabe eines Hörfilms nicht bekannt
+ist steht "(ab 18)".
+
 __Beispiel:__
 
 *Good Bye, Lenin.* \\
 Regie: Wolfgang Becker. Schauspieler: Daniel Brühl, Katrin Sass. \\
 Deutschland, 2002. \\
-Spielfilm. \\
+Spielfilm (ab 6). \\
 Kurz vor dem Fall der Mauer fällt die Mutter des 21jährigen Alex, eine
 selbstbewusste Bürgerin der DDR, nach einem Herzinfarkt ins Koma - und
 verschläft den Siegeszug des Kapitalismus. Als sie nach acht Monaten die
