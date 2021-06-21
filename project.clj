@@ -1,4 +1,4 @@
-(defproject catalog "0.28.0-SNAPSHOT"
+(defproject catalog "0.28.0"
   :description "A webapp to generate catalogs of the new items in the library"
   :url "https://github.com/sbsdev/catalog"
   :license {:name "GNU Affero General Public License"
