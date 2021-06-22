@@ -146,8 +146,8 @@ Quellenangaben, Signaturen etc. aufgesprochen werden.
 
 *** Impressum
 
-Das Impressum umfasst, wie bei den anderen Katalogen, Adresse, Telefon,
-Fax, E-Mail (Nutzerservice) und Internetadresse.
+Das Impressum umfasst, wie bei den anderen Katalogen, Adresse,
+Telefon, E-Mail (Nutzerservice) und Internetadresse.
 
 *** Ende
 
@@ -344,7 +344,6 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
 Grubenstrasse 12
 CH-8045 Zürich
 Fon +41 43 333 32 32
-Fax +41 43 333 32 33
 www.sbs.ch
 
 Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch
@@ -541,7 +540,6 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
 Grubenstrasse 12
 CH-8045 Zürich
 Fon +41 43 333 32 32
-Fax +41 43 333 32 33
 www.sbs.ch
 
 Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch
@@ -766,7 +764,6 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
 Grubenstrasse 12
 CH-8045 Zürich
 Fon +41 43 333 32 32
-Fax +41 43 333 32 33
 www.sbs.ch
 
 Abonnement, Ausleihe und Verkauf: nutzerservice@sbs.ch
@@ -1067,7 +1064,6 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
 Grubenstrasse 12
 CH-8045 Zürich
 Fon +41 43 333 32 32
-Fax +41 43 333 32 33
 www.sbs.ch
 nutzerservice@sbs.ch
 
@@ -1165,7 +1161,6 @@ SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte
 Grubenstrasse 12
 CH-8045 Zürich
 Fon +41 43 333 32 32
-Fax +41 43 333 32 33
 www.sbs.ch
 nutzerservice@sbs.ch
 
