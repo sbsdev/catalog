@@ -1084,16 +1084,17 @@ Unterteilungen, in folgender Reihenfolge gegliedert:
 Die Filmeinträge sind nach Filmkategorien / alphabetisch nach Titel
 gegliedert.
 
-Die einzelnen Titeleinträge sind wie im „Neu im Sortiment“, aber ohne
-Feld „Filmkategorie“ und sehen folgendermassen aus:
+Die einzelnen Titeleinträge sind wie im „Neu im Sortiment“ und sehen
+folgendermassen aus:
 
 1. Titel, Untertitel
 2. „Regie:“ Name Regisseur
 3. „Schauspieler:“ Namen der Hauptdarstellern
 4. Land, Erscheinungsjahr (des Originalfilms)
-5. Abstract
-6. Produzent
-7. „Ausleihe“: Signatur
+5. Filmkategorie, Alterangabe
+6. Abstract
+7. Produzent
+8. „Ausleihe“: Signatur
 
 ** Layout
 
@@ -1112,6 +1113,8 @@ Das Layout der Hörfilmeinträge sieht folgendermassen aus:
 “Regie:“ [Vorname Nachname Regisseur] “. Schauspieler:“ [Vornamen Nachnamen Hauptdarsteller] “.“ (Zeilenumbruch)
 
 [Land (Originalfilm)] “,“ [Erscheinungsjahr (Originalfilm)] “.“ (Zeilenumbruch)
+
+[Filmkategorie] “ “ [Altersangabe] “.“ (Zeilenumbruch)
 
 [Abstract] “.“ (Zeilenumbruch)
 
