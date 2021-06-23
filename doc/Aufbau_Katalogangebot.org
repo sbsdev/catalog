@@ -954,7 +954,7 @@ Das Layout der einzelnen Einträge sieht folgendermassen aus:
 “Ausleihe:“ (fett) [Signatur]
 #+end_example
 
-Die Alterangabe ist entweder "(ab 3)", "(ab 6)", "(ab 10)", "(ab 14)"
+Die Altersangabe ist entweder "(ab 3)", "(ab 6)", "(ab 10)", "(ab 14)"
 oder "(ab 18)". Falls die Altersangabe eines Hörfilms nicht bekannt
 ist steht "(ab 18)".
 
@@ -1091,7 +1091,7 @@ folgendermassen aus:
 2. „Regie:“ Name Regisseur
 3. „Schauspieler:“ Namen der Hauptdarstellern
 4. Land, Erscheinungsjahr (des Originalfilms)
-5. Filmkategorie, Alterangabe
+5. Filmkategorie, Altersangabe
 6. Abstract
 7. Produzent
 8. „Ausleihe“: Signatur
