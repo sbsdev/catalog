@@ -928,7 +928,7 @@
         [:fo:flow {:flow-name "xsl-region-body"}
          (cover-page [title "Filme mit Audiodeskription"] year)
          (toc subitems [fmt] 1 {:heading? true})
-         (mapcat #(genre-sexp (get subitems %) fmt % 1 {:show-genre? false}) (keys subitems))])]]))
+         (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems))])]]))
 
 (defmethod document-sexp :ludo
   [items fmt year _ _ _ {:keys [description]}]
