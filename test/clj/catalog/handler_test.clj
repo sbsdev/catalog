@@ -20,6 +20,10 @@
 (deftest test-app
   (testing "main route"
     (let [response ((app) (request :get "/"))]
+      (is (= 302 (:status response)))))
+
+  (testing "an issue"
+    (let [response ((app) (request :get "/2021/3"))]
       (is (= 200 (:status response)))))
 
   (testing "not-found route"
