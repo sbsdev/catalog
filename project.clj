@@ -1,4 +1,4 @@
-(defproject catalog "0.28.0-SNAPSHOT"
+(defproject ch.sbs/catalog "0.28.0-SNAPSHOT"
 
   :description "A webapp to generate catalogs of the new items in the library"
   :url "https://github.com/sbsdev/catalog"
@@ -6,16 +6,16 @@
             :url "https://www.gnu.org/licenses/agpl.html"}
 
   :dependencies [[ch.qos.logback/logback-classic "1.2.3"]
+                 [clj-commons/iapetos "0.1.11"]
                  [clojure.java-time "0.3.2"]
                  [com.google.protobuf/protobuf-java "3.8.0"]
                  [conman "0.9.1"]
                  [cprop "0.1.17"]
-                 [clj-commons/iapetos "0.1.11"]
-                 [expound "0.8.9"]
                  [endophile "0.2.1"]
+                 [expound "0.8.9"]
                  [hiccup "1.0.5"]
-                 [json-html "0.4.7"]
                  [io.prometheus/simpleclient_hotspot "0.10.0"]
+                 [json-html "0.4.7"]
                  [luminus-migrations "0.7.1"]
                  [luminus-transit "0.1.2"]
                  [luminus-undertow "0.1.11"]
@@ -43,7 +43,8 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.9.3"]
                  [ring/ring-defaults "0.3.2"]
-                 [selmer "1.12.40"]]
+                 [selmer "1.12.40"]
+                 [trptcolin/versioneer "0.2.0"]]
 
   :min-lein-version "2.0.0"
   

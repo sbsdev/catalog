@@ -2,7 +2,8 @@
   "Define the basic page structure and layout"
   (:require [catalog.issue :as issue]
             [hiccup.page :refer [html5 include-css include-js]]
-            [ring.util.http-response :as response]))
+            [ring.util.http-response :as response]
+            [trptcolin.versioneer.core :as version]))
 
 (defn glyphicon
   ([class]
@@ -74,6 +75,11 @@
     (html5
      [:head
       [:title "Catalog"]
+      (let [group "ch.sbs" artifact "catalog"]
+        [:meta {:name "application-version"
+                :content (format "%s (%s)"
+                                 (version/get-version group artifact)
+                                 (version/get-revision group artifact))}])
       (include-css "/css/bootstrap.min.css")
       (include-css "/css/bootstrap-markdown.min.css")]
      [:body
