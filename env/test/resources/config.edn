@@ -1,1 +1,2 @@
-{}
+{:dummy true} ; just add something to the env so that cprop.core/load-config doesn't
+              ; complain about an empty env when wunning in CI
