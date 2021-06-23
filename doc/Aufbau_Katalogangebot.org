@@ -724,7 +724,7 @@ Die einzelnen Filmeinträge sehen folgendermassen aus:
 2. „Regie:“ Name Regisseur
 3. „Schauspieler:“ Namen der Hauptdarstellern
 4. Land, Erscheinungsjahr (des Originalfilms)
-5. Filmkategorie (Spielfilm, Dokumentarfilm, Mundartfilm)
+5. Filmkategorie, Altersangabe
 6. Abstract
 7. Produzent
 8. „Ausleihe“: Signatur
