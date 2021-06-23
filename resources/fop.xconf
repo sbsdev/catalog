@@ -3,8 +3,6 @@
 <fop version="1.0">
 
   <accessibility>true</accessibility>
-  <!-- Base URL for resolving relative URLs -->
-  <base>.</base>
 
   <source-resolution>72</source-resolution>
   <target-resolution>72</target-resolution>
