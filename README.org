@@ -1,3 +1,5 @@
+[[https://github.com/sbsdev/catalog/actions/workflows/clojure.yml][https://github.com/sbsdev/catalog/actions/workflows/clojure.yml/badge.svg]]
+
 * Kati
 
 Kati is a web-based system to generate catalogs of new items in the
