@@ -5,7 +5,8 @@
   :license {:name "GNU Affero General Public License"
             :url "https://www.gnu.org/licenses/agpl.html"}
 
-  :dependencies [[ch.qos.logback/logback-classic "1.2.3"]
+  :dependencies [[babashka/fs "0.0.5"]
+                 [ch.qos.logback/logback-classic "1.2.3"]
                  [clj-commons/iapetos "0.1.11"]
                  [clojure.java-time "0.3.2"]
                  [com.google.protobuf/protobuf-java "3.8.0"]
@@ -34,7 +35,6 @@
                  [org.clojure/data.zip "0.1.2"]
                  [org.clojure/tools.cli "1.0.206"]
                  [org.clojure/tools.logging "1.1.0"]
-                 [org.tobereplaced/nio.file "0.4.0"]
                  [org.webjars.npm/bulma "0.9.2"]
                  [org.webjars.npm/material-icons "0.7.0"]
                  [org.webjars/webjars-locator "0.41"]

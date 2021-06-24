@@ -1,6 +1,7 @@
 (ns catalog.web.views
   "Views for web application"
-  (:require [catalog.db.core :as db]
+  (:require [babashka.fs :as fs]
+            [catalog.db.core :as db]
             [catalog.issue :as issue]
             [catalog.layout.common :refer [translations]]
             [catalog.layout.dtbook :as layout.dtbook]
@@ -15,7 +16,6 @@
             [hiccup.core :refer [h]]
             [hiccup.form :as form]
             [java-time :as time]
-            [org.tobereplaced.nio.file :as nio.file]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [ring.util.response :as response]
             [schema.core :as s]))
@@ -310,7 +310,7 @@
 (defn upload-confirm [request year issue fmt file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)]
-    (if-not (= (nio.file/size path) 0)
+    (if-not (= (fs/size path) 0)
       (let [items (vubis/read-file path)
             items-collated (vubis/collate-all-duplicate-items items)
             checker (s/checker validation/CatalogItem)
@@ -453,7 +453,7 @@
 (defn custom-confirm [request year issue query customer fmt file]
   (let [{tempfile :tempfile} file
         path (.getPath tempfile)]
-    (if-not (= (nio.file/size path) 0)
+    (if-not (= (fs/size path) 0)
       (let [items (vubis/read-file path)
             items-collated (vubis/collate-all-duplicate-items items)
             checker (s/checker validation/CatalogItem)
