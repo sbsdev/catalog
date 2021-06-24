@@ -37,11 +37,12 @@
    (download-button (download-url year issue file-name))])
 
 (defn home
-  ([]
+  ([request]
    (let [date (time/local-date)
          [year issue] (issue/issue-for date)]
-     (response/redirect (format "/%s/%s" year issue))))
-  ([year issue]
+     (response/redirect
+      (layout/path-for request :issue {:year year :issue issue}))))
+  ([request year issue]
    (layout/common
     year issue
     [:div.row
