@@ -54,7 +54,14 @@
   :target-path "target/%s/"
   :main ^:skip-aot catalog.core
 
-  :plugins [[lein-kibit "0.1.2"]] 
+  :plugins [[lein-kibit "0.1.2"]
+            [lein-codox "0.10.7"]]
+
+  :codox {:project {:name "Kati"}
+          :source-paths ["src"]
+          :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
+          :metadata {:doc/format :markdown}}
+
 
   :profiles
   {:uberjar {:omit-source true
