@@ -62,6 +62,15 @@
           :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
 
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  #_["deploy"]
+                  #_["uberjar"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
 
   :profiles
   {:uberjar {:omit-source true
