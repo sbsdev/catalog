@@ -31,6 +31,12 @@ The resulting jar can be run as follows:
 java -Dconf=dev-config.edn -jar catalog.jar
 #+END_SRC
 
+*** Release
+
+#+BEGIN_SRC shell
+lein release :minor
+#+END_SRC
+
 ** Documentation
 
 - [[https://sbsdev.github.io/catalog][API Docs]]
