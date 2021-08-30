@@ -81,10 +81,10 @@ again converted to a [[https://github.com/weavejester/hiccup][hiccup style]] dat
 Installation and configuration can be done using an [[https://github.com/sbsdev/sbs-infrastructure/blob/master/kati.yml][ansible
 installation script]] which automates the whole process.
 
-Mostly you will need [[http://wildfly.org/][Wildfly]], and some fonts.
+Mostly you will need Java, and some fonts.
 
 ** License
 
-Copyright © 2015-2020 Swiss Library for the Blind, Visually Impaired and Print Disabled.
+Copyright © 2015-2021 Swiss Library for the Blind, Visually Impaired and Print Disabled.
 
 Distributed under the [[http://www.gnu.org/licenses/agpl-3.0.html][GNU Affero General Public License]]. See the file LICENSE.
