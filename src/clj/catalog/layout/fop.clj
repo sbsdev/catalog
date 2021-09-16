@@ -542,11 +542,9 @@
     (block (style :h2 {:letter-spacing "150%"}) "Hinweis")
     (block "Ausleihbar sind die Titel in diesem Verzeichnis")
     (block {:space-after "1em"} "nur in der Schriftgrösse Tiresias 17 Punkt.")
-    (block "Sämtliche Bücher sind auch in der Tiresias-Schrift")
-    (block "17, 20 und 25 Punkt käuflich zu erwerben. Geben Sie")
-    (block "bitte bei einer Kauf-Bestellung den Autor und den")
-    (block "Titel des gewünschten Buchs sowie die Punktgrösse")
-    (block "mit an."))])
+    (block "Käuflich erwerben können Sie alle Bücher mit einer Verkaufspreisangabe in den drei Schriftgrössen 17,
+    20 und 25 Punkt Tiresias. Geben Sie bitte bei einer Kauf-Bestellung den Autor und den Titel des gewünschten
+    Buchs sowie die Punktgrösse mit an."))])
 
 (defn- coverpage-recto-background
   "Return a hiccup style sexp for the recto background for given
