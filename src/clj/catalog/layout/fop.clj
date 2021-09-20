@@ -828,19 +828,20 @@
         (header :recto)
         (header :verso)
 
-        (let [subitems (-> items
-                           (get fmt)
-                           (cond->
-                               (not (string/blank? editorial)) (assoc :editorial editorial)
-                               (not (string/blank? recommendations)) (assoc :recommendation recommendations)))]
-          (if (seq subitems)
-            [:fo:flow {:flow-name "xsl-region-body"}
+        (let [subitems (or
+                        (-> items
+                            (get fmt)
+                            (cond->
+                                (not (string/blank? editorial)) (assoc :editorial editorial)
+                                (not (string/blank? recommendations)) (assoc :recommendation recommendations)))
+                        ;; if there are no items and neither an editorial nor any recommendations
+                        ;; then default to an empty map. This will make sure at least the title of
+                        ;; the toc is printed and the fop will be valid.
+                        {})]
+          [:fo:flow {:flow-name "xsl-region-body"}
              (toc subitems [fmt] 2 {:heading? true})
              (realize-lazy-seqs
-              (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))]
-            ;; hm, we have neither an editorial, recommendations nor any items
-            ;; just add some dummy block to make the fop valid
-            [:fo:flow {:flow-name "xsl-region-body"} (block " ")]))]
+              (mapcat #(genre-sexp (get subitems %) fmt % 1 {}) (keys subitems)))])]
        (coverpage-verso title issue fmt)])))
 
 (defmethod document-sexp :hörbuch
