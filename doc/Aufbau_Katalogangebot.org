@@ -465,9 +465,10 @@ Auf der Innenseite des Deckblatts steht in Tiresias folgender Hinweis:
 Ausleihbar sind die Titel in diesem Verzeichnis nur in der
 Schriftgrösse Tiresias 17 Punkt.
 
-Sämtliche Bücher sind auch in der Tiresias-Schrift 17, 20 und 25 Punkt
-käuflich zu erwerben. Geben Sie bitte bei einer Kauf-Bestellung den
-Autor und den Titel des gewünschten Buchs sowie die Punktgrösse mit an.
+Käuflich erwerben können Sie alle Bücher mit einer Verkaufspreisangabe
+in den drei Schriftgrössen 17, 20 und 25 Punkt Tiresias. Geben Sie
+bitte bei einer Kauf-Bestellung den Autor und den Titel des
+gewünschten Buchs sowie die Punktgrösse mit an.
 #+end_example
 
 *** Inhaltsverzeichnis
