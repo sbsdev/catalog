@@ -354,7 +354,8 @@
                         :data-hidden-buttons "cmdImage cmdCode"
                         :data-resize "vertical" :rows 30} "editorial" editorial)]
       [:div.form-group
-       (form/label "recommended" "Buchtipps:")
+       ;; all formats except for braille have only one recommendation
+       (form/label "recommended" (if (#{"braille"} fmt) "Buchtipps:" "Buchtipp:"))
        (form/text-area {:class "form-control" :data-provide "markdown"
                         :data-hidden-buttons "cmdImage cmdCode"
                         :data-resize "vertical" :rows 30} "recommended" recommendation)]
