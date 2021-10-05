@@ -6,10 +6,11 @@
 
 * Allgemeines zum Katalogangebot
 
-Ab 2016 besteht das Katalogangebot der SBS aus vier physischen, drei
+Seit 2016 besteht das Katalogangebot der SBS aus vier physischen, drei
 digitalen und einem Katalog nach Mass. Ein Katalog (Neu im Sortiment)
-wird physisch und digital zugleich angeboten, weshalb das neue Angebot
-insgesamt sechs „standardisierte“ Kataloge umfasst.
+wird physisch und digital zugleich angeboten. Seit 2018 gibt es
+zusätzlich den digitalen Gesamtkatalog „Print & Braille“. Insgesamt
+umfasst das Katalogangebot somit sieben „standardisierte“ Kataloge.
 
 ** Genres-Struktur
 
@@ -42,14 +43,13 @@ Grass, Günter: ...\\
 Grosis Märchen.\\
 Horvath, Ödon von: ...
 
-* Neu als Hörbuch
+* Neu als Hörbuch (Umstellung per Ausgabe 6/2021)
 
 ** Katalogtyp
 
 Zweimonatlicher Katalognachtrag aller neuen Hörbücher mit
-Inhaltsverzeichnis, Editorial (Infos der SBS, nur falls es solche Infos
-hat) und Buchtipps („Inspirationsteil“ über Bücher, Autoren usw.), im
-Audio-Format.
+Inhaltsverzeichnis, Editorial (Infos der SBS, nur falls es solche
+Infos hat) und Buchtipp, im Audio-Format.
 
 ** Zielgruppe
 
@@ -63,20 +63,17 @@ also ca. 560 Personen)
 3. Struktur dieser Ausgabe
 4. Inhaltsverzeichnis
 5. Editorial
-6. Neue Hörbücher (/Bucheinträge/)
-7. Buchtipps
+6. Buchtipp
+7. Neue Hörbücher (/Bucheinträge/)
 8. Impressum
 9. Ende („Ende von Neu als Hörbuch Nr. X, 201X“)
 
-Der Katalog wird aufgesprochen. Die Struktur des Aufgesprochenen richtet
-sich nach den „Ansagen für Zeitschriften“, die für Hörzeitschriften,
-Abstimmungsunterlagen etc. gelten. Deshalb unterscheidet sich die
-Gliederung von Neu als Hörbuch von den anderen physischen Katalogen in
-den obigen Strukturpunkten 2, 3 und 9. Da einige Kunden die
-Navigationsfunktion nicht nutzen (können) und den Katalog daher von
-vorne nach hinten hören, kommen die Buchtipps nach (und nicht vor) den
-Bucheinträgen. Die einzelnen Kapitel werden bis zur 3. Strukturebene
-nummeriert.
+Der Katalog wird aufgesprochen. Die Struktur des Aufgesprochenen
+richtet sich nach den „Ansagen für Zeitschriften“, die für
+Hörzeitschriften, Abstimmungsunterlagen etc. gelten. Deshalb
+unterscheidet sich die Gliederung von Neu als Hörbuch von den anderen
+physischen Katalogen in den obigen Strukturpunkten 2, 3 und 9. Die
+einzelnen Kapitel werden bis zur 3. Strukturebene nummeriert.
 
 Kati produziert die obigen Punkte 4. bis 7.; die Ansage mit den
 restlichen Punkten wird nach Ansagen-Schema vom Hörbuchstudio erstellt.
@@ -103,10 +100,23 @@ Es ist bis zur 3. Ebene nummeriert und wird ohne Seitenangaben gelesen.
 
 *** Editorial
 
-Das Editorial beinhaltet die SBS-Neuigkeiten (nur falls vorhanden) und
-einen Überblick mit rotem Faden zu den Buchtipps. Das Editorial beginnt
-mit „Liebe Leserin, lieber Leser“ und endet mit einem jeweils passenden
-Satz, wie „Wir wünschen Ihnen eine anregende Lektüre“ und „Ihre SBS“.
+Das Editorial beinhaltet die SBS-Neuigkeiten (nur falls vorhanden).
+Das Editorial beginnt mit „Liebe Leserin, lieber Leser“ und endet mit
+einem jeweils passenden Satz, wie „Wir wünschen Ihnen eine anregende
+Lektüre“ und „Ihre SBS“.
+
+*** Buchtipp
+
+Der Teil „Buchtipp“ enthält 1 Buchbesprechung. Der Buchtipp, der einen
+Bezug zu den Neuheiten hat, wird folgendermassen vorgestellt:
+
+- Kommentar / Würdigung zum Buch: ca. 4-5 Minuten
+- Audiobeispiele (nur in Ausnahmefällen, wenn tatsächlich relevant):
+  ca. 4-5 Minuten
+
+Der Buchtipp sollte nicht zu lang sein, da einige Kunden die
+Navigationsfunktion nicht nutzen (können) und den Katalog daher von
+vorne nach hinten hören.
 
 *** Neue Hörbücher
 
@@ -128,21 +138,6 @@ Die einzelnen Bucheinträge werden folgendermassen vorgelesen:
    sich um ein kommerzielles Hörbuch handelt, zusätzlich: „Hörbuch aus
    dem Handel“
 9. Signaturen (zuerst Ausleihe, dann Verkauf mit Preisangabe in Franken)
-
-*** Buchtipps
-
-Der Teil „Buchtipps“ enthält 5 Buchbesprechungen. Wenn es thematisch
-sinnvoll / notwendig ist, kann die Anzahl besprochener Bücher von 4 bis
-maximal 8 variieren, aber in der Regel sollten 5 Bücher besprochen
-werden. Die einzelnen Bücher, die einen Bezug zu den Neuheiten haben,
-werden folgendermassen vorgestellt:
-
-- Kommentar / Würdigung zum Buch: ca. 8 Minuten
-- Audiobeispiele / Zusammenschnitt von Hörproben: ca. 6-8 Minuten
-
-Als letztes Unterkapitel der Buchtipps, nach den 5 Büchern, kommt als 6.
-Unterkapitel die „Liste der vorgestellten Bücher“, in der
-Quellenangaben, Signaturen etc. aufgesprochen werden.
 
 *** Impressum
 
@@ -274,7 +269,7 @@ Die einzelnen Bucheinträge sehen folgendermassen aus:
 Die „Print & Braille“-Titel werden direkt nach den Kinder- und
 Jugendbüchern und vor den Braille-Musiknoten angezeigt.
 
-In diese neue Kategorie sollen nicht nur die Titel mit TB-Signaturen,
+In dieser Kategorie erscheinen nicht nur die Titel mit TB-Signaturen,
 sondern alle Titel, welche die Print&Braille-Eigenschaft haben (Feld
 492).
 
@@ -1294,28 +1289,6 @@ die im beiliegenden Bilderbuch markierten Bildausschnitte, BG 27548 \\
 Legende für die im beiliegenden Bilderbuch markierten Bildausschnitte,
 PS15042. Vollschrift, 2 Bd., Text, Bildbeschreibungen und Legende für
 die im beiliegenden Bilderbuch markierten Bildausschnitte, PS15043
-
-* Taktile Kinderbücher der SBS
-
-** Katalogtyp
-
-Dieser Katalog wird nicht mehr produziert. Er wurde durch den Katalog
-[[#print-braille-bücher][Print & Braille]] ersetzt.
-
-** Gliederung und Inhalt
-
-Die einzelnen Bucheinträge werden alphabetisch nach Autor (Titel)
-geordnet und enthalten folgende Angaben:
-
-1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
-   ohne „u.a.“)
-2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
-   verschiedenen Orten innerhalb des Titelbereichs sein)
-3. Verlag, Erscheinungsjahr
-4. Abstract
-5. Produzent (Kürzel), Stadt
-6. Schriftart und Bemerkungen, Bandangabe, Begleitmaterialien,
-   Signaturen
 
 *  Katalog nach Mass
 
