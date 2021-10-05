@@ -859,7 +859,7 @@
                          (#(apply dissoc % (remove #{fmt} (keys %))))
                          (cond->
                              (not (string/blank? editorial)) (assoc :editorial editorial)
-                             (not (string/blank? recommendations)) (assoc :recommendations recommendations)))
+                             (not (string/blank? recommendations)) (assoc :recommendation recommendations)))
             path-to-numbers (layout/path-to-number subitems)]
         [:fo:flow {:flow-name "xsl-region-body"}
          ;; Cover page
