@@ -40,15 +40,15 @@
               (layout/section-numbers (get path-to-numbers path))
               (layout/translations (last path)))]
      (cond
-       ;; handle the special case where the editorial or the recommendations are passed in the tree
-       (#{:editorial :recommendations} (last path)) (md-to-obi items path path-to-numbers)
+       ;; handle the special case where the editorial or the recommendation is passed in the tree
+       (#{:editorial :recommendation} (last path)) (md-to-obi items path path-to-numbers)
        ;; handle a list of entries
        (vector? items) (map #(entry-sexp (inc level) %) items)
        :else (map #(level-sexp (get items %) (conj path %) path-to-numbers) (keys items)))]))
 
 (defn document
   "Return a hiccup style sexp of DTBook XML for a catalog"
-  [items year issue editorial recommendations &
+  [items year issue editorial recommendation &
                 {:keys [creator date language]
                  :or {creator "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
                       date (time/local-date)
@@ -62,7 +62,7 @@
                      ;; the sorted map.
                      (#(apply dissoc % (remove #{:hörbuch} (keys %))))
                      (assoc :editorial editorial
-                            :recommendations recommendations))
+                            :recommendation recommendation))
         path-to-numbers (layout/path-to-number subitems)]
     [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
               :version "2005-3" :xml:lang language}
@@ -104,7 +104,7 @@
 (defn dtbook
   "Return a catalog in the form of DTBook XML. This will be imported
   into obi so the narrator has a structure when reading the catalog."
-  [items year issue editorial recommendations]
-  (-> (document items year issue editorial recommendations)
+  [items year issue editorial recommendation]
+  (-> (document items year issue editorial recommendation)
       xml/sexp-as-element
       (xml/indent-str :doctype doctype)))
