@@ -47,15 +47,15 @@
                  [trptcolin/versioneer "0.2.0"]]
 
   :min-lein-version "2.0.0"
-  
+
   :source-paths ["src/clj"]
   :test-paths ["test/clj"]
   :resource-paths ["resources"]
   :target-path "target/%s/"
   :main ^:skip-aot catalog.core
 
-  :plugins [[lein-kibit "0.1.2"]
-            [lein-codox "0.10.7"]]
+  :plugins [[lein-kibit "0.1.8"]
+            [lein-codox "0.10.8"]]
 
   :codox {:project {:name "Kati"}
           :source-paths ["src"]
@@ -87,9 +87,9 @@
                                  [prone "2021-04-23"]
                                  [ring/ring-devel "1.9.4"]
                                  [ring/ring-mock "0.4.0"]]
-                  :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
-                                 [jonase/eastwood "0.3.5"]] 
-                  
+                  :plugins      [[com.jakemccrary/lein-test-refresh "0.25.0"]
+                                 [jonase/eastwood "0.9.9"]]
+
                   :source-paths ["env/dev/clj" ]
                   :resource-paths ["env/dev/resources"]
                   :repl-options {:init-ns user
