@@ -22,9 +22,10 @@
    :bücher-über-spiel])
 (def subgenres [;; Belletristik
                 :action-und-thriller :beziehungsromane :fantasy-science-fiction
-                :gesellschaftsromane :historische-romane :hörspiele :krimis
+                :gesellschaftsromane :glaube-und-philosophie
+                :historische-romane :hörspiele :krimis
                 :lebensgeschichten-und-schicksale :literarische-gattungen
-                :mundart-heimat-natur :glaube-und-philosophie
+                :mundart-heimat-natur
                 ;; Sachbücher
                 :biografien :freizeit-haus-garten
                 :geschichte-und-gegenwart :kunst-kultur-medien
