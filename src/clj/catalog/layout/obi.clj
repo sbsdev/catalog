@@ -5,8 +5,8 @@
   later in the tool chain."
   (:require [catalog.layout.common :as layout]
             [clojure.data.xml :as xml]
-            [clojure.string :as string]
-            [java-time :as time]))
+            [java-time :as time]
+            [medley.core :refer [assoc-some]]))
 
 (defn- heading-keyword [level]
   (keyword (str "h" level)))
@@ -62,9 +62,10 @@
                      ;; cannot use select-keys as we need to retain
                      ;; the sorted map.
                      (#(apply dissoc % (remove #{:hörbuch} (keys %))))
-                     (cond->
-                         (not (string/blank? editorial)) (assoc :editorial editorial)
-                         (not (string/blank? recommendation)) (assoc :recommendation recommendation)))
+                     ;; add editorial and recommendation unless they are blank
+                     (assoc-some
+                      :editorial (layout/non-blank-string editorial)
+                      :recommendation (layout/non-blank-string recommendation)))
         path-to-numbers (layout/path-to-number subitems)]
     [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
               :version "2005-3" :xml:lang language}

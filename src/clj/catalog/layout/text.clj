@@ -5,7 +5,8 @@
             [clojure.string :as string]
             [clojure.walk :as walk]
             [endophile.core :as endophile]
-            [java-time :as time]))
+            [java-time :as time]
+            [medley.core :refer [assoc-some]]))
 
 (def ^:private dos-newline "\r\n")
 (def ^:private double-newline (str dos-newline dos-newline))
@@ -236,9 +237,10 @@
 (defmethod document-str :standard
   [items {:keys [year issue editorial recommendation]}]
   (let [title (layout/translations :catalog-all)
-        items (cond-> items
-                (not (string/blank? editorial)) (assoc :editorial editorial)
-                (not (string/blank? recommendation)) (assoc :recommendation recommendation))
+        ;; add editorial and recommendation unless they are blank
+        items (assoc-some items
+               :editorial (layout/non-blank-string editorial)
+               :recommendation (layout/non-blank-string recommendation))
         path-to-numbers (layout/path-to-number items)]
     (string/join
      double-newline

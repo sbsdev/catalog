@@ -9,7 +9,8 @@
             [clojure.walk :as walk]
             [endophile.core :as endophile]
             [iapetos.collector.fn :as prometheus]
-            [java-time :as time])
+            [java-time :as time]
+            [medley.core :refer [assoc-some]])
   (:import java.io.StringReader
            javax.xml.transform.sax.SAXResult
            javax.xml.transform.stream.StreamSource
@@ -829,10 +830,11 @@
         (header :verso)
 
         (let [subitems (-> items
-                            (get fmt)
-                            (cond->
-                                (not (string/blank? editorial)) (assoc :editorial editorial)
-                                (not (string/blank? recommendations)) (assoc :recommendation recommendations)))]
+                           (get fmt)
+                           ;; add editorial and recommendation unless they are blank
+                           (assoc-some
+                            :editorial (layout/non-blank-string editorial)
+                            :recommendation (layout/non-blank-string recommendations)))]
           [:fo:flow {:flow-name "xsl-region-body"}
            ;; if there are no items then at least the title of the toc is printed so the fop is valid.
            (toc (or subitems {}) [fmt] 2 {:heading? true})
@@ -857,9 +859,10 @@
                          ;; cannot use select-keys as we need to retain
                          ;; the sorted map.
                          (#(apply dissoc % (remove #{fmt} (keys %))))
-                         (cond->
-                             (not (string/blank? editorial)) (assoc :editorial editorial)
-                             (not (string/blank? recommendations)) (assoc :recommendation recommendations)))
+                         ;; add editorial and recommendation unless they are blank
+                         (assoc-some
+                          :editorial (layout/non-blank-string editorial)
+                          :recommendation (layout/non-blank-string recommendations)))
             path-to-numbers (layout/path-to-number subitems)]
         [:fo:flow {:flow-name "xsl-region-body"}
          ;; Cover page

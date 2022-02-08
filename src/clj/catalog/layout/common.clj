@@ -193,6 +193,11 @@
       (safe-blank? s)
       false))
 
+(defn non-blank-string
+  "If `s` is a blank string return nil. Otherwise just return `s`"
+  [s]
+  (when-not (and (string? s) (string/blank? s)) s))
+
 (defn- braille-signature [[signature grade volumes double-spaced? accompanying-material :as item]]
   (when item
     (->>
