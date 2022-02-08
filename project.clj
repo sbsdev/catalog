@@ -1,4 +1,4 @@
-(defproject ch.sbs/catalog "0.37.0"
+(defproject ch.sbs/catalog "0.38.0-SNAPSHOT"
 
   :description "A webapp to generate catalogs of the new items in the library"
   :url "https://github.com/sbsdev/catalog"
