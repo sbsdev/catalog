@@ -833,8 +833,8 @@
                            (get fmt)
                            ;; add editorial and recommendation unless they are blank
                            (assoc-some
-                            :editorial (layout/non-blank-string editorial)
-                            :recommendation (layout/non-blank-string recommendations)))]
+                            :editorial (layout/empty-string-to-nil editorial)
+                            :recommendation (layout/empty-string-to-nil recommendations)))]
           [:fo:flow {:flow-name "xsl-region-body"}
            ;; if there are no items then at least the title of the toc is printed so the fop is valid.
            (toc (or subitems {}) [fmt] 2 {:heading? true})
@@ -861,8 +861,8 @@
                          (#(apply dissoc % (remove #{fmt} (keys %))))
                          ;; add editorial and recommendation unless they are blank
                          (assoc-some
-                          :editorial (layout/non-blank-string editorial)
-                          :recommendation (layout/non-blank-string recommendations)))
+                          :editorial (layout/empty-string-to-nil editorial)
+                          :recommendation (layout/empty-string-to-nil recommendations)))
             path-to-numbers (layout/path-to-number subitems)]
         [:fo:flow {:flow-name "xsl-region-body"}
          ;; Cover page

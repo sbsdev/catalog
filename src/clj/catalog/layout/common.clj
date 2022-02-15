@@ -193,7 +193,7 @@
       (safe-blank? s)
       false))
 
-(defn non-blank-string
+(defn empty-string-to-nil
   "If `s` is a blank string return nil. Otherwise just return `s`"
   [s]
   (when-not (and (string? s) (string/blank? s)) s))

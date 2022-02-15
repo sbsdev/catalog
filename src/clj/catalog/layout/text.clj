@@ -239,8 +239,8 @@
   (let [title (layout/translations :catalog-all)
         ;; add editorial and recommendation unless they are blank
         items (assoc-some items
-               :editorial (layout/non-blank-string editorial)
-               :recommendation (layout/non-blank-string recommendation))
+               :editorial (layout/empty-string-to-nil editorial)
+               :recommendation (layout/empty-string-to-nil recommendation))
         path-to-numbers (layout/path-to-number items)]
     (string/join
      double-newline

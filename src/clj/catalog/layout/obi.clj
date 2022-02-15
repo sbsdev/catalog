@@ -64,8 +64,8 @@
                      (#(apply dissoc % (remove #{:hörbuch} (keys %))))
                      ;; add editorial and recommendation unless they are blank
                      (assoc-some
-                      :editorial (layout/non-blank-string editorial)
-                      :recommendation (layout/non-blank-string recommendation)))
+                      :editorial (layout/empty-string-to-nil editorial)
+                      :recommendation (layout/empty-string-to-nil recommendation)))
         path-to-numbers (layout/path-to-number subitems)]
     [:dtbook {:xmlns "http://www.daisy.org/z3986/2005/dtbook/"
               :version "2005-3" :xml:lang language}
