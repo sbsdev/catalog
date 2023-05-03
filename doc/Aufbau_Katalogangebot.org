@@ -1,6 +1,6 @@
 #+options: toc:t H:4
-#+title: SBS-Katalogangebot ab 1.1.2016
-#+date: <2020-12-03 Do>
+#+title: SBS-Katalogangebot ab 31.8.2023
+#+date: <2023-04-28 Fr>
 #+language: de
 #+LANG: de-CH
 
@@ -680,6 +680,11 @@ erstellt. Zusammen ergeben sie folgende Inhaltverzeichnis-Struktur:
   - Sachbücher
   - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
   - Bücher in Fremdsprachen
+- Neue Text-Hörbücher
+  - Belletristik
+  - Sachbücher
+  - Kinder- und Jugendbücher (unterteilt nach Genregruppen)
+  - Bücher in Fremdsprachen
 - Neue Hörfilme
 - Neue Spiele
 
@@ -708,6 +713,26 @@ Die einzelnen Bucheinträge sehen folgendermassen aus:
 4. Genre
 5. Abstract
 6. „Ausleihe“: Signatur
+
+**** „Neue Text-Hörbücher“
+
+Das Inhaltsverzeichnis sieht identisch wie jenes E-Books, bzw. der
+Grossdruckbücher aus. Die Titel werden nach Literaturtyp /
+alphabetisch nach Autor (Titel) geordnet. Die Kinder- und Jugendbücher
+werden zusätzlich nach Genregruppe (d.h. altersbezogen) geordnet.
+
+Die einzelnen Bucheinträge sehen folgendermassen aus:
+
+1. Autor: Nachname, Vorname (nur 1 Name, selbst wenn es mehrere sind;
+   ohne „u.a.“)
+2. Titelbereich: Titel, Untertitel, Bandangabe (die Bandangabe kann an
+   verschiedenen Orten innerhalb des Titelbereichs sein)
+3. Verlag, Erscheinungsjahr
+4. Genre
+5. Abstract
+6. Spieldauer in Minuten
+7. „gelesen von:“ Sprecher (falls es mehrere sind: mit „u.a.“)
+8. „Ausleihe“: Signatur
 
 **** „Neue Hörfilme“
 
@@ -916,6 +941,16 @@ Das Layout der einzelnen Einträge sieht folgendermassen aus:
 “Verkauf:“ (fett) “CHF“ [Preisangabe] “.“ [Schriftart und Bemerkungen] “,“ [Anzahl Bände] „Bd.,“ [Begleitmaterialien] “,“ [Signatur]
 #+end_example
 
+__Beispiel:__
+
+*Rodin, Al: Das kleine Echo*. - NordSüd Verlag, 2022. \\
+Genre: Bücher (bis 6). \\
+Echo ist ein schüchternes, kleines Wesen. […] Als Max in Gefahr gerät, fasst sich Echo ein Herz und ruft in voller Lautstärke ihre ersten eigenen Worte. \\
+SBS, Zürich, Rucksackbuch Nr. 614 \\
+*Ausleihe:* Vollschrift, 1 Bd., Zeilentreue Schwarzschriftbeilage, BK 4725 \\
+*Verkauf:* CHF 21.90. Kurzschrift, 1 Bd., Schwarzschriftbeilage, PS18155. \\
+Vollschrift, 1 Bd., Zeilentreue Schwarzschriftbeilage, PS18156. Weitzeilige Vollschrift, 1 Bd., Schwarzschriftbeilage, PS18157
+
 *** Grossdruck-Einträge
 
 Die Katalogeinträge sind gleich aufgebaut wie in Neu in Grossdruck.
@@ -929,6 +964,39 @@ wird angezeigt, ob ein E-Book Bilder enthält:
 #+begin_example
 “Ausleihe:“ (fett) [Signatur] “, mit Bildern“ (falls vorhanden)
 #+end_example
+
+__Beispiel:_
+
+*Boehme, Julia: Conni und die Ponyspiele*. - Carlsen, 2021. \\
+Genre: Freunde, Familie (ab 6). \\
+Ein echtes Ponyturnier! [...] Und machen eine unglaubliche Entdeckung! \\
+*Ausleihe:* ED 8436, mit Bildern
+
+*** Text-Hörbuch-Einträge
+Die Einträge entsprechen jenen für E-Books, sind aber um
+Hörbucheigenschaften erweitert. Zusätzlich zu den Eigenschaften der
+E-Books, erscheinen zwischen Abstract und Ausleihsignatur die
+Spieldauer und Sprecherangaben (wie bei den Hörbüchern).
+
+#+begin_example
+[Nachname Autor (fett)] “,“ [Vorname Autor (fett)] “:“ [Titel(fett)] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
+
+“Genre:“ [Genrename] “.“ (Zeilenumbruch)
+
+[Abstract] “.“ (Zeilenumbruch)
+
+[Spieldauer] “Min., gelesen von:“ [Vorname Nachname Sprecher (in dieser Reihenfolge)] „u.a.“ (nur falls es mehrere Sprecher sind) “.“ (Zeilenumbruch)
+
+“Ausleihe:“ (fett) [Signatur] “, mit Bildern“ (falls vorhanden)
+#+end_example
+
+__Beispiel:_
+
+*Kessler, Liz: Plötzlich unsichtbar*. – Fischer KJB, 2015. \\
+Genre: Fantasie (ab 10). \\
+Jess hält sich für ein ganz normales Mädchen. [...]Ist Jessica jetzt eine Superheldin? Und kann sie ihren Freunden helfen, als diese in Gefahr geraten? \\
+383 Min., gelesen von: Sengebusch, Ute. \\
+*Ausleihe:* TH 7, mit Bildern
 
 *** Hörfilm-Einträge
 
@@ -1290,7 +1358,7 @@ Legende für die im beiliegenden Bilderbuch markierten Bildausschnitte,
 PS15042. Vollschrift, 2 Bd., Text, Bildbeschreibungen und Legende für
 die im beiliegenden Bilderbuch markierten Bildausschnitte, PS15043
 
-*  Katalog nach Mass
+* Katalog nach Mass
 
 ** Katalogtyp
 
