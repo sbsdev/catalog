@@ -151,6 +151,17 @@
    (when (or product-number price-on-request?)
      (str "Verkauf: " (when product-number (str product-number ", ")) price))))
 
+(defmethod entry-str :text-hörbuch
+  [{:keys [genre-text description duration narrators producer-brief
+           library-signature accompanying-material] :as item}]
+  (join
+   (entry-heading-str item)
+   (genre-str genre-text)
+   (description-str description)
+   (str (wrap duration "" " Min., " false) (layout/render-narrators narrators))
+   (when library-signature
+     (str "Ausleihe: " library-signature (wrap accompanying-material ", " "" false)))))
+
 (defmethod entry-str :grossdruck
   [{:keys [genre-text description library-signature volumes
            product-number price price-on-request?] :as item}]

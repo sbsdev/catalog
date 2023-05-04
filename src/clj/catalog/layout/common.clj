@@ -6,7 +6,7 @@
             [java-time :as time])
   (:import java.util.Locale))
 
-(def formats [:hörbuch :braille :grossdruck :e-book :hörfilm :ludo])
+(def formats [:hörbuch :braille :grossdruck :e-book :text-hörbuch :hörfilm :ludo])
 (def genres
   "All possible genres of an item. Note that the order matters as it is
   used to sort the items, see [[catalog.vubis/sort-order]]."
@@ -56,6 +56,7 @@
                              :catalog-custom "Katalog nach Mass"
                              ;; Names of formats
                              :hörbuch "Neue Hörbücher"
+                             :text-hörbuch "Neue Text-Hörbücher"
                              :braille "Neue Braillebücher"
                              :grossdruck "Neue Grossdruckbücher"
                              :e-book "Neue E-Books"

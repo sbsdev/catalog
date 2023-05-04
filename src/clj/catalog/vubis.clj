@@ -130,7 +130,8 @@
    "GD" :grossdruck
    "LU" :ludo
    "MN" :musiknoten
-   "TB" :taktilesbuch})
+   "TB" :taktilesbuch
+   "TH" :text-hörbuch})
 
 ;; FIXME: The following data changes once in a while (probably once a
 ;; year), so it would make sense to store it somewhere where the users
@@ -401,6 +402,11 @@
                     :produced-commercially? (some? produced-commercially?)
                     :duration (parse-int duration)
                     :narrators (not-empty (map normalize-name narrators))))
+      :text-hörbuch (-> item
+                        (assoc-some
+                         :duration (parse-int duration)
+                         :narrators (not-empty (map normalize-name narrators))
+                         :accompanying-material (get-accompanying-material raw-item)))
       :braille (let [rucksackbuch-number (and series-title
                                               (re-find #"^Rucksackbuch" series-title)
                                               (parse-int series-volume))

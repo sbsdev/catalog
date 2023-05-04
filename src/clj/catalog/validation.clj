@@ -27,7 +27,7 @@
 
 (def BrailleGrade (s/enum :kurzschrift :vollschrift :schwarzschrift))
 
-(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}|LUD \d{1,3}|BK \d{3}|VI \d{1,3}|TB \d{1,3}")
+(def SignatureRE #"(DS |GDB |BG |ED |BM |BK |PS|DY|GD)\d{4,6}|LUD \d{1,3}|BK \d{3}|VI \d{1,3}|TB \d{1,3}|TH \d{1,6}")
 
 (def SignatureTuple
   [(s/one SignatureRE "signature")
@@ -72,6 +72,18 @@
   :duration s/Int
   :narrators [s/Str]
   :produced-commercially? s/Bool})
+
+(abstract-map/extend-schema
+ TextHörbuch CatalogItem [:text-hörbuch]
+ {:source-publisher s/Str
+  :source-date s/Inst
+  :genre Genre
+  :sub-genre SubGenre
+  :genre-text s/Str
+  :producer-brief ProducerBrief
+  :duration s/Int
+  :narrators [s/Str]
+  (s/optional-key :accompanying-material) s/Str})
 
 (abstract-map/extend-schema
  Braille CatalogItem [:braille]

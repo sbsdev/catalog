@@ -307,6 +307,20 @@
    (when (or product-number price-on-request?)
      (block {:keep-with-previous "always"} (bold "Verkauf:") " " product-number ", " price))))
 
+(defmethod entry-sexp :text-hörbuch
+  [{:keys [genre-text description duration narrators producer-brief
+           library-signature accompanying-material] :as item}
+   {:keys [show-genre?] :or {show-genre? true}}]
+  (list-item
+   (entry-heading-sexp item)
+   (when show-genre?
+     (block (wrap genre-text "Genre: ")))
+   (block (wrap description))
+   (block (wrap duration "" " Min., " false) (render-narrators narrators))
+   (when library-signature
+     (block {:keep-with-previous "always"}
+            (bold "Ausleihe:") " " library-signature (wrap accompanying-material ", " "" false)))))
+
 (defmethod entry-sexp :braille
   [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
            library-signature] :as item}

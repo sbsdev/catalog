@@ -143,6 +143,17 @@
    (when (or product-number price-on-request?)
      [:p {:brl:class "ver"} "Verkauf: " product-number ", " price])])
 
+(defmethod entry-sexp :text-hörbuch
+  [{:keys [genre-text description duration narrators producer-brief
+           library-signature accompanying-material] :as item}]
+  [:div {:brl:class "ps"}
+   (entry-heading-sexp item)
+   (genre-sexp genre-text)
+   (description-sexp description)
+   [:p {:brl:class "duration"} (wrap duration "" " Min., " false) (layout/render-narrators narrators)]
+   (when library-signature
+     [:p {:brl:class "aus"} "Ausleihe: " library-signature (wrap accompanying-material ", " "" false)])])
+
 (defmethod entry-sexp :grossdruck
   [{:keys [genre-text description library-signature volumes
            product-number price price-on-request?] :as item}]
