@@ -590,7 +590,7 @@
 
 (defn get-update-keys-neu-als-hörbuch
   "Return the update keys for a given item (see [[get-update-keys]]).
-  For the neu-als-hörbuch all foreign language books need to ge
+  For the neu-als-hörbuch all foreign language books need to be
   grouped under `:bücher-in-fremdsprachen`, even kids books, so we
   need to group not only by `format`, `genre` and `sub-genre` but also
   by `language`."
