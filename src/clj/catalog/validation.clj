@@ -52,23 +52,23 @@
     (s/optional-key :subtitles) [s/Str]
     (s/optional-key :name-of-part) s/Str
     (s/optional-key :source) s/Str
+    (s/optional-key :source-date) s/Inst
     (s/optional-key :description) s/Str
     :library-signature LibrarySignature
     (s/optional-key :product-number) LibrarySignature
     (s/optional-key :price) s/Str
     (s/optional-key :price-on-request?) s/Bool
     (s/optional-key :language) Language
-    :target-audience TargetAudience
     }))
 
 (abstract-map/extend-schema
  Hörbuch CatalogItem [:hörbuch]
  {:source-publisher s/Str
-  :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   :duration s/Int
   :narrators [s/Str]
   :produced-commercially? s/Bool})
@@ -76,11 +76,11 @@
 (abstract-map/extend-schema
  TextHörbuch CatalogItem [:text-hörbuch]
  {:source-publisher s/Str
-  :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   :duration s/Int
   :narrators [s/Str]
   (s/optional-key :accompanying-material) s/Str})
@@ -88,11 +88,11 @@
 (abstract-map/extend-schema
  Braille CatalogItem [:braille]
  {:source-publisher s/Str
-  :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   :rucksackbuch? s/Bool
   (s/optional-key :rucksackbuch-number) s/Int
   (s/optional-key :print-and-braille?) s/Bool})
@@ -100,17 +100,16 @@
 (abstract-map/extend-schema
  Taktil CatalogItem [:taktilesbuch]
  {:source-publisher s/Str
-  :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   (s/optional-key :print-and-braille?) s/Bool})
 
 (abstract-map/extend-schema
  Musiknoten CatalogItem [:musiknoten]
  {:source-publisher s/Str
-  :source-date s/Inst
   :producer-brief ProducerBrief
   :genre-text s/Str
   (s/optional-key :volumes) s/Int})
@@ -118,18 +117,18 @@
 (abstract-map/extend-schema
  Grossdruck CatalogItem [:grossdruck]
  {:source-publisher s/Str
-  :source-date s/Inst
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   :volumes s/Int})
 
 (abstract-map/extend-schema
  E-book CatalogItem [:e-book]
  {:source-publisher s/Str
-  :source-date s/Inst
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   :genre Genre
   :sub-genre SubGenre
   :genre-text s/Str
@@ -139,7 +138,9 @@
  Hörfilm CatalogItem [:hörfilm]
  {:genre (apply s/enum (vals vubis/genre-code-to-genre))
   :genre-text s/Str
+  :target-audience TargetAudience
   :producer s/Str
+  :producer-brief s/Str ;; for :hörfilm allow any string as :producer-brief
   :directed-by [s/Str]
   :actors [s/Str]
   :personel-text s/Str
@@ -148,8 +149,8 @@
 (abstract-map/extend-schema
  Spiel CatalogItem [:ludo]
  {:source-publisher s/Str
-  :source-date s/Inst
   :producer-brief ProducerBrief
+  :target-audience TargetAudience
   :genre LudoGenre
   :genre-text s/Str
   (s/optional-key :accompanying-material) s/Str
