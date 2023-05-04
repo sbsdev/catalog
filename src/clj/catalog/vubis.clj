@@ -1,6 +1,7 @@
 (ns catalog.vubis
   "Import XML files from the library system"
   (:require [catalog.layout.common :as layout]
+            [catalog.unicode-normalization :as unicode]
             [clojure.data.zip :as data-zip]
             [clojure.data.zip.xml :refer [attr= text xml-> xml1->]]
             [clojure.java.io :as io]
@@ -740,7 +741,7 @@
   Returns nil if there is no such subfield"
   [record path]
   (some->
-   (apply xml1-> record path) text string/trim ignore-sine-nomine))
+   (apply xml1-> record path) text string/trim ignore-sine-nomine unicode/normalize))
 
 (defn get-multi-subfields
   "Get a list of subfield texts for the given `path` in the given
