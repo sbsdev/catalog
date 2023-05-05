@@ -91,6 +91,6 @@ Mostly you will need Java, and some fonts.
 
 ** License
 
-Copyright © 2015-2021 Swiss Library for the Blind, Visually Impaired and Print Disabled.
+Copyright © 2015-2023 Swiss Library for the Blind, Visually Impaired and Print Disabled.
 
 Distributed under the [[http://www.gnu.org/licenses/agpl-3.0.html][GNU Affero General Public License]]. See the file LICENSE.
