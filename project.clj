@@ -29,7 +29,7 @@
                  [mount "0.1.16"]
                  [mysql/mysql-connector-java "8.0.27"]
                  [nrepl "0.8.3"]
-                 [org.apache.xmlgraphics/fop "2.4" :exclusions [xalan commons-io commons-logging]]
+                 [org.apache.xmlgraphics/fop "2.4" :exclusions [xalan commons-io]]
                  [org.clojure/clojure "1.10.3"]
                  [org.clojure/data.xml "0.1.0-beta2"]
                  [org.clojure/data.zip "1.0.0"]
