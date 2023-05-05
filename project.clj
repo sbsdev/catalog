@@ -57,6 +57,11 @@
   :plugins [[lein-kibit "0.1.8"]
             [lein-codox "0.10.8"]]
 
+  ;; fop depends on com.sun.media/jai-codec which is apparently only
+  ;; available from the jboss 3rd-party repository
+  :repositories [["JBoss 3rd-party"
+                  "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"]]
+
   :codox {:project {:name "Kati"}
           :source-paths ["src"]
           :source-uri "https://github.com/sbsdev/catalog/blob/{version}/{filepath}#L{line}"
