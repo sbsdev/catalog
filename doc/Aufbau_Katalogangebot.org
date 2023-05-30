@@ -979,9 +979,7 @@ E-Books, erscheinen zwischen Abstract und Ausleihsignatur die
 Spieldauer und Sprecherangaben (wie bei den Hörbüchern).
 
 #+begin_example
-[Nachname Autor (fett)] “,“ [Vorname Autor (fett)] “:“ [Titel(fett)] “.“ [Untertitel und restlicher Titelbereich] “. --„ [Verlag] “,“ [Erscheinungsjahr] “.“ (Zeilenumbruch)
-
-“Genre:“ [Genrename] “.“ (Zeilenumbruch)
+[Beginn wie E-Book]
 
 [Abstract] “.“ (Zeilenumbruch)
 
