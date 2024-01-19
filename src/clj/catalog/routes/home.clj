@@ -19,15 +19,16 @@
   [ "" 
    {:middleware [middleware/wrap-csrf
                  middleware/wrap-formats]}
-   ["/" {:get {:handler (fn [_] (views/home))}}]
+   ["/" {:get {:handler views/home}}]
    ["/:year/:issue"
     {:coercion spec-coercion/coercion
      :middleware [coercion/coerce-request-middleware
                   multipart/multipart-middleware]}
     
-    ["" {:get {:parameters {:path {:year ::year :issue ::issue}}
-               :handler (fn [{{{:keys [year issue]} :path} :parameters}]
-                          (views/home year issue))}}]
+    ["" {:name :issue
+         :get {:parameters {:path {:year ::year :issue ::issue}}
+               :handler (fn [{{{:keys [year issue]} :path} :parameters :as request}]
+                          (views/home request year issue))}}]
 
     ;; Neu im Sortiment
     ["/neu-im-sortiment.pdf"
