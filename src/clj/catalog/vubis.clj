@@ -250,7 +250,7 @@
   "Grab the date year out of a string. Return nil if `s` cannot be
   parsed."
   [s]
-  (when-let [year (and s (re-find #"\d{4}" s))]
+  (when-let [year (and (string? s) (re-find #"\d{4}" s))]
     ;; we return a legacy date here so that time literals work and
     ;; stay compatible with what e already have in the database
     (time/java-date
