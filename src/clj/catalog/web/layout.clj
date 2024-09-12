@@ -3,6 +3,7 @@
   (:require [catalog.issue :as issue]
             [hiccup.page :refer [html5 include-css include-js]]
             [ring.util.http-response :as response]
+            [reitit.core :as reitit]
             [trptcolin.versioneer.core :as version]))
 
 (defn glyphicon
@@ -33,6 +34,11 @@
    [:ul.dropdown-menu {:role "menu"}
     (for [[link label] items]
       (menu-item link label))]])
+
+(defn path-for [{::reitit/keys[router]} name args]
+  (-> router
+      (reitit/match-by-name name args)
+      (reitit/match->path)))
 
 (defn navbar
   "Display the navbar"
