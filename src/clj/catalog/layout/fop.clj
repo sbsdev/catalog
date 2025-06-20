@@ -1074,8 +1074,9 @@
         (xml/indent out))))
 
 (defn generate-pdf!
-  "Return a pdf in `out` for given `document`, which is a string
-  containing xsl-fo XML. The pdf is generated using the [Apache
+  "Return a pdf in `out` for given `document`, which is a tree of
+  Element records as defined in clojure.data.xml, containing xsl-fo
+  XML. The pdf is generated using the [Apache
   Fop](https://xmlgraphics.apache.org/fop/) xsl-fo formatting objects
   processor."
   [document out]
