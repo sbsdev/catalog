@@ -5,6 +5,8 @@
             [catalog.layout.text :as layout.text]
             [catalog.validation :as validation]
             [catalog.vubis :as vubis]
+            [clojure.data.xml :as xml]
+            [clojure.java.io :as io]
             [schema.core :as s]))
 
 (defn neu-im-sortiment [year issue]
@@ -46,6 +48,13 @@
      (db/read-catalog year issue)
      vubis/order-and-group
      (layout.fop/generate-document :grossdruck year issue editorial recommendations out))))
+
+(defn generate-pdf
+  "Generate the pdf `pdf` for a given xsl-fo XML file `fo-file`"
+  [fo-file pdf]
+  (->
+   (xml/parse (io/reader fo-file))
+   (layout.fop/generate-pdf! (io/file pdf))))
 
 (defn neu-im-sortiment-text
   "Generate plain text for the *Neu im Sortiment* catalog for given
