@@ -253,8 +253,10 @@
 (defmethod entry-heading-sexp :default
   [{:keys [creator record-id title subtitles name-of-part source-publisher source-date]}]
   (block {:keep-with-next.within-column "always" :role "Lbl"}
-         (bold (wrap creator "" ": " false)
-               (link-to-online-catalog record-id (layout/periodify title)))
+         (bold
+          (link-to-online-catalog
+           record-id
+           (str (wrap creator "" ": " false) (layout/periodify title))))
          (when subtitles " ")
          (layout/render-subtitles subtitles)
          (wrap name-of-part " ")
