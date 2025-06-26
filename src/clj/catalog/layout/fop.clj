@@ -238,21 +238,27 @@
   See [[insert-zero-width-space]]"
   (comp insert-zero-width-space layout/render-narrators))
 
+(defn- level-to-h [level]
+  (keyword (str "h" level)))
+
+(defn- level-to-role [level]
+  (str "H" level))
+
 (defmulti entry-heading-sexp
   "Return a hiccup style sexp for a heading for a given item."
-  (fn [{fmt :format}] fmt))
+  (fn [{fmt :format} _] fmt))
 
 (defmethod entry-heading-sexp :ludo
-  [{:keys [creator record-id title subtitles]}]
-  (block {:keep-with-next.within-column "always" :role "Lbl"}
+  [{:keys [creator record-id title subtitles]} level]
+  (block {:keep-with-next.within-column "always" :role (level-to-role level)}
          (bold (link-to-online-catalog record-id (layout/periodify title)))
          (when subtitles " ")
          (layout/render-subtitles subtitles)
          (wrap creator " " "" false)))
 
 (defmethod entry-heading-sexp :default
-  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date]}]
-  (block {:keep-with-next.within-column "always" :role "Lbl"}
+  [{:keys [creator record-id title subtitles name-of-part source-publisher source-date]} level]
+  (block {:keep-with-next.within-column "always" :role (level-to-role level)}
          (bold
           (link-to-online-catalog
            record-id
@@ -279,16 +285,16 @@
            (bold "Verkauf:") " " price ". " (braille-signatures product-number))))
 
 (defn- list-body [& args]
-  (block {:role "LBody"} args))
+  (block args))
 
 (defn- list-item [heading & args]
-  (block {:space-after "1em" :role "LI"}
+  (block {:space-after "1em"}
    heading
    (list-body args)))
 
 (defmulti entry-sexp
   "Return a hiccup style sexp for a given item."
-  (fn [{fmt :format print-and-braille? :print-and-braille?} opts]
+  (fn [{fmt :format print-and-braille? :print-and-braille?} level opts]
     (cond
       ;; render print-and-braille items the same way as a :braille item
       print-and-braille? :braille
@@ -297,9 +303,10 @@
 (defmethod entry-sexp :hörbuch
   [{:keys [genre-text description duration narrators producer-brief
            produced-commercially? library-signature product-number price price-on-request?] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
@@ -312,9 +319,10 @@
 (defmethod entry-sexp :text-hörbuch
   [{:keys [genre-text description duration narrators producer-brief
            library-signature accompanying-material] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
@@ -326,9 +334,10 @@
 (defmethod entry-sexp :braille
   [{:keys [genre-text description producer-brief rucksackbuch? rucksackbuch-number
            library-signature] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
@@ -341,9 +350,10 @@
 
 (defmethod entry-sexp :grossdruck
   [{:keys [genre-text description library-signature volumes product-number price price-on-request?] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
@@ -356,9 +366,10 @@
 (defmethod entry-sexp :e-book
   [{:keys [genre-text description library-signature
            accompanying-material] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
@@ -369,9 +380,10 @@
 (defmethod entry-sexp :hörfilm
   [{:keys [personel-text movie_country genre-text
            description producer library-signature target-audience] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (block (wrap personel-text))
    (block (wrap movie_country))
    (when show-genre?
@@ -384,9 +396,10 @@
 (defmethod entry-sexp :ludo
   [{:keys [source-publisher genre-text description
            game-description accompanying-material library-signature] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (block (wrap source-publisher))
    (when show-genre?
      (block (wrap genre-text)))
@@ -396,9 +409,9 @@
    (verkauf item)))
 
 (defmethod entry-sexp :musiknoten
-  [{:keys [description producer-brief library-signature] :as item} opts]
+  [{:keys [description producer-brief library-signature] :as item} level opts]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (block (wrap description))
    (block (wrap producer-brief))
    (ausleihe-multi library-signature)
@@ -406,9 +419,10 @@
 
 (defmethod entry-sexp :taktilesbuch
   [{:keys [genre-text description producer-brief library-signature] :as item}
+   level
    {:keys [show-genre?] :or {show-genre? true}}]
   (list-item
-   (entry-heading-sexp item)
+   (entry-heading-sexp item level)
    (when show-genre?
      (block (wrap genre-text "Genre: ")))
    (block (wrap description))
@@ -417,13 +431,10 @@
    (verkauf item)))
 
 (defn entries-sexp
-  "Return a hiccup style sexp for given `items` and `opts`"
-  [items opts]
-  [:fo:block {:role "L"}
-   (map #(entry-sexp % opts) items)])
-
-(defn- level-to-h [level]
-  (keyword (str "h" level)))
+  "Return a hiccup style sexp for given `items`, `level` and `opts`"
+  [items level opts]
+  [:fo:block
+   (map #(entry-sexp % level opts) items)])
 
 (defn subgenre-sexp
   "Return a hiccup style sexp for a subgenre"
@@ -431,7 +442,7 @@
   [(heading (level-to-h level) [fmt genre subgenre] opts)
    (when-not (#{:kinder-und-jugendbücher} genre)
      (set-marker (layout/translations subgenre)))
-   (entries-sexp items opts)])
+   (entries-sexp items (inc level) opts)])
 
 (defn subgenres-sexp
   "Return a hiccup style sexp for all subgenres for given `genre`"
@@ -447,10 +458,10 @@
      ;; special case where the editorial or the recommendations are passed in the tree
      (#{:editorial :recommendations :recommendation} genre) (md-to-fop items [fmt genre] opts)
      ;; special case when printing the whole catalog of tactile and print-and-braille books
-     (#{:taktilesbuch :print-and-braille} fmt) (entries-sexp items opts)
+     (#{:taktilesbuch :print-and-braille} fmt) (entries-sexp items (inc level) opts)
      (#{:kinder-und-jugendbücher} genre) (subgenres-sexp items fmt genre (inc level) opts)
      (#{:hörbuch} fmt) (subgenres-sexp items fmt genre (inc level) opts)
-     :else (entries-sexp items opts))])
+     :else (entries-sexp items (inc level) opts))])
 
 (defn format-sexp
   "Return a hiccup style sexp for a format"
@@ -462,7 +473,7 @@
    (case fmt
      ;; handle the special case where the editorial or the recommendations are passed in the tree
      (:editorial :recommendations :recommendation) (md-to-fop items [fmt] opts)
-     (:hörfilm :ludo) (entries-sexp items opts)
+     (:hörfilm :ludo) (entries-sexp items (inc level) opts)
      (mapcat #(genre-sexp (get items %) fmt % (inc level) opts) (keys items)))])
 
 (defn- page-number []
@@ -1017,7 +1028,7 @@
      (custom-cover-page title query customer)
      ;; start the items on a new page
      (block {:break-after "page"})
-     (entries-sexp items {})]]])
+     (entries-sexp items 2 {})]]])
 
 (defmethod document-sexp :custom
   [items fmt year issue _ _ {:keys [description query customer]}]
