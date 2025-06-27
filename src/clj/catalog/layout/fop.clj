@@ -94,10 +94,7 @@
 (defn- to-url
   "Return an url given a `record-id`"
   [record-id]
-  (let [api-key "c97386a2-914a-40c2-bd8d-df4c273175e6"]
-    (format "https://online.sbs.ch/iguana/www.main.cls?v=%s&surl=search&p=*#recordId=%s"
-            api-key
-            (string/replace record-id "/" "."))))
+  (format "https://online.sbs.ch/iguana/www.main.cls?surl=search&p=*#recordId=%s" (string/replace record-id "/" ".")))
 
 (defn- link-to-online-catalog [record-id title]
   ;; FIXME: The use of the alt-text isn't quite clear. Apparently when
