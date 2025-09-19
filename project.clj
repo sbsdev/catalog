@@ -13,6 +13,14 @@
                  [conman "0.9.1" :exclusions [org.clojure/tools.reader]]
                  [cprop "0.1.19"]
                  [endophile "0.2.1"]
+                 ;; FIXME: endophile is based on pegdown which is unmaintained (https://github.com/sirthias/pegdown). In
+                 ;; fact it does not work with newer Java versions due to its dependency on an old
+                 ;; parboiled-java (https://mvnrepository.com/artifact/org.parboiled/parboiled-java) So as a quick
+                 ;; workaround we depend on a newer parboiled-java to make the whole thing work again.
+                 ;;
+                 ;; But the real fix is probably to move to a well maintained clojure markdown parsing library such as
+                 ;; nextjournal markdown (https://github.com/nextjournal/markdown) for markdown parsing.
+                 [org.parboiled/parboiled-java "1.4.1"]
                  [expound "0.8.10"]
                  [hiccup "1.0.5"]
                  [io.prometheus/simpleclient_hotspot "0.12.0"]
